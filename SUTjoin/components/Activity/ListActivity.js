@@ -7,7 +7,7 @@ export default class App extends Component<Props> {
   }
 
   fetchData= async()=>{
-    const response = await fetch('http://127.0.0.1:1348/user');
+    const response = await fetch('http://localhost:1348/user');
     const users = await response.json();
     this.setState({data: users});
 

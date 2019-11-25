@@ -10,8 +10,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mysqli": "^3.0.11",
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "react-native-gesture-handler": "^1.5.1",
+    "react-navigation": "3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
