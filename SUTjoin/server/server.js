@@ -31,7 +31,6 @@ con.connect(function(error){
 app.get('/user', function(req, res){
   con.query('select * from user', function(error, rows, fields){
         if(error) console.log(error);
-
         else{
             console.log(rows);
             res.send(rows);

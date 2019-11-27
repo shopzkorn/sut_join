@@ -15,7 +15,10 @@
     "mysqli": "^3.0.11",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-device-info": "^5.3.1",
     "react-native-gesture-handler": "^1.5.1",
+    "react-native-network-info": "^5.2.1",
+    "react-native-vector-icons": "^6.6.0",
     "react-navigation": "3.3.2"
   },
   "devDependencies": {
