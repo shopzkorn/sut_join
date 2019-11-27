@@ -6,7 +6,7 @@ import {
     SafeAreaView,
     TextInput,
     Platform,
-    StatusBar
+    StatusBar,
 } from "react-native";
 
 class Checkin extends Component {
@@ -14,7 +14,7 @@ class Checkin extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Checkin</Text>
+                <Text style={styles.text}>CHECKIN</Text>
             </View>
         );
     }

@@ -17,26 +17,27 @@ import Activity from '../Activity/Activity';
 import Checkin from '../Checkin/Checkin';
 import Learning from '../Learning/Learning';
 import Profile from '../Profile/Profile';
+import List from '../Activity/ListActivity';
+import Add from '../Activity/AddActivity';
 
-class Menu extends Component {
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.text}>Hello Menu</Text>
-            </View>
-        );
-    }
-}
-// export default Menu;
 
 export default createBottomTabNavigator({
   Activity: {
-    screen: Activity,
+    screen: List,
     navigationOptions: {
       tabBarLabel:'ACTIVITY',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-rocket" color={tintColor} size={24}/>
+      ),
+    }
+  },
+  AddActivity: {
+    screen: Add,
+    navigationOptions: {
+      tabBarLabel:'ADD ACTIVITY',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="ios-add-circle" color={tintColor} size={24}/>
       ),
     }
   },
@@ -67,6 +68,20 @@ export default createBottomTabNavigator({
       ),
   }
   },
+
+},{
+  tabBarOptions: {
+    activeTintColor: 'red',
+    // inactiveTintColor: 'Grey',
+    style: {
+      backgroundColor: 'white',
+      borderTopWidth:0,
+      shadowOffset:{width:5,height:3},
+      shadowColor:'black',
+      shadowOpacity: 0.5,
+      elevation: 5
+    }
+  }
 })
 
 const styles = StyleSheet.create({

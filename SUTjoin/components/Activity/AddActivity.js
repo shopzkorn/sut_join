@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, FlatList } from 'react-native';
+import { Platform, StyleSheet, Text, View, FlatList ,TextInput} from 'react-native';
 import { NetworkInfo } from "react-native-network-info";
-export default class App extends Component<Props> {
+
+export default class App extends Component {
 
   state = {
     data: []
@@ -23,23 +24,8 @@ export default class App extends Component<Props> {
   }
   render() {
     return (
-      <View >
+      <View style={styles.container}>
         <Text>Welcome</Text>
-
-        <FlatList
-          data={this.state.data}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) =>
-
-            <View style={{ backgroundColor: '#abc123', padding: 10, margin: 10 }}>
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.name}</Text>
-              <Text style={{ color: '#fff' }}>{item.email}</Text>
-              <Text>Phone: {item.phone}</Text>
-            </View>
-
-          }
-
-        />
       </View>
     );
   }
