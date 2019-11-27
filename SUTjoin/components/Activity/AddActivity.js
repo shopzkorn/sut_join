@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, FlatList } from 'react-native';
 import { NetworkInfo } from "react-native-network-info";
-export default class App extends Component<Props> {
+export default class App extends Component {
 
   state = {
     data: []

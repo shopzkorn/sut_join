@@ -13,10 +13,10 @@ import {
   TouchableOpacity
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Octicons from 'react-native-vector-icons/Octicons';
-
+import LinearGradient from 'react-native-linear-gradient';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NetworkInfo } from "react-native-network-info";
 import * as theme from '../../theme';
-
 const { width, height } = Dimensions.get('window');
 const mocks = [
   {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.sizes.padding / 2,
   },
   rating: {
-    fontSize: theme.sizes.font * 2,
+    fontSize: theme.sizes.font *1.5,
     color: theme.colors.white,
     fontWeight: 'bold'
   },
@@ -218,9 +218,13 @@ const styles = StyleSheet.create({
   }
 });
 
+
 class Articles extends Component {
-  scrollX = new Animated.Value(0); 
-  
+  state = {
+    data: []
+  }
+  scrollX = new Animated.Value(0);
+
   static navigationOptions = {
     header: (
       <View style={[styles.flex, styles.row, styles.header,]}>
@@ -229,7 +233,7 @@ class Articles extends Component {
           <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
         </View>
         <View>
-          <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} />
+          <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg' }} />
         </View>
       </View>
     )
@@ -237,22 +241,23 @@ class Articles extends Component {
 
   renderDots() {
     const { destinations } = this.props;
+    console.log(this.state.data);
     const dotPosition = Animated.divide(this.scrollX, width);
     return (
       <View style={[
         styles.flex, styles.row,
         { justifyContent: 'center', alignItems: 'center', marginTop: 10 }
       ]}>
-        {destinations.map((item, index) => {
+        {this.state.data.map((item, index) => {
           const borderWidth = dotPosition.interpolate({
-            inputRange: [index -1, index, index + 1],
+            inputRange: [index - 1, index, index + 1],
             outputRange: [0, 2.5, 0],
             extrapolate: 'clamp'
           });
           return (
             <Animated.View
               key={`step-${item.id}`}
-              style={[styles.dots, styles.activeDot, { borderWidth: borderWidth } ]}
+              style={[styles.dots, styles.activeDot, { borderWidth: borderWidth }]}
             />
           )
         })}
@@ -279,7 +284,15 @@ class Articles extends Component {
 
   renderDestinations = () => {
     return (
-      <View style={[ styles.column, styles.destinations ]}>
+      <View style={[styles.column, styles.destinations]}>
+        <View
+        style={[
+          styles.row,
+          styles.recommendedHeader
+        ]}
+      >
+        <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Recommended</Text>
+      </View>
         <FlatList
           horizontal
           pagingEnabled
@@ -288,10 +301,10 @@ class Articles extends Component {
           decelerationRate={0}
           scrollEventThrottle={16}
           snapToAlignment="center"
-          style={{ overflow:'visible', height: 280 }}
-          data={this.props.destinations}
+          style={{ overflow: 'visible', height: 280 }}
+          data={this.state.data}
           keyExtractor={(item, index) => `${item.id}`}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX }} }])}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
           renderItem={({ item }) => this.renderDestination(item)}
         />
         {this.renderDots()}
@@ -300,77 +313,83 @@ class Articles extends Component {
   }
 
   renderDestination = item => {
-    const { navigation } = this.props;
+    let photoAc = '../../asset/image/'+item.photo;
+    console.log(photoAc);
+    const { navigation } = this.state.data;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{ uri: item.preview }}
+          source={require('../../asset/image/18838.jpg')}
         >
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View style={{ flex: 0 }}>
-              <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+              <Image source={require('../../asset/image/IMG_8117.jpg')} style={styles.avatar} />
             </View>
             <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.user.name}</Text>
+              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>Suppanat</Text>
               <Text style={{ color: theme.colors.white }}>
-                <Octicons
-                  name="location"
+                <MaterialCommunityIcons
+                  name="map-marker-outline"
                   size={theme.sizes.font * 0.8}
                   color={theme.colors.white}
                 />
-                <Text> {item.location}</Text>
+                <Text> {item.location_name}</Text>
               </Text>
             </View>
             <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-              <Text style={styles.rating}>{item.rating}</Text>
+            <Text>
+            <MaterialCommunityIcons
+                  name="account"
+                  size={theme.sizes.font * 1.5}
+                  color={theme.colors.white}
+                />
+              <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
+              </Text>
             </View>
           </View>
         </ImageBackground>
-          <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
-            <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
-              {item.title}
-            </Text>
-            <View style={[ styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
-              <Text style={{ color: theme.colors.caption }}>
-                {item.description.split('').slice(0, 50)}...
+        <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
+          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+            {item.title}
+          </Text>
+          <View style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
+            <Text style={{ color: theme.colors.caption }}>
+              {item.description.split('').slice(0, 50)}...
               </Text>
-              <FontAwesome
-                name="chevron-right"
-                size={theme.sizes.font * 0.75}
-                color={theme.colors.caption}
-              />
-            </View>
+            <FontAwesome
+              name="chevron-right"
+              size={theme.sizes.font * 0.75}
+              color={theme.colors.caption}
+            />
           </View>
+        </View>
       </TouchableOpacity>
     )
   }
 
   renderRecommended = () => {
     return (
-      <View style={[styles.flex, styles.column, styles.recommended ]}>
+      <View style={[styles.flex, styles.column, styles.recommended]}>
         <View
           style={[
             styles.row,
             styles.recommendedHeader
           ]}
         >
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Recommended</Text>
-          <TouchableOpacity activeOpacity={0.5}>
-            <Text style={{ color: theme.colors.caption }}>More</Text>
-          </TouchableOpacity>
+          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Activity</Text>
         </View>
         <View style={[styles.column, styles.recommendedList]}>
           <FlatList
-            horizontal
+            Vertical
             pagingEnabled
             scrollEnabled
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             snapToAlignment="center"
-            style={[ styles.shadow, { overflow: 'visible' }]}
-            data={this.props.destinations}
+            style={[styles.shadow, { overflow: 'visible' }]}
+            data={this.state.data}
             keyExtractor={(item, index) => `${item.id}`}
             renderItem={({ item, index }) => this.renderRecommendation(item, index)}
           />
@@ -380,59 +399,143 @@ class Articles extends Component {
   }
 
   renderRecommendation = (item, index) => {
+    const { navigation } = this.state.data;
     const { destinations } = this.props;
     const isLastItem = index === destinations.length - 1;
     return (
-      <View style={[
-        styles.flex, styles.column, styles.recommendation, styles.shadow, 
-        index === 0 ? { marginLeft: theme.sizes.margin } : null,
-        isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
-      ]}>
-        <View style={[styles.flex, styles.recommendationHeader]}>
-          <Image style={[styles.recommendationImage]} source={{ uri: item.preview }} />
-          <View style={[ styles.flex, styles.row, styles.recommendationOptions ]}>
-            <Text style={styles.recommendationTemp}>
-              {item.temperature}℃
-            </Text>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+        <ImageBackground
+          style={[styles.flex, styles.destination, styles.shadow]}
+          imageStyle={{ borderRadius: theme.sizes.radius }}
+          source={require('../../asset/image/18838.jpg')}
+        >
+          <View style={[styles.row, { justifyContent: 'space-between' }]}>
+            <View style={{ flex: 0 }}>
+              <Image source={require('../../asset/image/IMG_8117.jpg')} style={styles.avatar} />
+            </View>
+            <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
+              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>Suppanat</Text>
+              <Text style={{ color: theme.colors.white }}>
+                <MaterialCommunityIcons
+                  name="map-marker-outline"
+                  size={theme.sizes.font * 0.8}
+                  color={theme.colors.white}
+                />
+                <Text> {item.location_name}</Text>
+              </Text>
+            </View>
+            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
+            <Text>
+            <MaterialCommunityIcons
+                  name="account"
+                  size={theme.sizes.font * 1.5}
+                  color={theme.colors.white}
+                />
+              <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
+              </Text>
+            </View>
+          </View>
+        </ImageBackground>
+        <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
+          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+            {item.title}
+          </Text>
+          <View style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
+            <Text style={{ color: theme.colors.caption }}>
+              {item.description.split('').slice(0, 50)}...
+              </Text>
             <FontAwesome
-              name={item.saved ? 'bookmark' : 'bookmark-o'}
-              color={theme.colors.white}
-              size={theme.sizes.font * 1.25}
+              name="chevron-right"
+              size={theme.sizes.font * 0.75}
+              color={theme.colors.caption}
             />
           </View>
         </View>
-        <View style={[styles.flex, styles.column, styles.shadow, { justifyContent: 'space-evenly', padding: theme.sizes.padding / 2 }]}>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: theme.sizes.padding / 4.5, }}>{item.title}</Text>
-          <Text style={{ color: theme.colors.caption }}>{item.location}</Text>
-          <View style={[
-            styles.row,
-            { alignItems: 'center', justifyContent: 'space-between', marginTop: theme.sizes.margin }
-          ]}>
-            {this.renderRatings(item.rating)}
-            <Text style={{ color: theme.colors.active }}>
-              {item.rating}
-            </Text>
-          </View>
+        <View>
+        <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+            
+          </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
+    // return (
+    //   <View style={[
+    //     styles.flex, styles.column, styles.recommendation, styles.shadow,
+    //     index === 0 ? { marginLeft: theme.sizes.margin } : null,
+    //     isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
+    //   ]}>
+    //     <View style={[styles.flex, styles.recommendationHeader]}>
+    //       <Image style={[styles.recommendationImage]} source={require('../../asset/image/18838.jpg')} />
+    //       <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
+    //         <Text style={styles.recommendationTemp}>
+    //           {item.temperature}℃
+    //         </Text>
+    //         <FontAwesome
+    //           name={item.saved ? 'bookmark' : 'bookmark-o'}
+    //           color={theme.colors.white}
+    //           size={theme.sizes.font * 1.25}
+    //         />
+    //       </View>
+    //     </View>
+    //     <View style={[styles.flex, styles.column, styles.shadow, { justifyContent: 'space-evenly', padding: theme.sizes.padding / 2 }]}>
+    //       <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: theme.sizes.padding / 4.5, }}>{item.title}</Text>
+    //       <Text style={{ color: theme.colors.caption }}>{item.location}</Text>
+    //       <View style={[
+    //         styles.row,
+    //         { alignItems: 'center', justifyContent: 'space-between', marginTop: theme.sizes.margin }
+    //       ]}>
+    //         {this.renderRatings(item.rating)}
+    //         <Text style={{ color: theme.colors.active }}>
+    //           {item.rating}
+    //         </Text>
+    //       </View>
+    //     </View>
+    //   </View>
+    // )
   }
+  fetchData = async () => {
+    const ipv4 = '10.0.33.150'; // @sut
+    // Get IPv4 IP (priority: WiFi first, cellular second)
+    NetworkInfo.getIPV4Address().then(ipv4Address => {
+      this.ipv4 = ipv4Address
+      console.log('http://' + this.ipv4 + ':1348/activity');
+    });
+    const response = await fetch('http://192.168.1.29:1348/activity');
+    const users = await response.json();
+    this.mocks = users;
 
+
+    console.log(this.mocks);
+    this.setState({ data: users });
+  }
+  componentWillMount() {
+    console.log(1);
+    this.fetchData();
+  }
   render() {
+    Articles.defaultProps = {
+      destinations: mocks
+    };
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-      >
-        {this.renderDestinations()}
-        {this.renderRecommended()}
-      </ScrollView>
+      <LinearGradient
+      start={{ x: 0.0, y: 0.25 }}
+      end={{ x: 0.5, y: 1.0 }}
+      locations={[0, 0.5, 0.6]}
+      colors={['white', 'pink']} >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+        >
+          {this.renderDestinations()}
+          {this.renderRecommended()}
+        </ScrollView>
+      </LinearGradient>
     )
   }
 }
 
 Articles.defaultProps = {
-  destinations: mocks
+  destinations: mocks,
 };
 
 export default Articles;

@@ -39,3 +39,15 @@ app.get('/user', function(req, res){
 
   });
 });
+
+app.get('/activity', function(req, res){
+  con.query('select * from activity', function(error, rows, fields){
+        if(error) console.log(error);
+        else{
+            console.log(rows);
+            res.send(rows);
+
+        }
+
+  });
+});
