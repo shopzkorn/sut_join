@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
   }
 
 });
+console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
+console.disableYellowBox = true;
 
 // export default createBottomTabNavigator({
   // Activity: {
