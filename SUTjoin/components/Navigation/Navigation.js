@@ -2,15 +2,15 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 
-import List from '../Activity/ListActivity';
-import Article from '../Activity/AddActivity';
+import Activity from '../Activity/Activity';
+import Menu from '../Navigation/Menu'
 
 export default createStackNavigator(
   {
-    List,
-    Article
+    Activity,
+    Menu,
   },
   {
-    initialRouteName: "List",
+    initialRouteName: "Menu",
   }
 );

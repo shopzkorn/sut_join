@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
 import React from 'react';
 import {
@@ -26,43 +19,79 @@ import {
 import { createAppContainer } from 'react-navigation';
 import Navigation from './components/Navigation/Navigation';
 
+import { createBottomTabNavigator } from 'react-navigation'
+import Icon from 'react-native-vector-icons/Ionicons'
+
+import Activity from './components/Activity/Activity';
+import Checkin from './components/Checkin/Checkin';
+import Learning from './components/Learning/Learning';
+import Profile from './components/Profile/Profile';
+
+class Application extends React.Component {
+  render() {
+    return(
+      <View style={styles.container}>
+        <Text style={styles.text}>Hello Menu </Text>
+      </View>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  text: {
+    fontSize: 30,
+    textAlign: 'center',
+  }
+
 });
 
+// export default createBottomTabNavigator({
+  // Activity: {
+  //   screen: Activity,
+  //   navigationOptions: {
+  //     tabBarLabel:'ACTIVITY',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="ios-rocket" color={tintColor} size={24}/>
+  //     ),
+  //   }
+  // },
+  // Checkin: {
+  //   screen: Checkin,
+  //   navigationOptions: {
+  //     tabBarLabel:'CHECK IN',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="ios-bookmarks" color={tintColor} size={24}/>
+  //     ),
+  // }
+  // },
+  // Profile: {
+  //   screen: Profile,
+  //   navigationOptions: {
+  //     tabBarLabel:'PROFILE',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="ios-person" color={tintColor} size={24}/>
+  //     ),
+  // }
+  // },
+  // Learning: {
+  //   screen: Learning,
+  //   navigationOptions: {
+  //     tabBarLabel:'LEARNING',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="ios-settings" color={tintColor} size={24}/>
+  //     ),
+  // }
+  // },
+// })
+
+
+
+// export default Application;
 export default createAppContainer(Navigation);
