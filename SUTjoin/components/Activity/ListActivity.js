@@ -17,6 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NetworkInfo } from "react-native-network-info";
 import * as theme from '../../theme';
+import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
 const mocks = [
   {
@@ -241,7 +242,7 @@ class Articles extends Component {
 
   renderDots() {
     const { destinations } = this.props;
-    console.log(this.state.data);
+    // console.log(this.state.data);
     const dotPosition = Animated.divide(this.scrollX, width);
     return (
       <View style={[
@@ -315,7 +316,7 @@ class Articles extends Component {
   renderDestination = item => {
     let photoAc = '../../asset/image/'+item.photo;
     console.log(photoAc);
-    const { navigation } = this.state.data;
+    const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
@@ -335,13 +336,13 @@ class Articles extends Component {
                   size={theme.sizes.font * 0.8}
                   color={theme.colors.white}
                 />
-                <Text> {item.location_name}</Text>
+                <Text> {item.location_name.split('').slice(0, 5)}...</Text>
               </Text>
             </View>
             <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
             <Text>
             <MaterialCommunityIcons
-                  name="account"
+                  name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
                 />
@@ -399,9 +400,7 @@ class Articles extends Component {
   }
 
   renderRecommendation = (item, index) => {
-    const { navigation } = this.state.data;
-    const { destinations } = this.props;
-    const isLastItem = index === destinations.length - 1;
+    const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
@@ -421,13 +420,13 @@ class Articles extends Component {
                   size={theme.sizes.font * 0.8}
                   color={theme.colors.white}
                 />
-                <Text> {item.location_name}</Text>
+                <Text> {item.location_name.split('').slice(0, 5)}...</Text>
               </Text>
             </View>
             <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
             <Text>
             <MaterialCommunityIcons
-                  name="account"
+                  name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
                 />
@@ -493,6 +492,7 @@ class Articles extends Component {
     //   </View>
     // )
   }
+  
   fetchData = async () => {
     const ipv4 = '10.0.33.150'; // @sut
     // Get IPv4 IP (priority: WiFi first, cellular second)
@@ -502,21 +502,20 @@ class Articles extends Component {
     });
     const response = await fetch('http://192.168.1.29:1348/activity');
     const users = await response.json();
-    this.mocks = users;
-
-
-    console.log(this.mocks);
     this.setState({ data: users });
   }
+  refresh() {
+    return new Promise((resolve) => {
+      this.fetchData;
+      setTimeout(()=>{resolve()}, 2000)
+    });
+  }
   componentWillMount() {
-    console.log(1);
     this.fetchData();
   }
   render() {
-    Articles.defaultProps = {
-      destinations: mocks
-    };
     return (
+      <PTRView onRefresh={this.refresh} >
       <LinearGradient
       start={{ x: 0.0, y: 0.25 }}
       end={{ x: 0.5, y: 1.0 }}
@@ -530,12 +529,13 @@ class Articles extends Component {
           {this.renderRecommended()}
         </ScrollView>
       </LinearGradient>
+      </PTRView>
     )
   }
 }
 
-Articles.defaultProps = {
-  destinations: mocks,
-};
+// Articles.defaultProps = {
+//   destinations: mocks,
+// };
 
 export default Articles;

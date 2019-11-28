@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity,RefreshControl } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Foundation from 'react-native-vector-icons/Foundation';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import LinearGradient from 'react-native-linear-gradient';
+import moment from 'moment'
 
 import * as theme from '../../theme';
 
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray,
   },
   title: {
-    fontSize: theme.sizes.font * 2,
+    fontSize: theme.sizes.font * 1.5,
     fontWeight: 'bold'
   },
   description: {
@@ -101,9 +104,9 @@ class Article extends Component {
           <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" color={theme.colors.white} size={theme.sizes.font * 1} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <MaterialIcons name="more-horiz" color={theme.colors.white} size={theme.sizes.font * 1.5} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       ),
       headerTransparent: true,
@@ -116,8 +119,8 @@ class Article extends Component {
     const dotPosition = Animated.divide(this.scrollX, width);
 
     return (
-      <View style={[ styles.flex, styles.row, styles.dotsContainer ]}>
-        {article.images.map((item, index) => {
+      <View style={[styles.flex, styles.row, styles.dotsContainer]}>
+        {article.photo.map((item, index) => {
           const opacity = dotPosition.interpolate({
             inputRange: [index - 1, index, index + 1],
             outputRange: [0.5, 1, 0.5],
@@ -132,6 +135,15 @@ class Article extends Component {
         })}
       </View>
     )
+  }
+
+  renderGender = (gender) =>{
+    if(gender == 1)
+      return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
+    else if(gender == 2)
+      return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
+    else
+    return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
   }
 
   renderRatings = (rating) => {
@@ -155,58 +167,140 @@ class Article extends Component {
   render() {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-
+    console.log(article);
+    const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
-      <View style={styles.flex}>
-        <View style={[styles.flex]}>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            scrollEnabled
-            showsHorizontalScrollIndicator={false}
-            decelerationRate={0}
-            scrollEventThrottle={16}
-            snapToAlignment="center"
-            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
-          >
-            {
-              article.images.map((img, index) => 
-                <Image
-                  key={`${index}-${img}`}
-                  source={{ uri: img }}
-                  resizeMode='cover'
-                  style={{ width, height: width }}
-                />
-              )
-            }
-          </ScrollView>
-          {this.renderDots()}
-        </View>
-        <View style={[styles.flex, styles.content]}>
-          <View style={[styles.flex, styles.contentHeader]}>
-            <Image style={[styles.avatar, styles.shadow]} source={{ uri: article.user.avatar }} />
-            <Text style={styles.title}>{article.title}</Text>
-            <View style={[
-              styles.row,
-              { alignItems: 'center', marginVertical: theme.sizes.margin / 2 }
-            ]}>
-              {this.renderRatings(article.rating)}
-              <Text style={{ color: theme.colors.active }}>
-                {article.rating} 
-              </Text>
-              <Text style={{ marginLeft: 8, color: theme.colors.caption }}>
-                 ({article.reviews} reviews)
-              </Text>
-            </View>
-            <TouchableOpacity>
-              <Text style={styles.description}>
-                {article.description.split('').slice(0, 180)}...
-                <Text style={{color: theme.colors.active}}> Read more</Text>
-              </Text>
-            </TouchableOpacity>
+     
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+      >
+        <View style={styles.flex}>
+          <View style={[styles.flex]}>
+            <Image
+              source={require('../../asset/image/18838.jpg')}
+              resizeMode='cover'
+              style={{ width, height: width * 0.7 }}
+            />
+            {/* {this.renderDots()} */}
+
           </View>
+          <LinearGradient
+          start={{ x: 0.0, y: 0.25 }}
+          end={{ x: 0.5, y: 1.0 }}
+          locations={[0, 0.5, 0.6]}
+          colors={['white', 'pink']} >
+          <View style={[styles.flex, styles.content]}>
+            <View style={[styles.flex, styles.contentHeader]}>
+              <Image style={[styles.avatar, styles.shadow]} source={require('../../asset/image/IMG_8117.jpg')} />
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}>
+                <Text style={styles.title}>{article.title}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',textAlign: 'right' }}>Suppanat</Text>
+                </View>
+              </View>
+              <View style={[
+                styles.row,
+                { alignItems: 'center', marginVertical: theme.sizes.margin / 2 }
+              ]}>
+                <Text >
+                  <MaterialCommunityIcons
+                    name="map-marker-outline"
+                    size={theme.sizes.font}
+                    color={theme.colors.caption}
+                  />
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold' }}> {article.location_name}</Text>
+                </Text>
+              </View>
+              <View style={[
+                styles.row
+              ]}>
+              <Text >
+                  <MaterialCommunityIcons
+                    name="account-plus"
+                    size={theme.sizes.font * 2}
+                    color={theme.colors.caption}
+                  />
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
+                </Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: theme.colors.caption,fontSize: theme.sizes.font * 1.1 }}>  
+                  {article.description}
+                </Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={[
+                styles.row
+              ]}>
+                <Text >
+                  <Foundation
+                    name="calendar"
+                    size={theme.sizes.font*2}
+                    color={theme.colors.caption}
+                  />
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
+                </Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={[
+                styles.row
+              ]}>
+                <Text >
+                  <FontAwesome
+                    name="play"
+                    size={theme.sizes.font*2}
+                    color={theme.colors.caption}
+                  />
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold' ,fontSize: theme.sizes.font * 1.1}}>    {article.type}</Text>
+                </Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={[
+                styles.row
+              ]}>
+                <Text >
+                  <FontAwesome
+                    name="user"
+                    size={theme.sizes.font*2}
+                    color={theme.colors.caption}
+                  />
+                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
+                </Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
+            </Text>
+              <View style={[
+                styles.row
+              ]}>
+                <Text >
+                  <Foundation
+                    name="male-female"
+                    size={theme.sizes.font*2}
+                    color={theme.colors.caption}
+                  />
+                  { this.renderGender(article.gender) }
+                </Text>
+              </View>
+            </View>
+          </View>
+          
+          </LinearGradient>
         </View>
-      </View>
+      </ScrollView>
+     
     )
   }
 }

@@ -4,9 +4,8 @@ var app = express();
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.json({type:'application/json'}));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-
 var con = mysql.createConnection({
  
     host:'localhost',
@@ -50,4 +49,18 @@ app.get('/activity', function(req, res){
         }
 
   });
+});
+
+app.post('/addActivity', function(req, res){
+  console.log(req.body); 
+  let sql = "Insert into activity(id_host,date_start,date_end,title,description,number_people,min_age,max_age,location_name,type,gender) values (1,'"+req.body.datetimes+"','"+req.body.datetimes+"','"+req.body.title+"','"+req.body.description+"','"+req.body.number_people+"','"+req.body.minage+"','"+req.body.maxage+"','"+req.body.location+"','"+req.body.tag+"','"+req.body.gender+"')"
+  con.query(sql, function(error, rows, fields){
+    if(error) console.log(error);
+    else{
+        console.log(rows);
+        res.send(rows);
+
+    }
+
+});
 });
