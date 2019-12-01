@@ -25,7 +25,7 @@ import * as theme from '../../theme';
 
 export default createBottomTabNavigator({
   Activity: {
-    screen: Activity,
+    screen: List,
     navigationOptions: {
       tabBarLabel:'EXPLORE',
       tabBarIcon: ({ tintColor }) => (
@@ -39,6 +39,15 @@ export default createBottomTabNavigator({
           </View>
         </View>
       )
+    }
+  },
+  AddActivity: {
+    screen: Add,
+    navigationOptions: {
+      tabBarLabel:'ADD ACTIVITY',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="ios-add-circle" color={tintColor} size={24}/>
+      ),
     }
   },
   AddActivity: {
@@ -86,6 +95,20 @@ export default createBottomTabNavigator({
       header: null
   }
   },
+
+},{
+  tabBarOptions: {
+    activeTintColor: 'red',
+    // inactiveTintColor: 'Grey',
+    style: {
+      backgroundColor: 'white',
+      borderTopWidth:0,
+      shadowOffset:{width:5,height:3},
+      shadowColor:'black',
+      shadowOpacity: 0.5,
+      elevation: 5
+    }
+  }
 })
 
 const styles = StyleSheet.create({
