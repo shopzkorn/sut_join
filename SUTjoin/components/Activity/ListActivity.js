@@ -19,87 +19,7 @@ import { NetworkInfo } from "react-native-network-info";
 import * as theme from '../../theme';
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
-const mocks = [
-  {
-    id: 1,
-    user: {
-      name: 'Lelia Chavez',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    saved: true,
-    location: 'Santorini, Greece',
-    temperature: 34,
-    title: 'Santorini',
-    description: 'Santorini is one of the Cyclades islands in the Aegean Sea. It was devastated by a volcanic eruption in the 16th century BC, forever shaping its rugged landscape. The whitewashed, cubiform houses of its 2 principal towns, Fira and Oia, cling to cliffs above an underwater caldera (crater). They overlook the sea, small islands to the west and beaches made up of black, red and white lava pebbles.',
-    rating: 4.3,
-    reviews: 3212,
-    preview: 'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-    ]
-  },
-  {
-    id: 2,
-    user: {
-      name: 'Lelia Chavez',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    saved: false,
-    location: 'Loutraki, Greece',
-    temperature: 34,
-    title: 'Loutraki',
-    description: 'This attractive small town, 80 kilometers from Athens',
-    rating: 4.6,
-    reviews: 3212,
-    preview: 'https://images.unsplash.com/photo-1458906931852-47d88574a008?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1458906931852-47d88574a008?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1446903572544-8888a0e60687?auto=format&fit=crop&w=800&q=80',
-    ]
-  },
-  {
-    id: 3,
-    user: {
-      name: 'Lelia Chavez',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    saved: true,
-    location: 'Santorini, Greece',
-    temperature: 34,
-    title: 'Santorini',
-    description: 'Santorini - Description',
-    rating: 3.2,
-    reviews: 3212,
-    preview: 'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=800&q=80',
-    ]
-  },
-  {
-    id: 4,
-    user: {
-      name: 'Lelia Chavez',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    location: 'Loutraki, Greece',
-    temperature: 34,
-    title: 'Loutraki',
-    description: 'This attractive small town, 80 kilometers from Athens',
-    rating: 5,
-    reviews: 3212,
-    preview: 'https://images.unsplash.com/photo-1458906931852-47d88574a008?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1458906931852-47d88574a008?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1446903572544-8888a0e60687?auto=format&fit=crop&w=800&q=80',
-    ]
-  },
-]
+
 const styles = StyleSheet.create({
   flex: {
     flex: 0,
@@ -222,7 +142,8 @@ const styles = StyleSheet.create({
 
 class Articles extends Component {
   state = {
-    data: []
+    data: [],
+    refreshing : false
   }
   scrollX = new Animated.Value(0);
 
@@ -314,8 +235,8 @@ class Articles extends Component {
   }
 
   renderDestination = item => {
-    let photoAc = 'http://10.0.33.150/Web_SUTJoin/image/'+item.photo;
-    let photoUser = 'http://10.0.33.150/Web_SUTJoin/image/'+item.profile;
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
@@ -400,8 +321,8 @@ class Articles extends Component {
   }
 
   renderRecommendation = (item, index) => {
-    let photoAc = 'http://10.0.33.150/Web_SUTJoin/image/'+item.photo;
-    let photoUser = 'http://10.0.33.150/Web_SUTJoin/image/'+item.profile;
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
@@ -503,13 +424,16 @@ class Articles extends Component {
       this.ipv4 = ipv4Address
       console.log('http://' + this.ipv4 + ':1348/activity');
     });
-    const response = await fetch('http://10.0.33.150/Web_SUTJoin/include/GetActivity.php');
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
     const users = await response.json();
     this.setState({ data: users });
   }
   refresh() {
+    this.setState({refreshing:true})
     return new Promise((resolve) => {
-      this.fetchData;
+      this.fetchData().then(()=>{
+        this.setState({refreshing:false})
+      });
       setTimeout(()=>{resolve()}, 2000)
     });
   }
@@ -536,9 +460,5 @@ class Articles extends Component {
     )
   }
 }
-
-// Articles.defaultProps = {
-//   destinations: mocks,
-// };
 
 export default Articles;

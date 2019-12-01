@@ -167,8 +167,8 @@ class Article extends Component {
   render() {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    let photoAc = 'http://10.0.33.150/Web_SUTJoin/image/'+article.photo;
-    let photoUser = 'http://10.0.33.150/Web_SUTJoin/image/'+article.profile;
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+article.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+article.profile;
     console.log(article);
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
