@@ -503,7 +503,7 @@ class Articles extends Component {
       this.ipv4 = ipv4Address
       console.log('http://' + this.ipv4 + ':1348/activity');
     });
-    const response = await fetch('http://10.0.33.150/SUTJoin/include/GetActivity.php');
+    const response = await fetch('http://10.0.33.150/Web_SUTJoin/include/GetActivity.php');
     const users = await response.json();
     this.setState({ data: users });
   }

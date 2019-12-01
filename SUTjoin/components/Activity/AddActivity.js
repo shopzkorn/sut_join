@@ -103,7 +103,7 @@ export default class HomeScreen extends Component {
     data.minage = this.state.multiSliderValue[0];
     data.maxage = this.state.multiSliderValue[1];
     console.log(data);
-    fetch('http://10.0.33.150/SUTJoin/include/AddActivity.php', {
+    fetch('http://10.0.33.150/Web_SUTJoin/include/AddActivity.php', {
     method: 'post',
     headers: new Headers({
       'Accept': 'application/json',
