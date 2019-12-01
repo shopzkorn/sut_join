@@ -429,7 +429,7 @@ class Articles extends Component {
     this.setState({ data: users });
   }
   refresh() {
-    this.setState({refreshing:true})
+    this.setState({refreshing:true});
     return new Promise((resolve) => {
       this.fetchData().then(()=>{
         this.setState({refreshing:false})
@@ -442,7 +442,7 @@ class Articles extends Component {
   }
   render() {
     return (
-      <PTRView onRefresh={this.refresh} >
+      <PTRView onRefresh={this.refresh.bind(this)} >
       <LinearGradient
       start={{ x: 0.0, y: 0.25 }}
       end={{ x: 0.5, y: 1.0 }}
