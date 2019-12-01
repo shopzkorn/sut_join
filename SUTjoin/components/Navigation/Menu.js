@@ -27,14 +27,14 @@ export default createBottomTabNavigator({
   Activity: {
     screen: Activity,
     navigationOptions: {
-      tabBarLabel:'ACTIVITY',
+      tabBarLabel:'EXPLORE',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-rocket" color={tintColor} size={24}/>
       ),
       header: (
         <View >
           <View>
-            <Text style={{ color: theme.colors.caption }}>Search for place</Text>
+            <Text style={{ color: theme.colors.rrcaption }}>Search for place</Text>
             <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
           </View>
         </View>

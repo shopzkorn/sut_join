@@ -314,22 +314,22 @@ class Articles extends Component {
   }
 
   renderDestination = item => {
-    let photoAc = '../../asset/image/'+item.photo;
-    console.log(photoAc);
+    let photoAc = 'http://192.168.43.151/SUTJoin/image/'+item.photo;
+    let photoUser = 'http://192.168.43.151/SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={require('../../asset/image/18838.jpg')}
+          source={{uri : photoAc}}
         >
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View style={{ flex: 0 }}>
-              <Image source={require('../../asset/image/IMG_8117.jpg')} style={styles.avatar} />
+              <Image source={{uri: photoUser}} style={styles.avatar} />
             </View>
             <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>Suppanat</Text>
+              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname.split('').slice(0, 5)}...</Text>
               <Text style={{ color: theme.colors.white }}>
                 <MaterialCommunityIcons
                   name="map-marker-outline"
@@ -400,20 +400,22 @@ class Articles extends Component {
   }
 
   renderRecommendation = (item, index) => {
+    let photoAc = 'http://192.168.43.151/SUTJoin/image/'+item.photo;
+    let photoUser = 'http://192.168.43.151/SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={require('../../asset/image/18838.jpg')}
+          source={{uri : photoAc}}
         >
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View style={{ flex: 0 }}>
-              <Image source={require('../../asset/image/IMG_8117.jpg')} style={styles.avatar} />
+              <Image source={{uri: photoUser}} style={styles.avatar} />
             </View>
             <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>Suppanat</Text>
+              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname.split('').slice(0, 5)}...</Text>
               <Text style={{ color: theme.colors.white }}>
                 <MaterialCommunityIcons
                   name="map-marker-outline"
@@ -495,12 +497,13 @@ class Articles extends Component {
   
   fetchData = async () => {
     const ipv4 = '10.0.33.150'; // @sut
+    const ip = '192.168.43.151' //หอ
     // Get IPv4 IP (priority: WiFi first, cellular second)
     NetworkInfo.getIPV4Address().then(ipv4Address => {
       this.ipv4 = ipv4Address
       console.log('http://' + this.ipv4 + ':1348/activity');
     });
-    const response = await fetch('http://192.168.1.29:1348/activity');
+    const response = await fetch('http://10.0.33.150/SUTJoin/include/GetActivity.php');
     const users = await response.json();
     this.setState({ data: users });
   }

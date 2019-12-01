@@ -20,7 +20,7 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Title: '', disctiption: '', Tag: '', Location: '', start: '', End: '', Gender: '', Amount: '', agemin: '', agemax: '', sliderOneChanging: false,
+      Title: '', description: '', Tag: '', Location: '', start: '', End: '', Gender: '1', Amount: '', agemin: '', agemax: '', sliderOneChanging: false,
       sliderOneValue: [1],
       multiSliderValue: [0, 60],
       nonCollidingMultiSliderValue: [0, 100],
@@ -103,7 +103,7 @@ export default class HomeScreen extends Component {
     data.minage = this.state.multiSliderValue[0];
     data.maxage = this.state.multiSliderValue[1];
     console.log(data);
-    fetch('http://192.168.1.29:1348/addActivity', {
+    fetch('http://10.0.33.150/SUTJoin/include/AddActivity.php', {
     method: 'post',
     headers: new Headers({
       'Accept': 'application/json',
@@ -117,14 +117,17 @@ export default class HomeScreen extends Component {
     datetimes : this.state.datetimes,
     number_people : this.state.sliderOneValue[0],
     minage : this.state.multiSliderValue[0],
-    maxage : this.state.multiSliderValue[1]
+    maxage : this.state.multiSliderValue[1],
+    gender: this.state.Gender
     })
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      alert("Success");
-      event.preventDefault();
-      
+    }).then((response) => response.text())
+    .then((responseJson) => {
+
+      // Showing response message coming from server after inserting records.
+      alert(responseJson);
+
+    }).catch((error) => {
+      console.error(error);
     });
 
   }
@@ -219,6 +222,7 @@ export default class HomeScreen extends Component {
             </TouchableOpacity>
             
               <Text style={styles.text}>Gender</Text>
+              <View style={styles.sliderOne}>
               <Picker
               style={{height: 50,width:'80%'}}
               selectedValue={this.state.Gender}
@@ -226,11 +230,11 @@ export default class HomeScreen extends Component {
               >
               <Picker.Item label="Male" value="1"/>
               <Picker.Item label="Female" value="2" />
-              <Picker.Item label="Male & Female" value="3"/>
+              <Picker.Item label="Male & Female" value="3"/>         
               </Picker>
-            
+              <Text style={styles.text}>>>></Text>
+              </View>
             <View style={styles.sliderOne}>
-              
               <Text style={styles.text}>Number of people: </Text>
               <Text
                 style={[

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: theme.sizes.font * 1.2,
     lineHeight: theme.sizes.font * 2,
-    color: theme.colors.caption
+    color: theme.colors.black
   }
 });
 
@@ -139,11 +139,11 @@ class Article extends Component {
 
   renderGender = (gender) =>{
     if(gender == 1)
-      return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
+      return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
     else if(gender == 2)
-      return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
+      return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
     else
-    return  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
+    return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
   }
 
   renderRatings = (rating) => {
@@ -167,6 +167,8 @@ class Article extends Component {
   render() {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
+    let photoAc = 'http://192.168.43.151/SUTJoin/image/'+article.photo;
+    let photoUser = 'http://192.168.43.151/SUTJoin/image/'+article.profile;
     console.log(article);
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
@@ -178,7 +180,7 @@ class Article extends Component {
         <View style={styles.flex}>
           <View style={[styles.flex]}>
             <Image
-              source={require('../../asset/image/18838.jpg')}
+              source={{uri : photoAc}}
               resizeMode='cover'
               style={{ width, height: width * 0.7 }}
             />
@@ -192,13 +194,13 @@ class Article extends Component {
           colors={['white', 'pink']} >
           <View style={[styles.flex, styles.content]}>
             <View style={[styles.flex, styles.contentHeader]}>
-              <Image style={[styles.avatar, styles.shadow]} source={require('../../asset/image/IMG_8117.jpg')} />
+              <Image style={[styles.avatar, styles.shadow]} source={{uri: photoUser}} />
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
                 <Text style={styles.title}>{article.title}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',textAlign: 'right' }}>Suppanat</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',textAlign: 'right' }}>{article.name} {article.surname}</Text>
                 </View>
               </View>
               <View style={[
@@ -209,9 +211,9 @@ class Article extends Component {
                   <MaterialCommunityIcons
                     name="map-marker-outline"
                     size={theme.sizes.font}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold' }}> {article.location_name}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
               </View>
               <View style={[
@@ -221,20 +223,20 @@ class Article extends Component {
                   <MaterialCommunityIcons
                     name="account-plus"
                     size={theme.sizes.font * 2}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
                 </Text>
               </View>
               <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
             </Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
+                <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
               </View>
               <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
             </Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.caption,fontSize: theme.sizes.font * 1.1 }}>  
+                <Text style={{ color: theme.colors.black,fontSize: theme.sizes.font * 1.1 }}>  
                   {article.description}
                 </Text>
               </View>
@@ -247,9 +249,9 @@ class Article extends Component {
                   <Foundation
                     name="calendar"
                     size={theme.sizes.font*2}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
                 </Text>
               </View>
               <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
@@ -261,9 +263,9 @@ class Article extends Component {
                   <FontAwesome
                     name="play"
                     size={theme.sizes.font*2}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold' ,fontSize: theme.sizes.font * 1.1}}>    {article.type}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold' ,fontSize: theme.sizes.font * 1.1}}>    {article.type}</Text>
                 </Text>
               </View>
               <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
@@ -275,9 +277,9 @@ class Article extends Component {
                   <FontAwesome
                     name="user"
                     size={theme.sizes.font*2}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.caption, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
                 </Text>
               </View>
               <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
@@ -289,7 +291,7 @@ class Article extends Component {
                   <Foundation
                     name="male-female"
                     size={theme.sizes.font*2}
-                    color={theme.colors.caption}
+                    color={theme.colors.black}
                   />
                   { this.renderGender(article.gender) }
                 </Text>
