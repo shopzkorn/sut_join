@@ -25,7 +25,7 @@ import * as theme from '../../theme';
 
 export default createBottomTabNavigator({
   Activity: {
-    screen: List,
+    screen: Activity,
     navigationOptions: {
       tabBarLabel:'EXPLORE',
       tabBarIcon: ({ tintColor }) => (

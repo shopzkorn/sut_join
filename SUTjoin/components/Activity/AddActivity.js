@@ -222,7 +222,6 @@ export default class HomeScreen extends Component {
             </TouchableOpacity>
             
               <Text style={styles.text}>Gender</Text>
-              <View style={styles.sliderOne}>
               <Picker
               style={{height: 50,width:'80%'}}
               selectedValue={this.state.Gender}
@@ -232,8 +231,6 @@ export default class HomeScreen extends Component {
               <Picker.Item label="Female" value="2" />
               <Picker.Item label="Male & Female" value="3"/>         
               </Picker>
-              <Text style={styles.text}>>>></Text>
-              </View>
             <View style={styles.sliderOne}>
               <Text style={styles.text}>Number of people: </Text>
               <Text

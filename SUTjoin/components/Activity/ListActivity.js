@@ -314,8 +314,8 @@ class Articles extends Component {
   }
 
   renderDestination = item => {
-    let photoAc = 'http://192.168.43.151/SUTJoin/image/'+item.photo;
-    let photoUser = 'http://192.168.43.151/SUTJoin/image/'+item.profile;
+    let photoAc = 'http://10.0.33.150/Web_SUTJoin/image/'+item.photo;
+    let photoUser = 'http://10.0.33.150/Web_SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
@@ -400,8 +400,8 @@ class Articles extends Component {
   }
 
   renderRecommendation = (item, index) => {
-    let photoAc = 'http://192.168.43.151/SUTJoin/image/'+item.photo;
-    let photoUser = 'http://192.168.43.151/SUTJoin/image/'+item.profile;
+    let photoAc = 'http://10.0.33.150/Web_SUTJoin/image/'+item.photo;
+    let photoUser = 'http://10.0.33.150/Web_SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
