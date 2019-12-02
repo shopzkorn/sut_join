@@ -24,5 +24,6 @@ export default createStackNavigator(
   {
     initialRouteName: "Login",
     header: null,
+    
   }
 );

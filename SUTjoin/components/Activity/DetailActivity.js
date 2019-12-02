@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity,RefreshControl } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, RefreshControl,FlatList } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment'
-
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as theme from '../../theme';
 
 const { width, height } = Dimensions.get('window');
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 6,
     },
-    shadowOpacity: 0.5,
+    shadowOpacity: 2,
     shadowRadius: 5,
   },
   dotsContainer: {
@@ -87,14 +87,61 @@ const styles = StyleSheet.create({
     fontSize: theme.sizes.font * 1.5,
     fontWeight: 'bold'
   },
+  btnFooter: {
+    position: 'absolute',
+    left: 0,
+    bottom: 10,
+  },
   description: {
     fontSize: theme.sizes.font * 1.2,
     lineHeight: theme.sizes.font * 2,
     color: theme.colors.black
-  }
+  },
+  recommendedList: {
+  },
+  recommendation: {
+    width: (width - (theme.sizes.padding * 2)) / 4,
+    marginHorizontal: 8,
+    backgroundColor: theme.colors.white,
+    overflow: 'hidden',
+    borderRadius: theme.sizes.radius,
+    marginVertical: theme.sizes.margin * 0.5,
+  },
+  recommendationHeader: {
+    overflow: 'hidden',
+    borderTopRightRadius: theme.sizes.radius,
+    borderTopLeftRadius: theme.sizes.radius,
+  },
+  recommendationOptions: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.sizes.padding / 2,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  recommendationTemp: {
+    fontSize: theme.sizes.font * 1.25,
+    color: theme.colors.white
+  },
+  recommendationImage: {
+    width: (width - (theme.sizes.padding * 2)) / 2,
+    height: (width - (theme.sizes.padding * 2)) / 2,
+  },
+  avatar2: {
+    width: theme.sizes.padding * 2,
+    height: theme.sizes.padding * 2,
+    borderRadius: theme.sizes.padding / 2,
+  },
 });
 
 class Article extends Component {
+  state = {
+    join : false,
+    joiner: []
+  }
+
   scrollX = new Animated.Value(0);
 
   static navigationOptions = ({ navigation }) => {
@@ -113,37 +160,233 @@ class Article extends Component {
     }
   }
 
-  renderDots = () => {
+  componentWillMount() {
+    this.setState({joiner : []})
+    this.fetchData();
+  }
+
+  fetchData = async () => {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    const dotPosition = Animated.divide(this.scrollX, width);
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/CheckJoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+      id : article.id,
+      id_user: 1
+      })
+      }).then((response) => response.text())
+      .then((responseJson) => {
+        if(responseJson > 0){
+         
+        this.setState({join:true})
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+      const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+        id : article.id
+        })
+        });
+      const users = await response.json();
+      this.setState({ joiner: users });
+      console.log(this.state.joiner.length);
+      
+  }
 
+  canceljoin() {
+    console.log(0);
+    const { navigation } = this.props;
+    const article = navigation.getParam('article');
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+      status : "cancel",
+      id : article.id,
+      inviter : article.inviter,
+      id_user: 1
+      })
+      }).then((response) => response.text())
+      .then((responseJson) => {
+  
+        // Showing response message coming from server after inserting records.
+        alert(responseJson);
+  
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+
+  join() {
+    console.log(1);
+    const { navigation } = this.props;
+    const article = navigation.getParam('article');
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+      status : "add",
+      id : article.id,
+      inviter : article.inviter,
+      id_user: 1
+      })
+      }).then((response) => response.text())
+      .then((responseJson) => {
+  
+        // Showing response message coming from server after inserting records.
+        alert(responseJson);
+  
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+  renderJoinButton = (id_host) => {
+    console.log("id host is " + id_host);
+    if (id_host == 1) {
+      return <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: 'rgba(0,0,0,0.2)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 70,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          height: 70,
+          backgroundColor: 'green',
+          borderRadius: 100,
+        }}
+        onPress={this.join.bind(this)}
+      >
+        <FontAwesome5
+          name="check-circle"
+          size={theme.sizes.font * 2}
+          color={theme.colors.black}
+        />
+      </TouchableOpacity>
+    } else if (this.state.join){
+      return <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: 'rgba(0,0,0,0.2)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 70,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          height: 70,
+          backgroundColor: 'red',
+          borderRadius: 100,
+        }}
+        onPress={this.canceljoin.bind(this)}
+      >
+        <FontAwesome5
+          name="user-times"
+          size={theme.sizes.font * 2}
+          color={theme.colors.black}
+        />
+      </TouchableOpacity>
+    } else
+      return <TouchableOpacity
+      style={{
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.2)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 70,
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        height: 70,
+        backgroundColor: '#ffc9de',
+        borderRadius: 100,
+      }}
+      onPress={this.join.bind(this)}
+    >
+      <FontAwesome5
+        name="user-plus"
+        size={theme.sizes.font * 2}
+        color={theme.colors.black}
+      />
+    </TouchableOpacity>
+  }
+
+  renderJoiner= () => {
     return (
-      <View style={[styles.flex, styles.row, styles.dotsContainer]}>
-        {article.photo.map((item, index) => {
-          const opacity = dotPosition.interpolate({
-            inputRange: [index - 1, index, index + 1],
-            outputRange: [0.5, 1, 0.5],
-            extrapolate: 'clamp'
-          });
-          return (
-            <Animated.View
-              key={`step-${item}-${index}`}
-              style={[styles.dots, { opacity }]}
-            />
-          )
-        })}
+      <View style={[styles.flex, styles.column, styles.recommended ]}>
+        <View
+          style={[
+            styles.row,
+            styles.recommendedHeader
+          ]}
+        >
+          {/* <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ color: theme.colors.caption }}>More</Text>
+          </TouchableOpacity> */}
+        </View>
+        <View style={[styles.column, styles.recommendedList]}>
+          <FlatList
+            horizontal
+            pagingEnabled
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={[ styles.shadow, { overflow: 'visible' }]}
+            data={this.state.joiner}
+            keyExtractor={(item, index) => `${item.id}`}
+            renderItem={({ item, index }) => this.renderRecommendation(item, index)}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  renderRecommendation = (item, index) => {
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
+    console.log("p "+photoUser);
+    const isLastItem = index === item.length - 1;
+    return (
+      <View style={[
+        styles.flex, styles.column, styles.recommendation, styles.shadow, 
+        index === 0 ? { marginLeft: theme.sizes.margin /2 } : null,
+        isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
+      ]}>
+        <View style={[styles.flex, styles.recommendationHeader]}>
+          <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
+        </View>
+        
       </View>
     )
   }
 
-  renderGender = (gender) =>{
-    if(gender == 1)
-      return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
-    else if(gender == 2)
-      return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
+  renderGender = (gender) => {
+    if (gender == 1)
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
+    else if (gender == 2)
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
     else
-    return  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
   }
 
   renderRatings = (rating) => {
@@ -167,12 +410,12 @@ class Article extends Component {
   render() {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+article.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+article.profile;
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
     console.log(article);
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
-     
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
@@ -180,27 +423,22 @@ class Article extends Component {
         <View style={styles.flex}>
           <View style={[styles.flex]}>
             <Image
-              source={{uri : photoAc}}
+              source={{ uri: photoAc }}
               resizeMode='cover'
               style={{ width, height: width * 0.7 }}
             />
             {/* {this.renderDots()} */}
 
           </View>
-          <LinearGradient
-          start={{ x: 0.0, y: 0.25 }}
-          end={{ x: 0.5, y: 1.0 }}
-          locations={[0, 0.5, 0.6]}
-          colors={['white', 'pink']} >
           <View style={[styles.flex, styles.content]}>
             <View style={[styles.flex, styles.contentHeader]}>
-              <Image style={[styles.avatar, styles.shadow]} source={{uri: photoUser}} />
+              <Image style={[styles.avatar, styles.shadow]} source={{ uri: photoUser }} />
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
-                <Text style={styles.title}>{article.title}</Text>
+                  <Text style={styles.title}>{article.title}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',textAlign: 'right' }}>{article.name} {article.surname}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }}>{article.name} {article.surname}</Text>
                 </View>
               </View>
               <View style={[
@@ -216,93 +454,103 @@ class Article extends Component {
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
               </View>
+              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }}/>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
               <View style={[
                 styles.row
               ]}>
-              <Text >
-                  <MaterialCommunityIcons
-                    name="account-plus"
+                <Text >
+                  <FontAwesome5
+                    name="users"
                     size={theme.sizes.font * 2}
                     color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
                 </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              {this.renderJoiner()}
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }}/>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
               <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
+                <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.black,fontSize: theme.sizes.font * 1.1 }}>  
+                <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
                   {article.description}
                 </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
               <View style={[
                 styles.row
               ]}>
                 <Text >
                   <Foundation
                     name="calendar"
-                    size={theme.sizes.font*2}
+                    size={theme.sizes.font * 2}
                     color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
                 </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
               <View style={[
                 styles.row
               ]}>
                 <Text >
                   <FontAwesome
                     name="play"
-                    size={theme.sizes.font*2}
+                    size={theme.sizes.font * 2}
                     color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold' ,fontSize: theme.sizes.font * 1.1}}>    {article.type}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.type}</Text>
                 </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
               <View style={[
                 styles.row
               ]}>
                 <Text >
                   <FontAwesome
                     name="user"
-                    size={theme.sizes.font*2}
+                    size={theme.sizes.font * 2}
                     color={theme.colors.black}
                   />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold',fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
                 </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font *0.2, fontWeight: '500', paddingBottom: 8, }}>
-            </Text>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
               <View style={[
                 styles.row
               ]}>
                 <Text >
                   <Foundation
                     name="male-female"
-                    size={theme.sizes.font*2}
+                    size={theme.sizes.font * 2}
                     color={theme.colors.black}
                   />
-                  { this.renderGender(article.gender) }
+                  {this.renderGender(article.gender)}
+
                 </Text>
               </View>
             </View>
           </View>
-          
-          </LinearGradient>
+        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            {this.renderJoinButton(article.id_host)}
+
+          </View>
+
         </View>
       </ScrollView>
-     
+
     )
   }
 }
