@@ -330,6 +330,7 @@ class Article extends Component {
   }
 
   renderJoiner= () => {
+    if(this.state.joiner.length > 0){
     return (
       <View style={[styles.flex, styles.column, styles.recommended ]}>
         <View
@@ -353,17 +354,28 @@ class Article extends Component {
             style={[ styles.shadow, { overflow: 'visible' }]}
             data={this.state.joiner}
             keyExtractor={(item, index) => `${item.id}`}
-            renderItem={({ item, index }) => this.renderRecommendation(item, index)}
+            renderItem={({ item, index }) => this.renderJoinerinActivity(item, index)}
           />
         </View>
       </View>
     );
+  }else {
+    return (
+      <View >
+        <View style={[styles.flex, styles.recommendationHeader]}>
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold',textAlign: "center",marginTop: 10,marginBottom:10,fontSize: 20 }}>No Joiner</Text>
+        </View>
+        
+      </View>
+    )
+  }
   }
 
-  renderRecommendation = (item, index) => {
+  renderJoinerinActivity = (item, index) => {
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
     console.log("p "+photoUser);
     const isLastItem = index === item.length - 1;
+    
     return (
       <View style={[
         styles.flex, styles.column, styles.recommendation, styles.shadow, 
@@ -378,6 +390,7 @@ class Article extends Component {
         
       </View>
     )
+    
   }
 
   renderGender = (gender) => {
