@@ -15,5 +15,6 @@ export default createStackNavigator(
   {
     initialRouteName: "Menu",
     header: null,
+    
   }
 );

@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import { createBottomTabNavigator } from 'react-navigation'
-// import Icon from 'react-native-vector-icons/Ionicons'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import Activity from '../Activity/ListActivity';
@@ -31,15 +30,8 @@ export default createBottomTabNavigator({
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-rocket" color={tintColor} size={24}/>
       ),
-      header: (
-        <View >
-          <View>
-            <Text style={{ color: theme.colors.rrcaption }}>Search for place</Text>
-            <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
-          </View>
-        </View>
-      )
-    }
+    },
+    headerTransparent: true,
   },
   AddActivity: {
     screen: Add,

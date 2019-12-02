@@ -147,19 +147,7 @@ class Articles extends Component {
   }
   scrollX = new Animated.Value(0);
 
-  static navigationOptions = {
-    header: (
-      <View style={[styles.flex, styles.row, styles.header,]}>
-        <View>
-          <Text style={{ color: theme.colors.caption }}>Search for place</Text>
-          <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
-        </View>
-        <View>
-          <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg' }} />
-        </View>
-      </View>
-    )
-  }
+  
 
   renderDots() {
     const { destinations } = this.props;
@@ -418,7 +406,6 @@ class Articles extends Component {
   
   fetchData = async () => {
     const ipv4 = '10.0.33.150'; // @sut
-    const ip = '192.168.43.151' //หอ
     // Get IPv4 IP (priority: WiFi first, cellular second)
     NetworkInfo.getIPV4Address().then(ipv4Address => {
       this.ipv4 = ipv4Address

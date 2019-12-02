@@ -6,9 +6,9 @@ import {
   View,
   Colors,
   ScrollView,
-  StatusBar,
+  Dimensions,
   TouchableOpacity,
-  ImageBackground,
+  Image,
   Picker
 } from 'react-native';
 
@@ -16,6 +16,18 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment'
 import LinearGradient from 'react-native-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import ImagePicker from 'react-native-image-picker';
+import RNFetchBlob from 'react-native-fetch-blob'
+import * as theme from '../../theme';
+const { width, height } = Dimensions.get('window');
+
+const options = {
+  title: 'Select a photo',
+  chooseFromLibraryButtonTitle	: 'Choose from gallery',
+  quality:1
+
+};
+
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -26,12 +38,13 @@ export default class HomeScreen extends Component {
       nonCollidingMultiSliderValue: [0, 100],
       isDateTimePickerVisible: false,
       chosendate: '',
-      datetimes: ''
+      datetimes: '',
+      imageSource: null,
+      imageName:null,
+      imagePath:null
     };
   }
-  refreshScreen() {
-    this.setState({ lastRefresh: Date(Date.now()).toString() })
-  }
+  
 
   showDateTimePicker = () => {
     this.setState({ isDateTimePickerVisible: true });
@@ -87,22 +100,57 @@ export default class HomeScreen extends Component {
     
 
   }
+
+  selectPhoto(){
+    ImagePicker.showImagePicker(options, (response) => {
+      // console.log('Response = ', response);
+      // const uriPart = response.uri.split('.');
+      // const fileExtension = uriPart[uriPart.length - 1];
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }  else {
+        const source = { uri: response.uri };
+        this.setState({
+          imageSource: source,
+          imageName : response.fileName,
+          imagePath : response.data
+        });
+      }
+    });
+    
+  }
   _getOptionList() {
     return this.refs['OPTIONLIST'];
   }
-  register(event) {
+  register() {
+
+    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+    Authorization : "Bearer access-token",
+    otherHeader : "foo",
+    'Content-Type' : 'multipart/form-data',
+  }, [
+    // custom content type
+    { name : 'image', filename : this.state.imageName, data: this.state.imagePath},
+  ]).then((resp) => {
+    console.log(resp);
+  }).catch((err) => {
+    console.log(err);
+  })
+
     // var key = firebase.database().ref('users').push().key;
-    let data={};
-    data.Title = this.state.Title;
-    data.description = this.state.description;
-    data.Tag = this.state.Tag;
-    data.Location = this.state.Location;
-    data.datetimes = this.state.datetimes;
-    data.gender = this.state.Gender;
-    data.number_people = this.state.sliderOneValue[0];
-    data.minage = this.state.multiSliderValue[0];
-    data.maxage = this.state.multiSliderValue[1];
-    console.log(data);
+    // let data={};
+    // data.Title = this.state.Title;
+    // data.description = this.state.description;
+    // data.Tag = this.state.Tag;
+    // data.Location = this.state.Location;
+    // data.datetimes = this.state.datetimes;
+    // data.gender = this.state.Gender;
+    // data.number_people = this.state.sliderOneValue[0];
+    // data.minage = this.state.multiSliderValue[0];
+    // data.maxage = this.state.multiSliderValue[1];
+    // console.log(data);
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
     method: 'post',
     headers: new Headers({
@@ -118,7 +166,8 @@ export default class HomeScreen extends Component {
     number_people : this.state.sliderOneValue[0],
     minage : this.state.multiSliderValue[0],
     maxage : this.state.multiSliderValue[1],
-    gender: this.state.Gender
+    gender: this.state.Gender,
+    image : this.state.imageName
     })
     }).then((response) => response.text())
     .then((responseJson) => {
@@ -148,22 +197,6 @@ export default class HomeScreen extends Component {
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
-            {/* <ImageBackground
-                  source={require('../assets/images/background.png')}
-                  style={styles.bgImage}
-                  resizeMode="cover"
-              > */}
-            <StatusBar
-              barStyle="dark-content"
-              // dark-content, light-content and default
-              hidden={false}
-              //To hide statusBar
-              backgroundColor="#00BCD4"
-              //Background color of statusBar
-              translucent={false}
-              //allowing light, but not detailed shapes
-              networkActivityIndicatorVisible={true}
-            />
 
             <Text style={styles.highlight}>
               Create new event
@@ -269,14 +302,18 @@ export default class HomeScreen extends Component {
               allowOverlap
               snapped
             />
-
-
+             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
+              <View>
+                <Text style={{ color: '#ffffff', fontSize: 16 }}> Add photo </Text>
+              </View>
+            </TouchableOpacity>
+            <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource}/>
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.register.bind(this)}>
               <View>
                 <Text style={{ color: '#ffffff', fontSize: 16 }}> Create </Text>
               </View>
             </TouchableOpacity>
-            {/* </ImageBackground> */}
+            
           </View>
         </ScrollView>
       </LinearGradient>
@@ -289,45 +326,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-  bgImage: {
-    flex: 1,
-    marginHorizontal: -20,
-  },
-  section: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sectionLarge: {
-    flex: 2,
-    justifyContent: 'space-around',
-  },
-  sectionHeader: {
-    marginBottom: 8,
-  },
-  priceContainer: {
-    alignItems: 'center',
-  },
   description: {
     padding: 15,
     lineHeight: 25,
   },
-  titleDescription: {
-    color: '#19e7f7',
-    textAlign: 'center',
-    //fontFamily: fonts.primaryRegular,
-    fontSize: 15,
-  },
   title: {
     marginTop: 30,
-  },
-  price: {
-    marginBottom: 5,
-  },
-  priceLink: {
-    borderBottomWidth: 1,
-    //borderBottomColor: colors.primary,
   },
   input: {
     fontFamily: 'SukhumvitSet-Text',
@@ -373,7 +377,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#01d7bf', //#B7BBBB//#DADFDF//#A0C8CB//#83CCD0//#279591
+    backgroundColor: '#ffc9de', //#B7BBBB//#DADFDF//#A0C8CB//#83CCD0//#279591
     borderRadius: 10,
     width: '45%',
     height: 50,
@@ -393,9 +397,30 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 20,
   },
-  dropdown: {
-    width: 700,
-    height: 50,
-    margin: 15,
+ image:{
+    width:400,
+    height:100,
+    marginTop:20
+ },
+ destination: {
+  width: width - (theme.sizes.padding * 2),
+  height: width * 0.6,
+  marginHorizontal: theme.sizes.margin,
+  paddingHorizontal: theme.sizes.padding,
+  paddingVertical: theme.sizes.padding * 0.66,
+  borderRadius: theme.sizes.radius,
+},
+shadow: {
+  shadowColor: theme.colors.black,
+  shadowOffset: {
+    width: 0,
+    height: 6,
   },
+  shadowOpacity: 0.05,
+  shadowRadius: 10,
+  elevation: 5,
+},
+flex: {
+  flex: 0,
+},
 });
