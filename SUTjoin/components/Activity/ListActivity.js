@@ -414,6 +414,7 @@ class Articles extends Component {
     const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
     const users = await response.json();
     this.setState({ data: users });
+    // console.log(this.state.data.length);
   }
   refresh() {
     this.setState({refreshing:true});

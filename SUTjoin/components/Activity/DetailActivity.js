@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, RefreshControl,FlatList } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 6,
     },
-    shadowOpacity: 0.5,
+    shadowOpacity: 2,
     shadowRadius: 5,
   },
   dotsContainer: {
@@ -97,11 +97,49 @@ const styles = StyleSheet.create({
     lineHeight: theme.sizes.font * 2,
     color: theme.colors.black
   },
+  recommendedList: {
+  },
+  recommendation: {
+    width: (width - (theme.sizes.padding * 2)) / 4,
+    marginHorizontal: 8,
+    backgroundColor: theme.colors.white,
+    overflow: 'hidden',
+    borderRadius: theme.sizes.radius,
+    marginVertical: theme.sizes.margin * 0.5,
+  },
+  recommendationHeader: {
+    overflow: 'hidden',
+    borderTopRightRadius: theme.sizes.radius,
+    borderTopLeftRadius: theme.sizes.radius,
+  },
+  recommendationOptions: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.sizes.padding / 2,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  recommendationTemp: {
+    fontSize: theme.sizes.font * 1.25,
+    color: theme.colors.white
+  },
+  recommendationImage: {
+    width: (width - (theme.sizes.padding * 2)) / 2,
+    height: (width - (theme.sizes.padding * 2)) / 2,
+  },
+  avatar2: {
+    width: theme.sizes.padding * 2,
+    height: theme.sizes.padding * 2,
+    borderRadius: theme.sizes.padding / 2,
+  },
 });
 
 class Article extends Component {
   state = {
-    join : false
+    join : false,
+    joiner: []
   }
 
   scrollX = new Animated.Value(0);
@@ -123,7 +161,7 @@ class Article extends Component {
   }
 
   componentWillMount() {
-    console.log(1);
+    this.setState({joiner : []})
     this.fetchData();
   }
 
@@ -149,6 +187,20 @@ class Article extends Component {
       }).catch((error) => {
         console.error(error);
       });
+      const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+        id : article.id
+        })
+        });
+      const users = await response.json();
+      this.setState({ joiner: users });
+      console.log(this.state.joiner.length);
+      
   }
 
   canceljoin() {
@@ -277,6 +329,57 @@ class Article extends Component {
     </TouchableOpacity>
   }
 
+  renderJoiner= () => {
+    return (
+      <View style={[styles.flex, styles.column, styles.recommended ]}>
+        <View
+          style={[
+            styles.row,
+            styles.recommendedHeader
+          ]}
+        >
+          {/* <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ color: theme.colors.caption }}>More</Text>
+          </TouchableOpacity> */}
+        </View>
+        <View style={[styles.column, styles.recommendedList]}>
+          <FlatList
+            horizontal
+            pagingEnabled
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={[ styles.shadow, { overflow: 'visible' }]}
+            data={this.state.joiner}
+            keyExtractor={(item, index) => `${item.id}`}
+            renderItem={({ item, index }) => this.renderRecommendation(item, index)}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  renderRecommendation = (item, index) => {
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
+    console.log("p "+photoUser);
+    const isLastItem = index === item.length - 1;
+    return (
+      <View style={[
+        styles.flex, styles.column, styles.recommendation, styles.shadow, 
+        index === 0 ? { marginLeft: theme.sizes.margin /2 } : null,
+        isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
+      ]}>
+        <View style={[styles.flex, styles.recommendationHeader]}>
+          <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
+        </View>
+        
+      </View>
+    )
+  }
+
   renderGender = (gender) => {
     if (gender == 1)
       return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
@@ -365,6 +468,7 @@ class Article extends Component {
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
                 </Text>
               </View>
+              {this.renderJoiner()}
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
               <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }}/>
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />

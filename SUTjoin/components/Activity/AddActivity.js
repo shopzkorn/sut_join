@@ -138,19 +138,7 @@ export default class HomeScreen extends Component {
   }).catch((err) => {
     console.log(err);
   })
-
-    // var key = firebase.database().ref('users').push().key;
-    // let data={};
-    // data.Title = this.state.Title;
-    // data.description = this.state.description;
-    // data.Tag = this.state.Tag;
-    // data.Location = this.state.Location;
-    // data.datetimes = this.state.datetimes;
-    // data.gender = this.state.Gender;
-    // data.number_people = this.state.sliderOneValue[0];
-    // data.minage = this.state.multiSliderValue[0];
-    // data.maxage = this.state.multiSliderValue[1];
-    // console.log(data);
+  
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
     method: 'post',
     headers: new Headers({
