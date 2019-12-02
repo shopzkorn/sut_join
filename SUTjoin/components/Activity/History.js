@@ -6,20 +6,20 @@ import {
     SafeAreaView,
     TextInput,
     Platform,
-    StatusBar
+    StatusBar,
 } from "react-native";
 
-class Learning extends Component {
+class History extends React.Component {
 
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>EDUCATION PAGE</Text>
+                <Text style={styles.text}>HISTORY ACTIVITIES</Text>
             </View>
         );
     }
 }
-export default Learning;
+export default History;
 
 const styles = StyleSheet.create({
     container: {

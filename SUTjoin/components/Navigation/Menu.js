@@ -18,6 +18,7 @@ import Checkin from '../Checkin/Checkin';
 import Learning from '../Learning/Learning';
 import Add from '../Activity/AddActivity';
 import Profile from '../Profile/Profile';
+import History from '../Activity/History';
 import * as theme from '../../theme';
 
 // export default Menu;
@@ -30,22 +31,21 @@ export default createBottomTabNavigator({
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-rocket" color={tintColor} size={24}/>
       ),
-    },
-    headerTransparent: true,
-  },
-  AddActivity: {
-    screen: Add,
-    navigationOptions: {
-      tabBarLabel:'ADD ACTIVITY',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="ios-add-circle" color={tintColor} size={24}/>
-      ),
     }
   },
-  AddActivity: {
-    screen: Add,
+  // AddActivity: {
+  //   screen: Add,
+  //   navigationOptions: {
+  //     tabBarLabel:'ADD ACTIVITY',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="ios-add-circle" color={tintColor} size={24}/>
+  //     ),
+  //   }
+  // },
+  History: {
+    screen: History,
     navigationOptions: {
-      tabBarLabel:'ADD ACTIVITY',
+      tabBarLabel:'MY ACTIVITIES',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-add-circle" color={tintColor} size={24}/>
       ),
@@ -56,11 +56,10 @@ export default createBottomTabNavigator({
     headerMode: 'none',
     header: null,
     navigationOptions: {
-      tabBarLabel:'CHECK IN',
+      tabBarLabel:'CHECK-IN',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-checkbox-outline" color={tintColor} size={24}/>
       ),
-      header: () => null,
   }
   },
   Learning: {
@@ -68,7 +67,7 @@ export default createBottomTabNavigator({
     headerMode: 'none',
     header: null,
     navigationOptions: {
-      tabBarLabel:'LEARNING',
+      tabBarLabel:'EDUCATION',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-bookmarks" color={tintColor} size={24}/>
       ),
@@ -77,20 +76,20 @@ export default createBottomTabNavigator({
   },
   Profile: {
     screen: Profile,
-    headerMode: 'none',
-    header: null,
+    // headerMode: 'none',
+    // header: null,
     navigationOptions: {
       tabBarLabel:'PROFILE',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-person" color={tintColor} size={24}/>
       ),
-      header: null
+      // header: null
   }
   },
 
 },{
   tabBarOptions: {
-    activeTintColor: 'red',
+    activeTintColor: 'lightpink',
     // inactiveTintColor: 'Grey',
     style: {
       backgroundColor: 'white',
@@ -103,10 +102,10 @@ export default createBottomTabNavigator({
   }
 })
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-});
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center'
+//     }
+// });
