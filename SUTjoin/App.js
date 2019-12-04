@@ -1,51 +1,44 @@
+//import createStackNavigator
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import { createAppContainer } from 'react-navigation';
-import Navigation from './components/Navigation/Navigation';
-
-
-class Application extends React.Component {
-  render() {
-    return(
-      <View style={styles.container}>
-        <Text style={styles.text}>Hello Menu </Text>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+import Article from './components/Activity/DetailActivity';
+import Login from './components/Profile/Login';
+import Menu from './components/Navigation/Menu';
+import Register from './components/Profile/Register';
+import AddActivity from './components/Activity/AddActivity';
+//Route
+const App = createStackNavigator(
+  {
+    Register,
+    AddActivity,
+    Article,
+    Menu:{
+      screen: Menu,
+      navigationOptions: {
+      header: null,
+    },
   },
-  text: {
-    fontSize: 30,
-    textAlign: 'center',
-  }
-
-});
+    Login:{
+      screen: Login,
+      navigationOptions: {
+      header: null,
+    },
+  },
+    
+  },
+  //You can hide the header from all the screens in once using defaultNavigationOptions
+  // {
+  //   defaultNavigationOptions: {
+  //     header: null
+  //   },
+  // },
+  { initialRouteName: 'Login' }
+);
+//Not show warning
 console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
 console.disableYellowBox = true;
 
 
-export default createAppContainer(Navigation);
+export default createAppContainer(App);
+
+

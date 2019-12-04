@@ -3,12 +3,13 @@ import {
     View,
     Text,
     StyleSheet,
-    SafeAreaView,
+    AsyncStorage,
     TextInput,
     Platform,
     StatusBar,
+    TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 
 class Login extends Component {
     
@@ -21,6 +22,7 @@ class Login extends Component {
       }
 
       login() {
+          console.log("login");
         const {navigate} = this.props.navigation;
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
         method: 'post',
@@ -37,7 +39,10 @@ class Login extends Component {
           // Showing response message coming from server after inserting records.
         //   alert(responseJson);
           if(responseJson != 0){
-            navigate('Profile', {user_id: responseJson })
+            navigate('Menu', {user_id: responseJson })
+            AsyncStorage.multiSet([
+                ["user_id", responseJson]
+            ])
         }else{
             alert("username or password incorrect");
         }
@@ -45,14 +50,23 @@ class Login extends Component {
         .catch((error) => {
           console.error(error);
         });
+        AsyncStorage.multiGet(['user_id']).then((data) => {
+            let user_id = data[0][1];
+            console.log("Session id is"+user_id);
+          
+        });
       }
       
     render() {
+         AsyncStorage.multiSet([
+                ["user_id", null]
+            ])
         const { navigation } = this.props;
         const {navigate} = this.props.navigation;
         return (
+            
             <View style={styles.container}>
-            <Text style={styles.text}>Register</Text>
+            <Text style={styles.text}>Login</Text>
             <View>
                 <TextInput 
                 style={styles.inputbox}
@@ -69,9 +83,10 @@ class Login extends Component {
                 value={this.state.Password}
                 onChangeText={Password => this.setState({ Password })}
                 />
+                
             </View>
             <TouchableOpacity style={styles.button} onPress={this.login.bind(this)}>
-                <Text style={styles.buttontext}> Register </Text>
+                <Text style={styles.buttontext} onPress={this.login.bind(this)}> Login </Text>
             </TouchableOpacity>
             <View style={styles.signuptextcont}>
                 <Text style={styles.signuptext}> Don't have an account yet?</Text>
@@ -113,7 +128,7 @@ const styles = StyleSheet.create({
     },
     button: {
         width: 300,
-        backgroundColor: 'rgba(255,105,180,1.0)',
+        backgroundColor: '#ffc9de',
         borderRadius: 25,
         paddingVertical: 16
     },

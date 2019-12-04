@@ -4,7 +4,7 @@ import {
   TextInput,
   StyleSheet,
   View,
-  Colors,
+  AsyncStorage,
   ScrollView,
   Dimensions,
   TouchableOpacity,
@@ -17,7 +17,10 @@ import moment from 'moment'
 import LinearGradient from 'react-native-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import ImagePicker from 'react-native-image-picker';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
@@ -41,10 +44,21 @@ export default class HomeScreen extends Component {
       datetimes: '',
       imageSource: null,
       imageName:null,
-      imagePath:null
+      imagePath:null,
+      id_host:''
     };
   }
-  
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <View style={[styles.flex, styles.row, styles.header]}>
+          <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+            <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+          </TouchableOpacity>
+        </View>
+      ),
+    }
+  }
 
   showDateTimePicker = () => {
     this.setState({ isDateTimePickerVisible: true });
@@ -96,8 +110,13 @@ export default class HomeScreen extends Component {
     });
   };
 
-  componentDidMount() {
-    
+  componentWillMount() {
+    AsyncStorage.multiGet(['user_id']).then((data) => {
+      let user_id = data[0][1];
+      this.setState({
+        id_host: user_id,
+      });
+  });
 
   }
 
@@ -119,12 +138,15 @@ export default class HomeScreen extends Component {
         });
       }
     });
-    
+    console.log(this.state.imageName);
   }
   _getOptionList() {
     return this.refs['OPTIONLIST'];
   }
-  register() {
+  register = (event) => {
+
+    
+    console.log(this.state.id_host);
 
     RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
     Authorization : "Bearer access-token",
@@ -146,6 +168,7 @@ export default class HomeScreen extends Component {
       'Content-Type': 'application/json'
     }),
     body: JSON.stringify({
+    id_host: this.state.id_host,
     title : this.state.Title,
     description : this.state.description,
     tag : this.state.Tag,
@@ -166,7 +189,7 @@ export default class HomeScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
-
+    event.preventDefault();
   }
 
   
@@ -410,5 +433,25 @@ shadow: {
 },
 flex: {
   flex: 0,
+},
+row: {
+  flexDirection: 'row'
+},
+header: {
+  backgroundColor: 'transparent',
+  paddingHorizontal: theme.sizes.padding,
+  paddingTop: theme.sizes.padding,
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+},
+back: {
+  width: theme.sizes.base * 3,
+  height: theme.sizes.base * 3,
+  justifyContent: 'center',
+  alignItems: 'flex-start',
 },
 });

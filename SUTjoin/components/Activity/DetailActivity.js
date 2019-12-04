@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, RefreshControl,FlatList } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage,FlatList } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
 class Article extends Component {
   state = {
     join : false,
-    joiner: []
+    joiner: [],
+    id_user:''
   }
 
   scrollX = new Animated.Value(0);
@@ -161,8 +162,16 @@ class Article extends Component {
   }
 
   componentWillMount() {
-    this.setState({joiner : []})
-    this.fetchData();
+    AsyncStorage.multiGet(['user_id']).then((data) => {
+      let user_id = data[0][1];
+      this.setState({
+        id_user: user_id,
+      });
+      this.setState({joiner : []})
+      this.fetchData();
+      console.log(this.state.id_user);
+  });
+  
   }
 
   fetchData = async () => {
@@ -176,13 +185,15 @@ class Article extends Component {
       }),
       body: JSON.stringify({
       id : article.id,
-      id_user: 1
+      id_user: this.state.id_user
       })
       }).then((response) => response.text())
       .then((responseJson) => {
         if(responseJson > 0){
-         
-        this.setState({join:true})
+         console.log("res is"+responseJson);
+        this.setState({join:true});
+        console.log("it is "+this.state.join);
+
         }
       }).catch((error) => {
         console.error(error);
@@ -200,8 +211,10 @@ class Article extends Component {
       const users = await response.json();
       this.setState({ joiner: users });
       console.log(this.state.joiner.length);
+     
       
   }
+
 
   canceljoin() {
     console.log(0);
@@ -217,7 +230,7 @@ class Article extends Component {
       status : "cancel",
       id : article.id,
       inviter : article.inviter,
-      id_user: 1
+      id_user: this.state.id_user
       })
       }).then((response) => response.text())
       .then((responseJson) => {
@@ -231,9 +244,11 @@ class Article extends Component {
   }
 
   join() {
-    console.log(1);
+    
+    console.log(this.state.id_user);
     const { navigation } = this.props;
     const article = navigation.getParam('article');
+    if(article.age>=article.min_age && article.age <= article.max_age){
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
       method: 'post',
       headers: new Headers({
@@ -244,7 +259,37 @@ class Article extends Component {
       status : "add",
       id : article.id,
       inviter : article.inviter,
-      id_user: 1
+      id_user: this.state.id_user
+      })
+      }).then((response) => response.text())
+      .then((responseJson) => {
+  
+        // Showing response message coming from server after inserting records.
+        alert(responseJson);
+  
+      }).catch((error) => {
+        console.error(error);
+      });
+    }else{
+      alert("อายุไม่ตรงตามที่ผู้จัดกิจกรรมต้องการ");
+    }
+  }
+
+  updateStatusJoin() {
+    console.log(1);
+    const { navigation } = this.props;
+    const article = navigation.getParam('article');
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+      status : "update",
+      id : article.id,
+      inviter : article.inviter,
+      id_user: this.state.id_user
       })
       }).then((response) => response.text())
       .then((responseJson) => {
@@ -256,9 +301,12 @@ class Article extends Component {
         console.error(error);
       });
   }
-  renderJoinButton = (id_host) => {
+
+  renderJoinButton = (id_host,number_people,inviter) => {
+    console.log("user is "+this.state.id_user.split('"')[1]);
+    
     console.log("id host is " + id_host);
-    if (id_host == 1) {
+    if (id_host == this.state.id_user.split('"')[1]) {
       return <TouchableOpacity
         style={{
           borderWidth: 1,
@@ -273,7 +321,7 @@ class Article extends Component {
           backgroundColor: 'green',
           borderRadius: 100,
         }}
-        onPress={this.join.bind(this)}
+        onPress={this.updateStatusJoin.bind(this)}
       >
         <FontAwesome5
           name="check-circle"
@@ -283,6 +331,7 @@ class Article extends Component {
       </TouchableOpacity>
     } else if (this.state.join){
       return <TouchableOpacity
+      
         style={{
           borderWidth: 1,
           borderColor: 'rgba(0,0,0,0.2)',
@@ -304,7 +353,32 @@ class Article extends Component {
           color={theme.colors.black}
         />
       </TouchableOpacity>
-    } else
+    } else{
+      if((number_people == inviter) ){
+        return <TouchableOpacity
+      style={{
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.2)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 70,
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        height: 70,
+        backgroundColor: 'red',
+        borderRadius: 100,
+      }}
+      disabled= { true}
+    >
+      <FontAwesome5
+        name="user-plus"
+        size={theme.sizes.font * 2}
+        color={theme.colors.black}
+      />
+    </TouchableOpacity>
+      }
+      else{
       return <TouchableOpacity
       style={{
         borderWidth: 1,
@@ -320,6 +394,7 @@ class Article extends Component {
         borderRadius: 100,
       }}
       onPress={this.join.bind(this)}
+      disabled= {false}
     >
       <FontAwesome5
         name="user-plus"
@@ -327,6 +402,8 @@ class Article extends Component {
         color={theme.colors.black}
       />
     </TouchableOpacity>
+      }
+    }
   }
 
   renderJoiner= () => {
@@ -557,7 +634,7 @@ class Article extends Component {
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            {this.renderJoinButton(article.id_host)}
+            {this.renderJoinButton(article.id_host,article.number_people,article.inviter)}
 
           </View>
 

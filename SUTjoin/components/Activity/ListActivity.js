@@ -148,7 +148,19 @@ class Articles extends Component {
   scrollX = new Animated.Value(0);
 
   
-
+  static navigationOptions = {
+    header: (
+      <View style={[styles.flex, styles.row, styles.header,]}>
+        <View>
+          <Text style={{ color: theme.colors.caption }}>Search for place</Text>
+          <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
+        </View>
+        <View>
+          <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} />
+        </View>
+      </View>
+    )
+  }
   renderDots() {
     const { destinations } = this.props;
     // console.log(this.state.data);
@@ -192,7 +204,7 @@ class Articles extends Component {
     )
   }
 
-  renderDestinations = () => {
+  renderListRecommended = () => {
     return (
       <View style={[styles.column, styles.destinations]}>
         <View
@@ -215,71 +227,14 @@ class Articles extends Component {
           data={this.state.data}
           keyExtractor={(item, index) => `${item.id}`}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
-          renderItem={({ item }) => this.renderDestination(item)}
+          renderItem={({ item }) => this.renderItem(item)}
         />
         {this.renderDots()}
       </View>
     );
   }
 
-  renderDestination = item => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
-    const { navigation } = this.props;
-    return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
-        <ImageBackground
-          style={[styles.flex, styles.destination, styles.shadow]}
-          imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{uri : photoAc}}
-        >
-          <View style={[styles.row, { justifyContent: 'space-between' }]}>
-            <View style={{ flex: 0 }}>
-              <Image source={{uri: photoUser}} style={styles.avatar} />
-            </View>
-            <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname.split('').slice(0, 5)}...</Text>
-              <Text style={{ color: theme.colors.white }}>
-                <MaterialCommunityIcons
-                  name="map-marker-outline"
-                  size={theme.sizes.font * 0.8}
-                  color={theme.colors.white}
-                />
-                <Text> {item.location_name.split('').slice(0, 5)}...</Text>
-              </Text>
-            </View>
-            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-            <Text>
-            <MaterialCommunityIcons
-                  name="account-plus"
-                  size={theme.sizes.font * 1.5}
-                  color={theme.colors.white}
-                />
-              <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
-        <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
-            {item.title}
-          </Text>
-          <View style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
-            <Text style={{ color: theme.colors.caption }}>
-              {item.description.split('').slice(0, 50)}...
-              </Text>
-            <FontAwesome
-              name="chevron-right"
-              size={theme.sizes.font * 0.75}
-              color={theme.colors.caption}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  renderRecommended = () => {
+  renderListActivity = () => {
     return (
       <View style={[styles.flex, styles.column, styles.recommended]}>
         <View
@@ -301,14 +256,14 @@ class Articles extends Component {
             style={[styles.shadow, { overflow: 'visible' }]}
             data={this.state.data}
             keyExtractor={(item, index) => `${item.id}`}
-            renderItem={({ item, index }) => this.renderRecommendation(item, index)}
+            renderItem={({ item, index }) => this.renderItem(item, index)}
           />
         </View>
       </View>
     );
   }
 
-  renderRecommendation = (item, index) => {
+  renderItem = (item, index) => {
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
     const { navigation } = this.props;
@@ -368,53 +323,13 @@ class Articles extends Component {
         </View>
       </TouchableOpacity>
     )
-    // return (
-    //   <View style={[
-    //     styles.flex, styles.column, styles.recommendation, styles.shadow,
-    //     index === 0 ? { marginLeft: theme.sizes.margin } : null,
-    //     isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
-    //   ]}>
-    //     <View style={[styles.flex, styles.recommendationHeader]}>
-    //       <Image style={[styles.recommendationImage]} source={require('../../asset/image/18838.jpg')} />
-    //       <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
-    //         <Text style={styles.recommendationTemp}>
-    //           {item.temperature}℃
-    //         </Text>
-    //         <FontAwesome
-    //           name={item.saved ? 'bookmark' : 'bookmark-o'}
-    //           color={theme.colors.white}
-    //           size={theme.sizes.font * 1.25}
-    //         />
-    //       </View>
-    //     </View>
-    //     <View style={[styles.flex, styles.column, styles.shadow, { justifyContent: 'space-evenly', padding: theme.sizes.padding / 2 }]}>
-    //       <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: theme.sizes.padding / 4.5, }}>{item.title}</Text>
-    //       <Text style={{ color: theme.colors.caption }}>{item.location}</Text>
-    //       <View style={[
-    //         styles.row,
-    //         { alignItems: 'center', justifyContent: 'space-between', marginTop: theme.sizes.margin }
-    //       ]}>
-    //         {this.renderRatings(item.rating)}
-    //         <Text style={{ color: theme.colors.active }}>
-    //           {item.rating}
-    //         </Text>
-    //       </View>
-    //     </View>
-    //   </View>
-    // )
+    
   }
   
   fetchData = async () => {
-    const ipv4 = '10.0.33.150'; // @sut
-    // Get IPv4 IP (priority: WiFi first, cellular second)
-    NetworkInfo.getIPV4Address().then(ipv4Address => {
-      this.ipv4 = ipv4Address
-      console.log('http://' + this.ipv4 + ':1348/activity');
-    });
     const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
     const users = await response.json();
     this.setState({ data: users });
-    // console.log(this.state.data.length);
   }
   refresh() {
     this.setState({refreshing:true});
@@ -426,24 +341,23 @@ class Articles extends Component {
     });
   }
   componentWillMount() {
-    this.fetchData();
+    this.fetchData(); //connect backend
   }
   render() {
     return (
       <PTRView onRefresh={this.refresh.bind(this)} >
-      <LinearGradient
-      start={{ x: 0.0, y: 0.25 }}
-      end={{ x: 0.5, y: 1.0 }}
-      locations={[0, 0.5, 0.6]}
-      colors={['white', 'pink']} >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-        >
-          {this.renderDestinations()}
-          {this.renderRecommended()}
-        </ScrollView>
-      </LinearGradient>
+        <LinearGradient
+          start={{ x: 0.0, y: 0.25 }}
+          end={{ x: 0.5, y: 1.0 }}
+          locations={[0, 0.5, 0.6]}
+          colors={['white', 'pink']} >
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
+                {this.renderListRecommended()}
+                {this.renderListActivity()}
+            </ScrollView>
+        </LinearGradient>
       </PTRView>
     )
   }
