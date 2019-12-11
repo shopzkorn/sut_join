@@ -58,9 +58,6 @@ class Login extends Component {
       }
       
     render() {
-         AsyncStorage.multiSet([
-                ["user_id", null]
-            ])
         const { navigation } = this.props;
         const {navigate} = this.props.navigation;
         return (
