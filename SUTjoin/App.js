@@ -7,6 +7,7 @@ import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
 import SelectMap from './components/Map/SelectLocation';
+import MyInterest from './components/Profile/MyInterests';
 //Route
 const App = createStackNavigator(
   {
@@ -30,6 +31,12 @@ const App = createStackNavigator(
       navigationOptions: {
       header: null,
     },
+  },
+  MyInterest:{
+    screen:MyInterest,
+    navigationOptions:{
+      // header: null,
+    }
   },
     
   },
