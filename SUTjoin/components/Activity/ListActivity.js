@@ -16,6 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NetworkInfo } from "react-native-network-info";
+import Icon from 'react-native-vector-icons/Ionicons'
 import * as theme from '../../theme';
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
@@ -148,19 +149,22 @@ class Articles extends Component {
   scrollX = new Animated.Value(0);
 
   
-  static navigationOptions = {
+  static navigationOptions = ({ navigation }) => {
+    return {
     header: (
       <View style={[styles.flex, styles.row, styles.header,]}>
         <View>
-          <Text style={{ color: theme.colors.caption }}>Search for place</Text>
-          <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
+          {/* <Text style={{ color: theme.colors.caption }}>Search for place</Text> */}
+          <Text style={{ fontSize: theme.sizes.font * 2 }}>SUT JOIN</Text>
         </View>
         <View>
-          <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} />
+          {/* <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} /> */}
+          <Icon name="ios-add-circle" size={40} onPress={() => navigation.navigate('AddActivity')}/> 
         </View>
       </View>
     )
   }
+}
   renderDots() {
     const { destinations } = this.props;
     // console.log(this.state.data);

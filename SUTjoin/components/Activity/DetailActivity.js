@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage,FlatList } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
 
 class Article extends Component {
   state = {
-    join : false,
+    join: false,
     joiner: [],
-    id_user:''
+    id_user: ''
   }
 
   scrollX = new Animated.Value(0);
@@ -168,11 +168,11 @@ class Article extends Component {
       this.setState({
         id_user: user_id,
       });
-      this.setState({joiner : []})
+      this.setState({ joiner: [] })
       this.fetchData();
       console.log(this.state.id_user);
-  });
-  
+    });
+
   }
 
   fetchData = async () => {
@@ -185,35 +185,35 @@ class Article extends Component {
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({
-      id : article.id,
-      id_user: this.state.id_user
+        id: article.id,
+        id_user: this.state.id_user
       })
-      }).then((response) => response.text())
+    }).then((response) => response.text())
       .then((responseJson) => {
-        if(responseJson > 0){
-         console.log("res is"+responseJson);
-        this.setState({join:true});
-        console.log("it is "+this.state.join);
+        if (responseJson > 0) {
+          console.log("res is" + responseJson);
+          this.setState({ join: true });
+          console.log("it is " + this.state.join);
 
         }
       }).catch((error) => {
         console.error(error);
       });
-      const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-        id : article.id
-        })
-        });
-      const users = await response.json();
-      this.setState({ joiner: users });
-      console.log(this.state.joiner.length);
-     
-      
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        id: article.id
+      })
+    });
+    const users = await response.json();
+    this.setState({ joiner: users });
+    console.log(this.state.joiner.length);
+
+
   }
 
 
@@ -228,50 +228,50 @@ class Article extends Component {
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({
-      status : "cancel",
-      id : article.id,
-      inviter : article.inviter,
-      id_user: this.state.id_user
+        status: "cancel",
+        id: article.id,
+        inviter: article.inviter,
+        id_user: this.state.id_user
       })
-      }).then((response) => response.text())
+    }).then((response) => response.text())
       .then((responseJson) => {
-  
+
         // Showing response message coming from server after inserting records.
         alert(responseJson);
-  
+
       }).catch((error) => {
         console.error(error);
       });
   }
 
   join() {
-    
+
     console.log(this.state.id_user);
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    if(article.age>=article.min_age && article.age <= article.max_age){
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
-      method: 'post',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({
-      status : "add",
-      id : article.id,
-      inviter : article.inviter,
-      id_user: this.state.id_user
-      })
+    if (article.age >= article.min_age && article.age <= article.max_age) {
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          status: "add",
+          id: article.id,
+          inviter: article.inviter,
+          id_user: this.state.id_user
+        })
       }).then((response) => response.text())
-      .then((responseJson) => {
-  
-        // Showing response message coming from server after inserting records.
-        alert(responseJson);
-  
-      }).catch((error) => {
-        console.error(error);
-      });
-    }else{
+        .then((responseJson) => {
+
+          // Showing response message coming from server after inserting records.
+          alert(responseJson);
+
+        }).catch((error) => {
+          console.error(error);
+        });
+    } else {
       alert("อายุไม่ตรงตามที่ผู้จัดกิจกรรมต้องการ");
     }
   }
@@ -287,25 +287,25 @@ class Article extends Component {
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({
-      status : "update",
-      id : article.id,
-      inviter : article.inviter,
-      id_user: this.state.id_user
+        status: "update",
+        id: article.id,
+        inviter: article.inviter,
+        id_user: this.state.id_user
       })
-      }).then((response) => response.text())
+    }).then((response) => response.text())
       .then((responseJson) => {
-  
+
         // Showing response message coming from server after inserting records.
         alert(responseJson);
-  
+
       }).catch((error) => {
         console.error(error);
       });
   }
 
-  renderJoinButton = (id_host,number_people,inviter) => {
-    console.log("user is "+this.state.id_user.split('"')[1]);
-    
+  renderJoinButton = (id_host, number_people, inviter) => {
+    console.log("user is " + this.state.id_user.split('"')[1]);
+
     console.log("id host is " + id_host);
     if (id_host == this.state.id_user.split('"')[1]) {
       return <TouchableOpacity
@@ -330,9 +330,9 @@ class Article extends Component {
           color={theme.colors.black}
         />
       </TouchableOpacity>
-    } else if (this.state.join){
+    } else if (this.state.join) {
       return <TouchableOpacity
-      
+
         style={{
           borderWidth: 1,
           borderColor: 'rgba(0,0,0,0.2)',
@@ -354,110 +354,110 @@ class Article extends Component {
           color={theme.colors.black}
         />
       </TouchableOpacity>
-    } else{
-      if((number_people == inviter) ){
+    } else {
+      if ((number_people == inviter)) {
         return <TouchableOpacity
-      style={{
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.2)',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 70,
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        height: 70,
-        backgroundColor: 'red',
-        borderRadius: 100,
-      }}
-      disabled= { true}
-    >
-      <FontAwesome5
-        name="user-plus"
-        size={theme.sizes.font * 2}
-        color={theme.colors.black}
-      />
-    </TouchableOpacity>
+          style={{
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.2)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 70,
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            height: 70,
+            backgroundColor: 'red',
+            borderRadius: 100,
+          }}
+          disabled={true}
+        >
+          <FontAwesome5
+            name="user-plus"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+        </TouchableOpacity>
       }
-      else{
-      return <TouchableOpacity
-      style={{
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.2)',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 70,
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        height: 70,
-        backgroundColor: '#ffc9de',
-        borderRadius: 100,
-      }}
-      onPress={this.join.bind(this)}
-      disabled= {false}
-    >
-      <FontAwesome5
-        name="user-plus"
-        size={theme.sizes.font * 2}
-        color={theme.colors.black}
-      />
-    </TouchableOpacity>
+      else {
+        return <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.2)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 70,
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            height: 70,
+            backgroundColor: '#ffc9de',
+            borderRadius: 100,
+          }}
+          onPress={this.join.bind(this)}
+          disabled={false}
+        >
+          <FontAwesome5
+            name="user-plus"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+        </TouchableOpacity>
       }
     }
   }
 
-  renderJoiner= () => {
-    if(this.state.joiner.length > 0){
-    return (
-      <View style={[styles.flex, styles.column, styles.recommended ]}>
-        <View
-          style={[
-            styles.row,
-            styles.recommendedHeader
-          ]}
-        >
-          {/* <TouchableOpacity activeOpacity={0.5}>
+  renderJoiner = () => {
+    if (this.state.joiner.length > 0) {
+      return (
+        <View style={[styles.flex, styles.column, styles.recommended]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            {/* <TouchableOpacity activeOpacity={0.5}>
             <Text style={{ color: theme.colors.caption }}>More</Text>
           </TouchableOpacity> */}
+          </View>
+          <View style={[styles.column, styles.recommendedList]}>
+            <FlatList
+              horizontal
+              pagingEnabled
+              scrollEnabled
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              snapToAlignment="center"
+              style={[styles.shadow, { overflow: 'visible' }]}
+              data={this.state.joiner}
+              keyExtractor={(item, index) => `${item.id}`}
+              renderItem={({ item, index }) => this.renderJoinerinActivity(item, index)}
+            />
+          </View>
         </View>
-        <View style={[styles.column, styles.recommendedList]}>
-          <FlatList
-            horizontal
-            pagingEnabled
-            scrollEnabled
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            snapToAlignment="center"
-            style={[ styles.shadow, { overflow: 'visible' }]}
-            data={this.state.joiner}
-            keyExtractor={(item, index) => `${item.id}`}
-            renderItem={({ item, index }) => this.renderJoinerinActivity(item, index)}
-          />
+      );
+    } else {
+      return (
+        <View >
+          <View style={[styles.flex, styles.recommendationHeader]}>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 10, marginBottom: 10, fontSize: 20 }}>No Joiner</Text>
+          </View>
+
         </View>
-      </View>
-    );
-  }else {
-    return (
-      <View >
-        <View style={[styles.flex, styles.recommendationHeader]}>
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold',textAlign: "center",marginTop: 10,marginBottom:10,fontSize: 20 }}>No Joiner</Text>
-        </View>
-        
-      </View>
-    )
-  }
+      )
+    }
   }
 
   renderJoinerinActivity = (item, index) => {
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
-    console.log("p "+photoUser);
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    console.log("p " + photoUser);
     const isLastItem = index === item.length - 1;
-    
+
     return (
       <View style={[
-        styles.flex, styles.column, styles.recommendation, styles.shadow, 
-        index === 0 ? { marginLeft: theme.sizes.margin /2 } : null,
+        styles.flex, styles.column, styles.recommendation, styles.shadow,
+        index === 0 ? { marginLeft: theme.sizes.margin / 2 } : null,
         isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
       ]}>
         <View style={[styles.flex, styles.recommendationHeader]}>
@@ -465,10 +465,10 @@ class Article extends Component {
           <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
           <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
         </View>
-        
+
       </View>
     )
-    
+
   }
 
   renderGender = (gender) => {
@@ -544,8 +544,15 @@ class Article extends Component {
                   />
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
+                
               </View>
-              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }}/>
+              <Text style={{ color: theme.colors.black, fontWeight: 'bold' ,marginBottom : 10}}> {article.location_address}</Text>
+              <TouchableOpacity style={{marginBottom : 10}} onPress={() => navigation.navigate('Map', { lat: article.location_lat ,lng:article.location_long,title: article.title , location_name: article.location_name ,address: article.location_address})}>
+                    <View>
+                      <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center',fontWeight: 'bold' }}> Show map </Text>
+                    </View>
+              </TouchableOpacity>
+              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
               <View style={[
                 styles.row
@@ -561,7 +568,7 @@ class Article extends Component {
               </View>
               {this.renderJoiner()}
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }}/>
+              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
               <View style={{ flex: 1 }}>
                 <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
@@ -635,7 +642,7 @@ class Article extends Component {
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            {this.renderJoinButton(article.id_host,article.number_people,article.inviter)}
+            {this.renderJoinButton(article.id_host, article.number_people, article.inviter)}
 
           </View>
 

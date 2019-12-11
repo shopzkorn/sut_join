@@ -65,6 +65,7 @@ class selectLocation extends Component {
             showLocation: '',
             SetLocation: '',
             search: false,
+            address:''
         };
     }
 
@@ -72,8 +73,9 @@ class selectLocation extends Component {
         this.googlePlacesAutocomplete._handleChangeText('')
     }
 
-    Done(){
-
+    Selected(){
+        this.props.navigation.state.params.returnData(this.state.SetLocation,this.state.region.latitude,this.state.region.longitude,this.state.address)
+        this.props.navigation.goBack()
     }
 
     onRegionChange(region) {
@@ -84,22 +86,23 @@ class selectLocation extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                
-                console.log(JSON.stringify(responseJson));
+                // console.log(JSON.stringify(responseJson));
                 var location = responseJson.results[0].formatted_address
                 console.log('ADDRESS GEOCODE is BACK!! => ' + location);
                 if (this.state.search == false) {
-                    var city = responseJson.results[0].address_components.filter(x => x.types.filter(t => t == 'administrative_area_level_1' ).length > 0)[0].short_name;
                     var Amphoe = responseJson.results[0].address_components.filter(x => x.types.filter(t => t == 'administrative_area_level_2'|| t == 'sublocality_level_1').length > 0)[0].short_name;
                     this.setState({
                         showLocation: location,
-                        SetLocation : Amphoe + ' ' + city
+                        SetLocation : Amphoe ,
+                        address : location
                     });
                 } else {
                     this.setState({
-                        search: false
+                        search: false,
+                        address : location
                     });
                 }
-                console.log(this.state.SetLocation);
+                console.log(this.state.address);
             })
         // this.googlePlacesAutocomplete._handleChangeText('')
     }
@@ -203,7 +206,7 @@ class selectLocation extends Component {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('AddActivity', { article: this.state.SetLocation })} > 
+                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.Selected.bind(this)} > 
                             <View>
                                 <Text style={{ color: '#ffffff', fontSize: 14 }}> {this.state.showLocation} </Text>
                             </View>

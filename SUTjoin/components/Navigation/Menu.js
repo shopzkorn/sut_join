@@ -10,7 +10,7 @@ import {
     StatusBar
 } from "react-native";
 
-import { createBottomTabNavigator,createAppContainer,createStackNavigator,DrawerActions } from 'react-navigation'
+import { createBottomTabNavigator,createAppContainer,createStackNavigator} from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import Activity from '../Activity/ListActivity';
@@ -49,26 +49,11 @@ const styles = StyleSheet.create({
 
 
 //Route
-
 const NaActivity = createStackNavigator(
   
   {
     Activity: {
       screen: Activity,
-      navigationOptions: {
-        header: (
-          <View style={[styles.flex, styles.row, styles.header,]}>
-            <View>
-              <Text style={{ color: theme.colors.caption }}>Search for place</Text>
-              <Text style={{ fontSize: theme.sizes.font * 2 }}>Destination</Text>
-            </View>
-            <View>
-              {/* <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} /> */}
-              <Icon name="ios-add-circle" size={40} onPress={() => DrawerActions(NaHistory)}/> 
-            </View>
-          </View>
-        ),
-      },
     },
   }
 );
