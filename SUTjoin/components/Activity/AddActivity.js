@@ -51,11 +51,15 @@ export default class HomeScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
-        <View style={[styles.flex, styles.row, styles.header]}>
+        <View style={[ styles.row, styles.header]}>
           <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
           </TouchableOpacity>
+          <Text style={styles.highlight}>
+              Create new event
+          </Text>
         </View>
+        
       ),
     }
   }
@@ -194,7 +198,7 @@ export default class HomeScreen extends Component {
 
   
   render() {
-
+    const { navigation } = this.props;
     return (
       <LinearGradient
         start={{ x: 0.0, y: 0.25 }}
@@ -209,9 +213,7 @@ export default class HomeScreen extends Component {
             alignItems: 'center',
           }}>
 
-            <Text style={styles.highlight}>
-              Create new event
-          </Text>
+            
            
             <Text style={styles.text}>Title event</Text>
             <TextInput
@@ -264,7 +266,11 @@ export default class HomeScreen extends Component {
                 is24Hour={false}
               />
             </TouchableOpacity>
-            
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap')}>
+              <View>
+                <Text style={{ color: '#ffffff', fontSize: 16 }}> Choose location </Text>
+              </View>
+            </TouchableOpacity>
               <Text style={styles.text}>Gender</Text>
               <Picker
               style={{height: 50,width:'80%'}}
@@ -381,8 +387,9 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.lighter,
   },
   highlight: {
-    fontSize: 36,
+    fontSize: 20,
     fontWeight: '700',
+    // alignItems: 'flex-end',
   },
   button: {
     flexDirection: 'row',
@@ -438,12 +445,12 @@ row: {
   flexDirection: 'row'
 },
 header: {
-  backgroundColor: 'transparent',
+  backgroundColor: '#ffffff',
   paddingHorizontal: theme.sizes.padding,
-  paddingTop: theme.sizes.padding,
-  justifyContent: 'space-between',
+  paddingTop: theme.sizes.padding*.25,
+  // justifyContent: 'space-around',
   alignItems: 'center',
-  position: 'absolute',
+  // position: 'absolute',
   top: 0,
   left: 0,
   right: 0,

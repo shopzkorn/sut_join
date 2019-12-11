@@ -6,12 +6,19 @@ import Login from './components/Profile/Login';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
+import SelectMap from './components/Map/SelectLocation';
 //Route
 const App = createStackNavigator(
   {
     Register,
     AddActivity,
     Article,
+    SelectMap:{
+      screen: SelectMap,
+      navigationOptions: {
+      header: null,
+    },
+  },
     Menu:{
       screen: Menu,
       navigationOptions: {

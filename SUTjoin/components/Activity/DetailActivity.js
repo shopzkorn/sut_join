@@ -6,6 +6,7 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment'
+import FAB from 'react-native-fab'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as theme from '../../theme';
 
