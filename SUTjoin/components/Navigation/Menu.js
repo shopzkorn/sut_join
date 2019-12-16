@@ -9,7 +9,6 @@ import {
     Platform,
     StatusBar
 } from "react-native";
-
 import { createBottomTabNavigator,createAppContainer,createStackNavigator} from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -21,7 +20,7 @@ import Profile from '../Profile/Profile';
 import History from '../Activity/HistoryActivity';
 import * as theme from '../../theme';
 
-// export default Menu;
+
 const styles = StyleSheet.create({
   flex: {
     flex: 0,

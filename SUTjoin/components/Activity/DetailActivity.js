@@ -471,6 +471,118 @@ class Article extends Component {
 
   }
 
+  renderTpye = (type) => {
+    console.log(type);
+    if (type == 1) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="book"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Learning</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 2) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="heart"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 3) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="play"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Recreation</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 4) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="play"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hangout</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 5) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="rocket"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Travel</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 6) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="play"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hobby</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 7) {
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="group"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Meet</Text>
+        </Text>
+      </View>
+      )
+    } else if (type == 8) {
+      console.log("this");
+      return (
+      <View style={[styles.row]}>
+        <Text >
+          <FontAwesome
+            name="glass"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Eat & Drink</Text>
+        </Text>
+      </View>
+      )
+    }else {
+      return (null);
+    } 
+  }
+
   renderGender = (gender) => {
     if (gender == 1)
       return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
@@ -544,13 +656,13 @@ class Article extends Component {
                   />
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
-                
+
               </View>
-              <Text style={{ color: theme.colors.black, fontWeight: 'bold' ,marginBottom : 10}}> {article.location_address}</Text>
-              <TouchableOpacity style={{marginBottom : 10}} onPress={() => navigation.navigate('Map', { lat: article.location_lat ,lng:article.location_long,title: article.title , location_name: article.location_name ,address: article.location_address})}>
-                    <View>
-                      <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center',fontWeight: 'bold' }}> Show map </Text>
-                    </View>
+              <Text style={{ color: theme.colors.black, fontWeight: 'bold', marginBottom: 10 }}> {article.location_address}</Text>
+              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => navigation.navigate('Map', { lat: article.location_lat, lng: article.location_long, title: article.title, location_name: article.location_name, address: article.location_address })}>
+                <View>
+                  <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
+                </View>
               </TouchableOpacity>
               <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
@@ -596,18 +708,7 @@ class Article extends Component {
               </View>
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
               </Text>
-              <View style={[
-                styles.row
-              ]}>
-                <Text >
-                  <FontAwesome
-                    name="play"
-                    size={theme.sizes.font * 2}
-                    color={theme.colors.black}
-                  />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.type}</Text>
-                </Text>
-              </View>
+              {this.renderTpye(article.type)}
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
               </Text>
               <View style={[

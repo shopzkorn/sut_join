@@ -35,7 +35,7 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
+      type: 1,
       latitude: '',
       longitude: '',
       Title: '',
@@ -77,6 +77,9 @@ export default class HomeScreen extends Component {
       ),
     }
   }
+
+
+  
 
   returnData = (SetLocation, lat, lng,address) => {
     // var lats = lat.toFixed(6);
@@ -170,7 +173,7 @@ export default class HomeScreen extends Component {
   register = (event) => {
 
 
-    console.log(this.state.id_host);
+    console.log(this.state.type);
 
     RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
       Authorization: "Bearer access-token",
@@ -205,7 +208,8 @@ export default class HomeScreen extends Component {
         image: this.state.imageName,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
-        address : this.state.address
+        address : this.state.address,
+        type : this.state.type
       })
     }).then((response) => response.text())
       .then((responseJson) => {
@@ -259,14 +263,28 @@ export default class HomeScreen extends Component {
               keyboardType={'email-address'}
             />
             <Text style={styles.text}>Event type</Text>
-            <TextInput
+            {/* <TextInput
               placeholder='Type'
               value={this.state.Tag}
               onChangeText={Tag => this.setState({ Tag })}
               style={styles.textbox}
               underlineColorAndroid="transparent"
               keyboardType={'email-address'}
-            />
+            /> */}
+             <Picker
+              style={{ height: 50, width: '80%' }}
+              selectedValue={this.state.type}
+              onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue }) }
+            >
+              <Picker.Item label="Learning" value="1" />
+              <Picker.Item label="Volunteer" value="2" />
+              <Picker.Item label="Recreation" value="3" />
+              <Picker.Item label="Hangout" value="4" />
+              <Picker.Item label="Travel" value="5" />
+              <Picker.Item label="Hobby" value="6" />
+              <Picker.Item label="Meet" value="7" />
+              <Picker.Item label="Eat & Drink" value="8" />
+            </Picker>
             <Text style={styles.text}>Location event</Text>
             <Text style={{ color: '#ffffff', fontSize: 16, justifyContent: 'center', }}> {this.state.Location} </Text>
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
