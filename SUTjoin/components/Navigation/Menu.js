@@ -12,7 +12,7 @@ import {
 import { createBottomTabNavigator,createAppContainer,createStackNavigator} from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 
-import Activity from '../Activity/ListActivity';
+import Activity from '../Activity/Tabscene';
 import Checkin from '../Checkin/Checkin';
 import Learning from '../Learning/Learning';
 import Add from '../Activity/AddActivity';

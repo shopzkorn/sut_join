@@ -1,71 +1,113 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions ,Text} from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
-
+import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
 import ListActivity from './ListActivity';
 import SearchActivity from './History';
-const FirstRoute = () => (
-  <ListActivity/>
-);
- 
-const SecondRoute = () => (
-    <SearchActivity/>
-);
- 
+
 export default class TabViewExample extends React.Component {
 
-    static navigationOptions = ({ navigation }) => {
-        return {
-          header: (
-            <LinearGradient colors={['#ffd8ff', '#f0c0ff','#c0c0ff']}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}>
-              <View style={[styles.flex, styles.row, styles.header,]}>
-                <View>
-                  {/* <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} /> */}
-                  <FontAwesome name="search" size={30} onPress={() => navigation.navigate('AddActivity')} />
-                </View>
-                <View>
-                  {/* <Text style={{ color: theme.colors.caption }}>Search for place</Text> */}
-                  <Text style={{ fontSize: theme.sizes.font * 2,fontWeight: 'bold' }}>SUT JOIN</Text>
-                </View>
-                <View>
-                  {/* <Image style={styles.avatar} source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg'}} /> */}
-                  <Icon name="ios-add-circle" size={30} onPress={() => navigation.navigate('AddActivity')} />
-                </View>
-              </View>
-            </LinearGradient>
-          ),
-          tabBarOnPress: (scene, jumpToIndex) => { console.log('Tab is pressed!') },
-        }
-      }
+  _renderTabBar = props => {
+    const inputRange = props.navigationState.routes.map((x, i) => i);
+
+    return (
+      <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}>
+        <View style={styles.tabBar}>
+          {props.navigationState.routes.map((route, i) => {
+            const color = Animated.color(
+              Animated.round(
+                Animated.interpolate(props.position, {
+                  inputRange,
+                  outputRange: inputRange.map(inputIndex =>
+                    inputIndex === i ? 255 : 0
+                  ),
+                })
+              ),
+              0,
+              0
+            );
+
+            return (
+              <TouchableOpacity
+                style={styles.tabItem}
+                onPress={() => this.setState({ index: i })}>
+                <Animated.Text style={{ color }}>{route.title}</Animated.Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </LinearGradient>
+    );
+  };
+
+  FirstRoute = () => {
+    const { navigation } = this.props;
+    return (
+      <ListActivity navigation={navigation} />
+    );
+  }
+
+  SecondRoute = () => {
+    const { navigation } = this.props;
+    return (
+      <SearchActivity navigation={navigation} />
+    );
+  }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}>
+        <View style={[styles.flex, styles.row, styles.header,]}>
+          <View style={{ alignItems: 'flex-start' }}>
+            <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
+          </View>
+          <View style={[styles.flex, styles.row]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun,styles.marginRight]}>
+              <FontAwesome name="search" size={20} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
+              <Icon name="ios-add-circle" size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
+      ),
+    }
+  }
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'First' },
-      { key: 'second', title: 'Second' },
+      { key: 'first', title: 'Feed' },
+      { key: 'second', title: 'EXPLORE' },
     ],
   };
- 
+
   render() {
+    const { navigation } = this.props;
+    // console.log(navigation);
     return (
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
+          first: this.FirstRoute,
+          second: this.SecondRoute,
         })}
+        renderTabBar={this._renderTabBar}
         onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
     );
   }
 }
- 
+
 const styles = StyleSheet.create({
   scene: {
     flex: 1,
@@ -87,4 +129,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  container: {
+    flex: 1,
+  },
+  tabBar: {
+    flexDirection: 'row',
+    // paddingTop: Constants.statusBarHeight,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 16,
+  },
+  circleButtun: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 35,
+    height: 35,
+    backgroundColor: "#c0c0ff",
+    borderRadius: 50,
+    // marginRight : 10
+  },
+  marginRight:{
+    marginRight : 10
+  }
 });
