@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.sizes.padding / 2,
   },
   rating: {
-    fontSize: theme.sizes.font *1.5,
+    fontSize: theme.sizes.font * 1.5,
     color: theme.colors.white,
     fontWeight: 'bold'
   },
@@ -143,25 +143,25 @@ const styles = StyleSheet.create({
 
 class Articles extends Component {
   state = {
-    myhost: [],
-    myjoin: [],
-    refreshing : false,
-    id_user:''
+    myparticipated: [],
+    myUpcoming: [],
+    refreshing: false,
+    id_user: ''
   }
-  scrollXHost = new Animated.Value(0);
-  scrollXJoin = new Animated.Value(0);
+  scrollXparticipated = new Animated.Value(0);
+  scrollXUpcoming = new Animated.Value(0);
 
-  
 
-  renderDotsHost() {
+
+  renderDotsparticipated() {
     const { destinations } = this.props;
-    const dotPosition = Animated.divide(this.scrollXHost, width);
+    const dotPosition = Animated.divide(this.scrollXparticipated, width);
     return (
       <View style={[
         styles.flex, styles.row,
         { justifyContent: 'center', alignItems: 'center', marginTop: 10 }
       ]}>
-        {this.state.myhost.map((item, index) => {
+        {this.state.myparticipated.map((item, index) => {
           const borderWidth1 = dotPosition.interpolate({
             inputRange: [index - 1, index, index + 1],
             outputRange: [0, 2.5, 0],
@@ -177,16 +177,16 @@ class Articles extends Component {
       </View>
     )
   }
-  renderDotsJoin() {
+  renderDotsUpcoming() {
     const { destinations } = this.props;
-    const dotPosition = Animated.divide(this.scrollXJoin, width);
-    console.log("position join is"+dotPosition);
+    const dotPosition = Animated.divide(this.scrollXUpcoming, width);
+    console.log("position Upcoming is" + dotPosition);
     return (
       <View style={[
         styles.flex, styles.row,
         { justifyContent: 'center', alignItems: 'center', marginTop: 10 }
       ]}>
-        {this.state.myjoin.map((item, index) => {
+        {this.state.myUpcoming.map((item, index) => {
           const borderWidth = dotPosition.interpolate({
             inputRange: [index - 1, index, index + 1],
             outputRange: [0, 2.5, 0],
@@ -220,17 +220,18 @@ class Articles extends Component {
     )
   }
 
-  renderHost = () => {
+  renderparticipated = () => {
+    if(this.state.myparticipated.length > 0){
     return (
       <View style={[styles.column, styles.destinations]}>
         <View
-        style={[
-          styles.row,
-          styles.recommendedHeader
-        ]}
-      >
-        <Text style={{ fontSize: theme.sizes.font * 1.4 }}>HOST</Text>
-      </View>
+          style={[
+            styles.row,
+            styles.recommendedHeader
+          ]}
+        >
+          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+        </View>
         <FlatList
           horizontal
           pagingEnabled
@@ -240,30 +241,48 @@ class Articles extends Component {
           scrollEventThrottle={16}
           snapToAlignment="center"
           style={{ overflow: 'visible', height: 280 }}
-          data={this.state.myhost}
+          data={this.state.myparticipated}
           keyExtractor={(item, index) => `${item.id}`}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXHost } } }])}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXparticipated } } }])}
           renderItem={({ item }) => this.renderDestination(item)}
         />
-        {this.renderDotsHost()}
+        {this.renderDotsparticipated()}
       </View>
     );
+        }
+        else {
+          return (
+            <View style={[styles.column, styles.destinations]}>
+              <View
+                style={[
+                  styles.row,
+                  styles.recommendedHeader
+                ]}
+              >
+                <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+              </View>
+              <View style={[styles.flex]}>
+                <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO PARTICIPATED</Text>
+              </View>
+            </View>
+          )
+        }
   }
 
-  renderDestination = item => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
+  renderDestination = (item) => {
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{uri : photoAc}}
+          source={{ uri: photoAc }}
         >
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View style={{ flex: 0 }}>
-              <Image source={{uri: photoUser}} style={styles.avatar} />
+              <Image source={{ uri: photoUser }} style={styles.avatar} />
             </View>
             <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
               <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname}...</Text>
@@ -277,13 +296,13 @@ class Articles extends Component {
               </Text>
             </View>
             <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-            <Text>
-            <MaterialCommunityIcons
+              <Text>
+                <MaterialCommunityIcons
                   name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
                 />
-              <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
+                <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
               </Text>
             </View>
           </View>
@@ -307,105 +326,125 @@ class Articles extends Component {
     )
   }
 
-  renderJoin = () => {
-    console.log(this.state.myjoin);
-    return (
-      <View style={[styles.column, styles.destinations]}>
-      <View
-      style={[
-        styles.row,
-        styles.recommendedHeader
-      ]}
-    >
-      <Text style={{ fontSize: theme.sizes.font * 1.4 }}>JOIN</Text>
-    </View>
-      <FlatList
-        horizontal
-        pagingEnabled
-        scrollEnabled
-        showsHorizontalScrollIndicator={false}
-        decelerationRate={0}
-        scrollEventThrottle={16}
-        snapToAlignment="center"
-        style={{ overflow: 'visible', height: 280 }}
-        data={this.state.myjoin}
-        keyExtractor={(item, index) => `${item.id}`}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXJoin } } }])}
-        renderItem={({ item }) => this.renderDestination(item)}
-      />
-      {this.renderDotsJoin()}
-    </View>
-    );
+  renderUpcoming = () => {
+    console.log(this.state.myUpcoming.length);
+    if (this.state.myUpcoming.length > 0) {
+      return (
+        <View style={[styles.column, styles.destinations]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            <Text style={{ fontSize: theme.sizes.font * 1.4 }}>UPCOMING</Text>
+          </View>
+          <FlatList
+            horizontal
+            pagingEnabled
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={{ overflow: 'visible', height: 280 }}
+            data={this.state.myUpcoming}
+            keyExtractor={(item, index) => `${item.id}`}
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXUpcoming } } }])}
+            renderItem={({ item }) => this.renderDestination(item)}
+          />
+          {this.renderDotsUpcoming()}
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={[styles.column, styles.destinations]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            <Text style={{ fontSize: theme.sizes.font * 1.4 }}>UPCOMING</Text>
+          </View>
+          <View style={[styles.flex]}>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO UPCOMING</Text>
+          </View>
+        </View>
+      )
+    }
   }
 
-  
-  
-  fetchData = async () => {
-    const responseHost = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-        id_user: this.state.id_user
-        })
-        });
-    const host = await responseHost.json();
-    // console.log(host);
-    this.setState({ myhost: host });
-    console.log(this.state.myhost);
 
-    const responseJoin = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
+
+  fetchData = async () => {
+
+    Promise.all([
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }),
         body: JSON.stringify({
-        id_user: this.state.id_user
+          id_user: this.state.id_user,
+          status: 'soon'
         })
-        });
-    const join = await responseJoin.json();
-    // console.log(join);
-    this.setState({ myjoin: join });
-    console.log(this.state.myjoin);
+      }),
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          id_user: this.state.id_user,
+          status: 'end'
+        })
+      }),
+    ])
+      .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
+      .then(([data1, data2]) => this.setState({
+        myUpcoming: data1,
+        myparticipated: data2
+      }));
   }
   refresh() {
-    this.setState({refreshing:true});
+    this.setState({ refreshing: true });
     return new Promise((resolve) => {
-      this.fetchData().then(()=>{
-        this.setState({refreshing:false})
+      this.fetchData().then(() => {
+        this.setState({ refreshing: false })
       });
-      setTimeout(()=>{resolve()}, 2000)
+      setTimeout(() => { resolve() }, 2000)
     });
   }
   componentWillMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
-        let user_id = data[0][1];
-        this.setState({
-          id_user: user_id,
-        });
-        this.fetchData();
-        console.log(this.state.id_user);
+      let user_id = data[0][1];
+      this.setState({
+        id_user: user_id,
+      });
+      this.fetchData();
+      console.log(this.state.id_user);
     });
   }
   render() {
     return (
       <PTRView onRefresh={this.refresh.bind(this)} >
-      <LinearGradient
-      start={{ x: 0.0, y: 0.25 }}
-      end={{ x: 0.5, y: 1.0 }}
-      locations={[0, 0.5, 0.6]}
-      colors={['white', 'pink']} >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-        >
-          {this.renderJoin()}
-          {this.renderHost()}
-        </ScrollView>
-      </LinearGradient>
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff','#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }} 
+          end={{ x: 1.0, y: 0.5 }} 
+          >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+          >
+            {this.renderUpcoming()}
+            {this.renderparticipated()}
+          </ScrollView>
+        </LinearGradient>
       </PTRView>
     )
   }

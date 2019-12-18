@@ -26,8 +26,8 @@ const { width, height } = Dimensions.get('window');
 
 const options = {
   title: 'Select a photo',
-  chooseFromLibraryButtonTitle	: 'Choose from gallery',
-  quality:1
+  chooseFromLibraryButtonTitle: 'Choose from gallery',
+  quality: 1
 
 };
 
@@ -35,7 +35,20 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Title: '', description: '', Tag: '', Location: '', start: '', End: '', Gender: '1', Amount: '', agemin: '', agemax: '', sliderOneChanging: false,
+      type: 1,
+      latitude: '',
+      longitude: '',
+      Title: '',
+      description: '',
+      Tag: '',
+      Location: '',
+      start: '',
+      End: '',
+      Gender: '1',
+      Amount: '',
+      agemin: '',
+      agemax: '',
+      sliderOneChanging: false,
       sliderOneValue: [1],
       multiSliderValue: [0, 60],
       nonCollidingMultiSliderValue: [0, 100],
@@ -43,21 +56,35 @@ export default class HomeScreen extends Component {
       chosendate: '',
       datetimes: '',
       imageSource: null,
-      imageName:null,
-      imagePath:null,
-      id_host:''
+      imageName: null,
+      imagePath: null,
+      id_host: '',
+      address:''
     };
   }
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
-        <View style={[styles.flex, styles.row, styles.header]}>
+        <View style={[styles.row, styles.header]}>
           <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
           </TouchableOpacity>
+          <Text style={styles.highlight}>
+            Create new event
+          </Text>
         </View>
+
       ),
     }
+  }
+
+
+  
+
+  returnData = (SetLocation, lat, lng,address) => {
+    // var lats = lat.toFixed(6);
+    this.setState({ Location: SetLocation, latitude: lat, longitude: lng ,address : address});
+    console.log(this.state.latitude);
   }
 
   showDateTimePicker = () => {
@@ -73,11 +100,11 @@ export default class HomeScreen extends Component {
     this.setState({
       isDateTimePickerVisible: true,
       chosendate: moment(datetime).format('MMMM, Do YYYY HH:mm'),
-      datetimes : datetime
+      datetimes: datetime
     });
     console.log("A date has been picked: ", this.state.datetimes);
   };
-  
+
 
   sliderOneValuesChangeStart = () => {
     this.setState({
@@ -116,11 +143,11 @@ export default class HomeScreen extends Component {
       this.setState({
         id_host: user_id,
       });
-  });
+    });
 
   }
 
-  selectPhoto(){
+  selectPhoto() {
     ImagePicker.showImagePicker(options, (response) => {
       // console.log('Response = ', response);
       // const uriPart = response.uri.split('.');
@@ -129,12 +156,12 @@ export default class HomeScreen extends Component {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      }  else {
+      } else {
         const source = { uri: response.uri };
         this.setState({
           imageSource: source,
-          imageName : response.fileName,
-          imagePath : response.data
+          imageName: response.fileName,
+          imagePath: response.data
         });
       }
     });
@@ -145,56 +172,60 @@ export default class HomeScreen extends Component {
   }
   register = (event) => {
 
-    
-    console.log(this.state.id_host);
+
+    console.log(this.state.type);
 
     RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
-    Authorization : "Bearer access-token",
-    otherHeader : "foo",
-    'Content-Type' : 'multipart/form-data',
-  }, [
-    // custom content type
-    { name : 'image', filename : this.state.imageName, data: this.state.imagePath},
-  ]).then((resp) => {
-    console.log(resp);
-  }).catch((err) => {
-    console.log(err);
-  })
-  
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
-    method: 'post',
-    headers: new Headers({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }),
-    body: JSON.stringify({
-    id_host: this.state.id_host,
-    title : this.state.Title,
-    description : this.state.description,
-    tag : this.state.Tag,
-    location : this.state.Location,
-    datetimes : this.state.datetimes,
-    number_people : this.state.sliderOneValue[0],
-    minage : this.state.multiSliderValue[0],
-    maxage : this.state.multiSliderValue[1],
-    gender: this.state.Gender,
-    image : this.state.imageName
+      Authorization: "Bearer access-token",
+      otherHeader: "foo",
+      'Content-Type': 'multipart/form-data',
+    }, [
+      // custom content type
+      { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
+    ]).then((resp) => {
+      console.log(resp);
+    }).catch((err) => {
+      console.log(err);
     })
+
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        id_host: this.state.id_host,
+        title: this.state.Title,
+        description: this.state.description,
+        tag: this.state.Tag,
+        location: this.state.Location,
+        datetimes: this.state.datetimes,
+        number_people: this.state.sliderOneValue[0],
+        minage: this.state.multiSliderValue[0],
+        maxage: this.state.multiSliderValue[1],
+        gender: this.state.Gender,
+        image: this.state.imageName,
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
+        address : this.state.address,
+        type : this.state.type
+      })
     }).then((response) => response.text())
-    .then((responseJson) => {
+      .then((responseJson) => {
 
-      // Showing response message coming from server after inserting records.
-      alert(responseJson);
+        // Showing response message coming from server after inserting records.
+        alert(responseJson);
 
-    }).catch((error) => {
-      console.error(error);
-    });
+      }).catch((error) => {
+        console.error(error);
+      });
     event.preventDefault();
   }
 
-  
-  render() {
 
+  render() {
+    const { navigation } = this.props;
     return (
       <LinearGradient
         start={{ x: 0.0, y: 0.25 }}
@@ -209,10 +240,8 @@ export default class HomeScreen extends Component {
             alignItems: 'center',
           }}>
 
-            <Text style={styles.highlight}>
-              Create new event
-          </Text>
-           
+
+
             <Text style={styles.text}>Title event</Text>
             <TextInput
               placeholder='Title'
@@ -234,23 +263,35 @@ export default class HomeScreen extends Component {
               keyboardType={'email-address'}
             />
             <Text style={styles.text}>Event type</Text>
-            <TextInput
+            {/* <TextInput
               placeholder='Type'
               value={this.state.Tag}
               onChangeText={Tag => this.setState({ Tag })}
               style={styles.textbox}
               underlineColorAndroid="transparent"
               keyboardType={'email-address'}
-            />
+            /> */}
+             <Picker
+              style={{ height: 50, width: '80%' }}
+              selectedValue={this.state.type}
+              onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue }) }
+            >
+              <Picker.Item label="Learning" value="1" />
+              <Picker.Item label="Volunteer" value="2" />
+              <Picker.Item label="Recreation" value="3" />
+              <Picker.Item label="Hangout" value="4" />
+              <Picker.Item label="Travel" value="5" />
+              <Picker.Item label="Hobby" value="6" />
+              <Picker.Item label="Meet" value="7" />
+              <Picker.Item label="Eat & Drink" value="8" />
+            </Picker>
             <Text style={styles.text}>Location event</Text>
-            <TextInput
-              placeholder='Location'
-              value={this.state.Location}
-              onChangeText={Location => this.setState({ Location })}
-              style={styles.textbox}
-              underlineColorAndroid="transparent"
-              keyboardType={'email-address'}
-            />
+            <Text style={{ color: '#ffffff', fontSize: 16, justifyContent: 'center', }}> {this.state.Location} </Text>
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
+              <View>
+                <Text style={{ color: '#ffffff', fontSize: 16, justifyContent: 'center', }}> Choose location </Text>
+              </View>
+            </TouchableOpacity>
             <Text style={styles.text}>Date: {this.state.chosendate}</Text>
             <TouchableOpacity style={styles.button} title="Choose date" onPress={this.showDateTimePicker} >
               <View>
@@ -264,17 +305,17 @@ export default class HomeScreen extends Component {
                 is24Hour={false}
               />
             </TouchableOpacity>
-            
-              <Text style={styles.text}>Gender</Text>
-              <Picker
-              style={{height: 50,width:'80%'}}
+
+            <Text style={styles.text}>Gender</Text>
+            <Picker
+              style={{ height: 50, width: '80%' }}
               selectedValue={this.state.Gender}
-              onValueChange={(itemValue,itemIndex) => this.setState({Gender:itemValue})}
-              >
-              <Picker.Item label="Male" value="1"/>
+              onValueChange={(itemValue, itemIndex) => this.setState({ Gender: itemValue })}
+            >
+              <Picker.Item label="Male" value="1" />
               <Picker.Item label="Female" value="2" />
-              <Picker.Item label="Male & Female" value="3"/>         
-              </Picker>
+              <Picker.Item label="Male & Female" value="3" />
+            </Picker>
             <View style={styles.sliderOne}>
               <Text style={styles.text}>Number of people: </Text>
               <Text
@@ -313,18 +354,18 @@ export default class HomeScreen extends Component {
               allowOverlap
               snapped
             />
-             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
               <View>
                 <Text style={{ color: '#ffffff', fontSize: 16 }}> Add photo </Text>
               </View>
             </TouchableOpacity>
-            <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource}/>
+            <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} />
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.register.bind(this)}>
               <View>
                 <Text style={{ color: '#ffffff', fontSize: 16 }}> Create </Text>
               </View>
             </TouchableOpacity>
-            
+
           </View>
         </ScrollView>
       </LinearGradient>
@@ -381,8 +422,9 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.lighter,
   },
   highlight: {
-    fontSize: 36,
+    fontSize: 20,
     fontWeight: '700',
+    // alignItems: 'flex-end',
   },
   button: {
     flexDirection: 'row',
@@ -408,50 +450,50 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 20,
   },
- image:{
-    width:400,
-    height:100,
-    marginTop:20
- },
- destination: {
-  width: width - (theme.sizes.padding * 2),
-  height: width * 0.6,
-  marginHorizontal: theme.sizes.margin,
-  paddingHorizontal: theme.sizes.padding,
-  paddingVertical: theme.sizes.padding * 0.66,
-  borderRadius: theme.sizes.radius,
-},
-shadow: {
-  shadowColor: theme.colors.black,
-  shadowOffset: {
-    width: 0,
-    height: 6,
+  image: {
+    width: 400,
+    height: 100,
+    marginTop: 20
   },
-  shadowOpacity: 0.05,
-  shadowRadius: 10,
-  elevation: 5,
-},
-flex: {
-  flex: 0,
-},
-row: {
-  flexDirection: 'row'
-},
-header: {
-  backgroundColor: 'transparent',
-  paddingHorizontal: theme.sizes.padding,
-  paddingTop: theme.sizes.padding,
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-},
-back: {
-  width: theme.sizes.base * 3,
-  height: theme.sizes.base * 3,
-  justifyContent: 'center',
-  alignItems: 'flex-start',
-},
+  destination: {
+    width: width - (theme.sizes.padding * 2),
+    height: width * 0.6,
+    marginHorizontal: theme.sizes.margin,
+    paddingHorizontal: theme.sizes.padding,
+    paddingVertical: theme.sizes.padding * 0.66,
+    borderRadius: theme.sizes.radius,
+  },
+  shadow: {
+    shadowColor: theme.colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  flex: {
+    flex: 0,
+  },
+  row: {
+    flexDirection: 'row'
+  },
+  header: {
+    backgroundColor: '#ffffff',
+    paddingHorizontal: theme.sizes.padding,
+    paddingTop: theme.sizes.padding * .25,
+    // justifyContent: 'space-around',
+    alignItems: 'center',
+    // position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
 });

@@ -41,9 +41,6 @@ class Register extends Component {
 
   selectPhoto() {
     ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
-      // const uriPart = response.uri.split('.');
-      // const fileExtension = uriPart[uriPart.length - 1];
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {

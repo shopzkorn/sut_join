@@ -273,7 +273,6 @@ class MyInterest extends React.Component {
             </View>
             </View>
 
-
             <View style={{flexDirection:'row'}}>
             <View style={styles.view_flex_start}>
                 {/* <Text>Recreation</Text> */}
@@ -522,16 +521,16 @@ class MyInterest extends React.Component {
 export default MyInterest;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    buttontext: {
-      fontSize: 16,
-      fontWeight: '500',
-      color: '#ffffff',
-      textAlign: 'center',
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttontext: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   buttontextDone: {
     fontSize: 25,
@@ -540,13 +539,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 },
   button: {
-      // width: 110,
-      backgroundColor: '#ffc9de',
-      borderRadius: 25,
-      paddingVertical: 20,
-      marginTop:20,
-      marginBottom:10,
-      width:108
+    // width: 110,
+    backgroundColor: '#ffc9de',
+    borderRadius: 25,
+    paddingVertical: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    width: 108
   },
   buttonDone: {
     // width: 110,
@@ -562,8 +561,8 @@ const styles = StyleSheet.create({
   view_flex_start: {
     shadowColor: "#000",
     shadowOffset: {
-	    width: 0,
-	    height: 3,
+      width: 0,
+      height: 3,
     },
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
@@ -575,18 +574,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     // borderWidth:2,
     // borderColor: '#ffc9de',
-    marginTop:5,
-    width:130,
-    height:130,
-    backgroundColor:'white',
+    marginTop: 5,
+    width: 130,
+    height: 130,
+    backgroundColor: 'white',
     alignItems: 'center'
   },
-  
+
   view_flex_end: {
     shadowColor: "#000",
     shadowOffset: {
-	    width: 0,
-	    height: 3,
+      width: 0,
+      height: 3,
     },
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
@@ -598,10 +597,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     // borderWidth:2,
     // borderColor: '#ffc9de',
-    marginTop:5,
-    width:130,
-    height:130,
-    backgroundColor:'white',
+    marginTop: 5,
+    width: 130,
+    height: 130,
+    backgroundColor: 'white',
     alignItems: 'center'
   },
 
