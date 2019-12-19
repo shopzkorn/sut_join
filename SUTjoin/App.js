@@ -6,7 +6,7 @@ import Login from './components/Profile/Login';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
-import ListActivity from './components/Activity/ListActivity';
+import SearchActivity from './components/Activity/SearchActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
@@ -19,7 +19,7 @@ const App = createStackNavigator(
      
     },
   },
-    ListActivity,
+    SearchActivity,
     Register,
     AddActivity,
     Article,

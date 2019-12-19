@@ -17,6 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NetworkInfo } from "react-native-network-info";
 import Icon from 'react-native-vector-icons/Ionicons'
+import moment from 'moment'
 import * as theme from '../../theme';
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
@@ -143,7 +144,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
-    backgroundColor: "#c0c0ff",
+    backgroundColor : 'rgba(52, 52, 52, 0.8)',
+    opacity: 0.5,
     borderRadius: 50,
     // marginRight : 10
   },
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
 class Articles extends Component {
   state = {
     data: [],
-    refreshing: false
+    refreshing: false,
+    page : 1
   }
   scrollX = new Animated.Value(0);
 
@@ -291,6 +294,7 @@ class Articles extends Component {
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
+    const dates = moment(item.date_start).format('MMM, Do YYYY');
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
@@ -324,6 +328,17 @@ class Articles extends Component {
               </Text>
             </View>
           </View>
+          <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end' }}>
+            <Text style={{
+                            fontSize: theme.sizes.font,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            // backgroundColor : 'rgba(52, 52, 52, 0.8)',
+                            // opacity: 0.5,
+                        }}>
+              {dates}
+            </Text>
+          </View>
         </ImageBackground>
         <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
           <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
@@ -345,6 +360,7 @@ class Articles extends Component {
 
           </Text>
         </View>
+        
       </TouchableOpacity>
     )
 
@@ -374,6 +390,7 @@ class Articles extends Component {
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
+          style= {{ flex:1 }}
         >
           <ScrollView
             showsVerticalScrollIndicator={false}
