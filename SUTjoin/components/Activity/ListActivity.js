@@ -364,6 +364,7 @@ class Articles extends Component {
       setTimeout(() => { resolve() }, 2000)
     });
   }
+  
   componentWillMount() {
     this.fetchData(); //connect backend
   }
@@ -374,6 +375,7 @@ class Articles extends Component {
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
+          style={{flex:1}}
         >
           <ScrollView
             showsVerticalScrollIndicator={false}

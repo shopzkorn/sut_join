@@ -49,7 +49,6 @@ class MyInterest extends React.Component {
   }
 
   GetMyinterest() {
-    
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyinterest.php', {
       method: 'post',
       headers: new Headers({

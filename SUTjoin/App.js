@@ -10,6 +10,8 @@ import ListActivity from './components/Activity/ListActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
+import UserDashboard from './components/Profile/UserDashboard';
+
 //Route
 const App = createStackNavigator(
   {
@@ -23,6 +25,7 @@ const App = createStackNavigator(
     Register,
     AddActivity,
     Article,
+    UserDashboard,
     SelectMap:{
       screen: SelectMap,
       navigationOptions: {
@@ -43,6 +46,12 @@ const App = createStackNavigator(
   },
   MyInterest:{
     screen:MyInterest,
+    navigationOptions:{
+      // header: null,
+    }
+  },
+  UserDashboard:{
+    screen:UserDashboard,
     navigationOptions:{
       // header: null,
     }
