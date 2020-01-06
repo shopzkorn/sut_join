@@ -10,12 +10,16 @@ import {
     ImageBackground,
     Dimensions,
     Platform,
-    TouchableOpacity
+    TouchableOpacity,
+    CheckBox
 } from 'react-native';
 import SearchBar from 'react-native-search-bar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
@@ -26,51 +30,474 @@ export default class ListViewExample extends Component {
         this.onChangeText = this.onChangeText.bind(this);
         this.onCancelButtonPress = this.onCancelButtonPress.bind(this);
         this.state = {
+            trending: [],
             data: [],
             page: 1,
             dataSource: '',
-            search: 0
+            search: 0,
+            filter: 1,
+            visible: false,
+            placeholder: '',
+            horizontal: false,
+            loadingVisible: false,
+            buttonBG: [
+                { button_id: '1', backgroundcolor: true, text: 'Title' },
+                { button_id: '2', backgroundcolor: false, text: 'Type' },
+                { button_id: '3', backgroundcolor: false, text: 'Tag' },
+                { button_id: '4', backgroundcolor: false, text: 'Gender' },
+                { button_id: '5', backgroundcolor: false, text: 'Volunteer hour' },
+                { button_id: '6', backgroundcolor: false, text: 'Age' },
+                { button_id: '7', backgroundcolor: false, text: 'Date' },
+                { button_id: '8', backgroundcolor: false, text: 'Number of people' },
+            ],
+            colorTitle: true,
+            visibleType: false,
+            visibleTag: false,
+            visibleGender: false,
+            visibleVolunteer: false,
+            visibleAge: false,
+            visibleDate: false,
+            visiblePeople: false,
+            radio_type: [
+                { label: 'Learning', value: 1 },
+                { label: 'Volunteer', value: 2 },
+                { label: 'Recreation', value: 3 },
+                { label: 'Hangout', value: 4 },
+                { label: 'Travel', value: 5 },
+                { label: 'Hobby', value: 6 },
+                { label: 'Meet', value: 7 },
+                { label: 'Eat & Drink', value: 8 },
+            ],
+            radio_Gender: [
+                { label: 'Male', value: 1 },
+                { label: 'Female', value: 2 },
+                { label: 'Male & Female', value: 3 },
+            ],
+            radio_Volunteer: [
+                { label: 'None', value: 1 },
+                { label: '1-10', value: 2 },
+                { label: '11-20', value: 3 },
+                { label: '21-30', value: 4 },
+                { label: '31-40', value: 5 },
+                { label: '41-50', value: 6 },
+                { label: '50+', value: 7 },
+            ],
+            radio_Age: [
+                { label: 'Less than 10 years old', value: 1 },
+                { label: 'Less than 20 years old', value: 2 },
+                { label: 'Less than 30 years old', value: 3 },
+                { label: 'Less than 40 years old', value: 4 },
+                { label: 'Less than 50 years old', value: 5 },
+                { label: 'Less than 60 years old', value: 6 },
+                { label: 'More than 60 years old', value: 7 },
+            ],
+            radio_Date: [
+                { label: 'Today', value: 1 },
+                { label: 'This week', value: 2 },
+                { label: 'This month', value: 3 },
+                { label: 'This year', value: 4 },
+            ],
+            radio_People: [
+                { label: '1-10', value: 1 },
+                { label: '11-20', value: 2 },
+                { label: '21-30', value: 3 },
+                { label: '31-40', value: 4 },
+                { label: '41-50', value: 5 },
+                { label: '51-60', value: 6 },
+                { label: '60+', value: 7 },
+            ],
+            valueType: 0,
+            valueGender: 0,
+            valueVolunteer: 0,
+            valueAge: 0,
+            valueDate: 0,
+            valuePeople: 0,
         };
 
     }
-    static navigationOptions = ({ navigation, screenProps }) => {
+    static navigationOptions = ({ navigation }) => {
         return {
             header: (
-                <LinearGradient
-                    colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                    start={{ x: 0.0, y: 0.5 }}
-                    end={{ x: 1.0, y: 0.5 }}
-                >
-                    <View style={{ marginTop: 10, marginLeft: 10 }}>
-                        <TouchableOpacity style={styles.back, styles.row} onPress={() => navigation.goBack()}>
-                            <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} style={{ marginTop: 8 }} />
-                            <Text style={styles.highlight}>
-                                BACK
-                            </Text>
-                        </TouchableOpacity>
 
-                    </View>
-                    <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5, marginTop: 10 }} >
-                        <SearchBar
-                            placeholder='Search'
-                            onChangeText={navigation.getParam('changeText')}
-                            onCancelButtonPress={navigation.getParam('cancelButton')}
-                            onSearchButtonPress={navigation.getParam('searchButton')}
-                            inputStyle={{ backgroundColor: 'green' }}
-                        />
-                    </View>
-                </LinearGradient>
+                <View style={{ marginTop: 10, marginLeft: 10, marginBottom: 10 }}>
+                    <TouchableOpacity style={styles.row} onPress={() => navigation.goBack()}>
+                        <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} style={{ marginTop: 8 }} />
+                        <Text style={styles.highlight}>
+                            BACK
+                            </Text>
+                    </TouchableOpacity>
+                </View>
             ),
             headerTransparent: true,
         }
     }
 
+
+    FilterType = (value) =>{
+        console.log(value);
+        this.setState( (prevState, props) => ({ 
+            valueType: value-1,
+            dataSource: value,
+            visibleType: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible),
+        this.fetchData()
+        })
+        
+    }
+
+    FilterGender= (value) =>{
+        this.setState( (prevState, props) => ({ 
+            valueGender: value-1,
+            dataSource: value,
+            visibleGender: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+    }
+     FilterVolunteer= (value) =>{
+        this.setState( (prevState, props) => ({ 
+            valueVolunteer: value-1,
+            dataSource: value,
+            visibleVolunteer: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+    }
+
+    FilterAge= (value) =>{
+        this.setState( (prevState, props) => ({ 
+            valueAge: value-1,
+            dataSource: value,
+            visibleAge: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+    }
+
+    FilterDate= (value) =>{
+        this.setState( (prevState, props) => ({  
+            valueDate: value-1,
+            dataSource: value,
+            visibleDate: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+    }
+
+    FilterPeople= (value) =>{
+        this.setState( (prevState, props) => ({  
+            valuePeople: value-1,
+            dataSource: value,
+            visiblePeople: false,
+            loadingVisible: true,
+        }), () => {
+        console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+    }
+
+    FilterTag= (text) =>{
+        this.setState( (prevState, props) => ({
+            dataSource: text
+        }), () => {
+        console.log('data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        this.fetchData()
+        })
+
+    }
+    DialogFilter() {
+        return (
+            <View>
+
+                <Dialog
+                    visible={this.state.visibleType}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visibleType: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by type" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_type}
+                                initial={this.state.valueType}
+                                onPress={(value) => { this.FilterType(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visibleGender}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visibleGender: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by gender" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_Gender}
+                                initial={this.state.valueGender}
+                                onPress={(value) => { this.FilterGender(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visibleVolunteer}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visibleVolunteer: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by volunteer hour" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_Volunteer}
+                                initial={this.state.valueVolunteer}
+                                onPress={(value) => { this.FilterVolunteer(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visibleAge}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visibleAge: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by age" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_Age}
+                                initial={this.state.valueAge}
+                                onPress={(value) => { this.FilterAge(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visibleDate}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visibleDate: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by date" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_Date}
+                                initial={this.state.valueDate}
+                                onPress={(value) => { this.FilterDate(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    visible={this.state.visiblePeople}
+                    dialogStyle={{ bottom: 0 }}
+                    containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+                    onTouchOutside={() => {
+                        this.setState({ visiblePeople: false });
+                    }}
+                    dialogTitle={<DialogTitle title="Filter by number of people" />}
+                    width='100%'
+                >
+                    <DialogContent>
+                        <View>
+                            <RadioForm
+                                buttonColor={'#ffc9de'}
+                                radio_props={this.state.radio_People}
+                                initial={this.state.valuePeople}
+                                onPress={(value) => { this.FilterPeople(value) }}
+                            />
+                        </View>
+                    </DialogContent>
+                </Dialog>
+            </View>
+
+
+        )
+    }
     componentWillMount() {
-        this.props.navigation.setParams({
-            changeText: this.onChangeText.bind(this),
-            cancelButton: this.onCancelButtonPress.bind(this),
-            searchButton: this.onSearchButtonPress.bind(this)
-        });
+        this.fetchDataTrending();
+        // this.props.navigation.setParams({
+        //     changeText: this.onChangeText.bind(this),
+        //     cancelButton: this.onCancelButtonPress.bind(this),
+        //     searchButton: this.onSearchButtonPress.bind(this)
+        // });
+    }
+
+    Filter = item => {
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        this.setState({
+            filter: item.button_id
+        })
+        for (let x = 0; x < this.state.buttonBG.length; x++) {
+            if (this.state.buttonBG[x].button_id == item.button_id) {
+                buttonBG[x].backgroundcolor = true;
+
+                this.setState({
+                    buttonBG: buttonBG,
+                });
+            } else {
+                buttonBG[x].backgroundcolor = false;
+
+                this.setState({
+                    buttonBG: buttonBG,
+                });
+            }
+        }
+        if (item.button_id == 1) {
+            this.setState({
+                search: 0,
+                visible: true
+            })
+        }
+        if (item.button_id == 2) {
+            this.setState({
+                search: 0,
+                visibleType: true
+            })
+        }
+        if (item.button_id == 3) {
+            this.setState({
+                search: 3,
+                horizontal: false
+            })
+        }
+        if (item.button_id == 4) {
+            this.setState({
+                search: 0,
+                visibleGender: true
+            })
+        }
+        if (item.button_id == 5) {
+            this.setState({
+                search: 0,
+                visibleVolunteer: true
+            })
+        }
+        if (item.button_id == 6) {
+            this.setState({
+                search: 0,
+                visibleAge: true
+            })
+        }
+        if (item.button_id == 7) {
+            this.setState({
+                search: 0,
+                visibleDate: true
+            })
+        }
+        if (item.button_id == 8) {
+            this.setState({
+                search: 0,
+                visiblePeople: true
+            })
+        }
+    };
+
+    renderFilter() {
+        return (
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 5,
+                    margin: 10,
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 5 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 2,
+                    elevation: 1,
+                    backgroundColor: "#eeeeee"
+                }}>Filter</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+
+                    {this.state.buttonBG.map((item, key) => (
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: 5,
+                                margin: 10,
+                                paddingHorizontal: 10,
+                                paddingVertical: 10,
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: 5 },
+                                shadowOpacity: 0.8,
+                                shadowRadius: 2,
+                                elevation: 1,
+                                backgroundColor: item.backgroundcolor
+                                    ? "#cccccc"
+                                    : "#eeeeee",
+                            }}
+                            onPress={() => this.Filter(item)}>
+                            <Text >
+                                {' '}
+                                {item.text}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+
+                </ScrollView>
+            </View>
+        )
+
+    }
+
+    renderTrends = (item, index) => {
+        console.log(item);
+        return (
+            <View>
+                <TouchableOpacity onPress={() => this.FilterTag(item.activity_tag)}>
+                    <Text>{item.activity_tag}</Text>
+                </TouchableOpacity>
+                <View style={{ borderBottomColor: 'rgba(52, 52, 52, 0.8)', borderBottomWidth: 3, }} />
+            </View>
+        )
+
     }
 
     render() {
@@ -80,10 +507,25 @@ export default class ListViewExample extends Component {
                 end={{ x: 1, y: 0 }}
                 style={{ flex: 1 }}
             >
+                <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
+                    <SearchBar
+                        placeholder='Search'
+                        onChangeText={this.onChangeText.bind(this)}
+                        onCancelButtonPress={this.onCancelButtonPress.bind(this)}
+                        onSearchButtonPress={this.onSearchButtonPress.bind(this)}
+                    />
+                </View>
+
+                {this.renderFilter()}
+                {this.DialogFilter()}
+                <View >
+                    <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+                </View>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
                     {this.renderListActivity()}
+
                 </ScrollView>
             </LinearGradient>
         );
@@ -102,6 +544,7 @@ export default class ListViewExample extends Component {
                     >
                         <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Result</Text>
                     </View>
+
                     <View style={[styles.column, styles.recommendedList]}>
                         <FlatList
                             Vertical
@@ -110,6 +553,7 @@ export default class ListViewExample extends Component {
                             showsHorizontalScrollIndicator={false}
                             scrollEventThrottle={16}
                             numColumns={2}
+                            key={(this.state.horizontal ? 'h' : 'v')}
                             snapToAlignment="center"
                             style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
                             data={this.state.data}
@@ -131,6 +575,36 @@ export default class ListViewExample extends Component {
                     <Text style={{ fontSize: theme.sizes.font * 1.4 }}>NO Result</Text>
 
 
+                </View>
+            )
+        }
+        else if (this.state.search == 3) {
+            return (
+                <View >
+                    <View
+                        style={[
+                            styles.row,
+                            styles.recommendedHeader
+                        ]}
+                    >
+                        <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Trending</Text>
+                    </View>
+                    <View style={[styles.column, styles.recommendedList]}>
+                        <FlatList
+                            Vertical
+                            pagingEnabled
+                            scrollEnabled
+                            showsHorizontalScrollIndicator={false}
+                            scrollEventThrottle={16}
+                            numColumns={1}
+                            key={(this.state.horizontal ? 'h' : 'v')}
+                            snapToAlignment="center"
+                            style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
+                            data={this.state.trending}
+                            keyExtractor={(item, index) => `${item.id}`}
+                            renderItem={({ item, index }) => this.renderTrends(item, index)}
+                        />
+                    </View>
                 </View>
             )
         }
@@ -222,6 +696,7 @@ export default class ListViewExample extends Component {
         this.setState({
             dataSource: e
         });
+        console.log(this.state.dataSource);
     }
 
 
@@ -233,13 +708,15 @@ export default class ListViewExample extends Component {
 
     onSearchButtonPress() {
         console.log(this.state.dataSource);
+        this.setState({
+            loadingVisible: true,
+        });
         this.fetchData();
-        // this.setState({
-        //     search: 1,
-        // });
+
     }
 
     fetchData = async () => {
+        console.log('fecth');
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
             method: 'post',
             headers: new Headers({
@@ -250,6 +727,7 @@ export default class ListViewExample extends Component {
                 status: "update",
                 text: this.state.dataSource,
                 page: this.state.page,
+                filter: this.state.filter
             })
         }).then((response) => response.json())
             .then((responseJson) => {
@@ -257,13 +735,34 @@ export default class ListViewExample extends Component {
                 if (responseJson.length > 0) {
                     this.setState({
                         search: 1,
-                        data: responseJson
+                        data: responseJson,
+                        loadingVisible: false,
+                        horizontal: true
                     });
                 } else {
                     this.setState({
                         search: 2,
+                        loadingVisible: false,
                     });
                 }
+            }).catch((error) => {
+                console.error(error);
+            });
+    }
+    fetchDataTrending = async () => {
+        console.log('fecth');
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
+            method: 'post',
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                // console.log('res ' + responseJson.length);
+                this.setState({
+                    trending: responseJson
+                });
             }).catch((error) => {
                 console.error(error);
             });
@@ -410,6 +909,20 @@ const styles = StyleSheet.create({
     highlight: {
         fontSize: 20,
         fontWeight: '700',
-        marginLeft:10
+        marginLeft: 10
+    },
+    button: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        margin: 15,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 1,
     },
 });

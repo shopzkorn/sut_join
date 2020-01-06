@@ -19,6 +19,7 @@ import { NetworkInfo } from "react-native-network-info";
 import Icon from 'react-native-vector-icons/Ionicons'
 import moment from 'moment'
 import * as theme from '../../theme';
+import Spinner from 'react-native-loading-spinner-overlay';
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
 
@@ -144,13 +145,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
-    backgroundColor : 'rgba(52, 52, 52, 0.8)',
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
     opacity: 0.5,
     borderRadius: 50,
     // marginRight : 10
   },
-  marginRight:{
-    marginRight : 10
+  marginRight: {
+    marginRight: 10
   }
 });
 
@@ -159,7 +160,8 @@ class Articles extends Component {
   state = {
     data: [],
     refreshing: false,
-    page : 1
+    page: 1,
+    loadingVisible: true
   }
   scrollX = new Animated.Value(0);
 
@@ -175,7 +177,7 @@ class Articles extends Component {
               <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
             </View>
             <View style={[styles.flex, styles.row]}>
-              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun,styles.marginRight]}>
+              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun, styles.marginRight]}>
                 <FontAwesome name="search" size={20} />
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
@@ -330,12 +332,12 @@ class Articles extends Component {
           </View>
           <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end' }}>
             <Text style={{
-                            fontSize: theme.sizes.font,
-                            color: 'white',
-                            fontWeight: 'bold',
-                            // backgroundColor : 'rgba(52, 52, 52, 0.8)',
-                            // opacity: 0.5,
-                        }}>
+              fontSize: theme.sizes.font,
+              color: 'white',
+              fontWeight: 'bold',
+              // backgroundColor : 'rgba(52, 52, 52, 0.8)',
+              // opacity: 0.5,
+            }}>
               {dates}
             </Text>
           </View>
@@ -360,7 +362,7 @@ class Articles extends Component {
 
           </Text>
         </View>
-        
+
       </TouchableOpacity>
     )
 
@@ -369,7 +371,7 @@ class Articles extends Component {
   fetchData = async () => {
     const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
     const users = await response.json();
-    this.setState({ data: users });
+    this.setState({ data: users, loadingVisible: false });
   }
   refresh() {
     this.setState({ refreshing: true });
@@ -390,8 +392,11 @@ class Articles extends Component {
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
-          style= {{ flex:1 }}
+          style={{ flex: 1 }}
         >
+          <View style={{ flex: 1 }}>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>

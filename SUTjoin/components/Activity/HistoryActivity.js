@@ -17,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NetworkInfo } from "react-native-network-info";
+import Spinner from 'react-native-loading-spinner-overlay';
 import * as theme from '../../theme';
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
@@ -146,7 +147,8 @@ class Articles extends Component {
     myparticipated: [],
     myUpcoming: [],
     refreshing: false,
-    id_user: ''
+    id_user: '',
+    loadingVisible: true
   }
   scrollXparticipated = new Animated.Value(0);
   scrollXUpcoming = new Animated.Value(0);
@@ -221,52 +223,52 @@ class Articles extends Component {
   }
 
   renderparticipated = () => {
-    if(this.state.myparticipated.length > 0){
-    return (
-      <View style={[styles.column, styles.destinations]}>
-        <View
-          style={[
-            styles.row,
-            styles.recommendedHeader
-          ]}
-        >
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+    if (this.state.myparticipated.length > 0) {
+      return (
+        <View style={[styles.column, styles.destinations]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+          </View>
+          <FlatList
+            horizontal
+            pagingEnabled
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={{ overflow: 'visible', height: 280 }}
+            data={this.state.myparticipated}
+            keyExtractor={(item, index) => `${item.id}`}
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXparticipated } } }])}
+            renderItem={({ item }) => this.renderDestination(item)}
+          />
+          {this.renderDotsparticipated()}
         </View>
-        <FlatList
-          horizontal
-          pagingEnabled
-          scrollEnabled
-          showsHorizontalScrollIndicator={false}
-          decelerationRate={0}
-          scrollEventThrottle={16}
-          snapToAlignment="center"
-          style={{ overflow: 'visible', height: 280 }}
-          data={this.state.myparticipated}
-          keyExtractor={(item, index) => `${item.id}`}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXparticipated } } }])}
-          renderItem={({ item }) => this.renderDestination(item)}
-        />
-        {this.renderDotsparticipated()}
-      </View>
-    );
-        }
-        else {
-          return (
-            <View style={[styles.column, styles.destinations]}>
-              <View
-                style={[
-                  styles.row,
-                  styles.recommendedHeader
-                ]}
-              >
-                <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
-              </View>
-              <View style={[styles.flex]}>
-                <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO PARTICIPATED</Text>
-              </View>
-            </View>
-          )
-        }
+      );
+    }
+    else {
+      return (
+        <View style={[styles.column, styles.destinations]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+          </View>
+          <View style={[styles.flex]}>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO PARTICIPATED</Text>
+          </View>
+        </View>
+      )
+    }
   }
 
   renderDestination = (item) => {
@@ -407,7 +409,8 @@ class Articles extends Component {
       .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
       .then(([data1, data2]) => this.setState({
         myUpcoming: data1,
-        myparticipated: data2
+        myparticipated: data2,
+        loadingVisible: false
       }));
   }
   refresh() {
@@ -433,10 +436,13 @@ class Articles extends Component {
     return (
       <PTRView onRefresh={this.refresh.bind(this)} >
         <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff','#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }} 
-          end={{ x: 1.0, y: 0.5 }} 
-          >
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+        >
+          <View style={{ flex: 1 }}>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}

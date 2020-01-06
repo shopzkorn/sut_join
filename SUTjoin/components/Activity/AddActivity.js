@@ -59,7 +59,7 @@ export default class HomeScreen extends Component {
       imageName: null,
       imagePath: null,
       id_host: '',
-      address:''
+      address: ''
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -79,11 +79,11 @@ export default class HomeScreen extends Component {
   }
 
 
-  
 
-  returnData = (SetLocation, lat, lng,address) => {
+
+  returnData = (SetLocation, lat, lng, address) => {
     // var lats = lat.toFixed(6);
-    this.setState({ Location: SetLocation, latitude: lat, longitude: lng ,address : address});
+    this.setState({ Location: SetLocation, latitude: lat, longitude: lng, address: address });
     console.log(this.state.latitude);
   }
 
@@ -103,6 +103,7 @@ export default class HomeScreen extends Component {
       datetimes: datetime
     });
     console.log("A date has been picked: ", this.state.datetimes);
+    this.hideDateTimePicker();
   };
 
 
@@ -208,8 +209,8 @@ export default class HomeScreen extends Component {
         image: this.state.imageName,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
-        address : this.state.address,
-        type : this.state.type
+        address: this.state.address,
+        type: this.state.type
       })
     }).then((response) => response.text())
       .then((responseJson) => {
@@ -223,15 +224,25 @@ export default class HomeScreen extends Component {
     event.preventDefault();
   }
 
+  renderPhoto(){
+    if(this.state.imageSource  != null){
+      return(
+      <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} />
+        ) ;
+    }
+    else {
+      return null;
+    }
+  }
 
   render() {
     const { navigation } = this.props;
     return (
       <LinearGradient
-        start={{ x: 0.0, y: 0.25 }}
-        end={{ x: 0.5, y: 1.0 }}
-        locations={[0, 0.5, 0.6]}
-        colors={['white', 'pink']} >
+        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0.0, y: 0.5 }}
+        end={{ x: 1.0, y: 0.5 }}
+        style={{ flex: 1 }}>
         <ScrollView style={styles.scrollView}>
           <View style={{
             flex: 1,
@@ -271,10 +282,10 @@ export default class HomeScreen extends Component {
               underlineColorAndroid="transparent"
               keyboardType={'email-address'}
             /> */}
-             <Picker
+            <Picker
               style={{ height: 50, width: '80%' }}
               selectedValue={this.state.type}
-              onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue }) }
+              onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue })}
             >
               <Picker.Item label="Learning" value="1" />
               <Picker.Item label="Volunteer" value="2" />
@@ -359,7 +370,7 @@ export default class HomeScreen extends Component {
                 <Text style={{ color: '#ffffff', fontSize: 16 }}> Add photo </Text>
               </View>
             </TouchableOpacity>
-            <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} />
+            {this.renderPhoto()}
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.register.bind(this)}>
               <View>
                 <Text style={{ color: '#ffffff', fontSize: 16 }}> Create </Text>
