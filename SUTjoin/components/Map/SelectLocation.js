@@ -184,14 +184,16 @@ class selectLocation extends Component {
 
                     //   filterReverseGeocodingByTypes={['locality', 'administrative_area_level_1']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
                     predefinedPlacesAlwaysVisible={true}
-                    renderLeftButton={() => <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
+                    renderLeftButton={() => 
+                    <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
                         <View>
                             <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
                                 <FontAwesome name="chevron-left" color={theme.colors.white} size={theme.sizes.font * 1} />
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>}
-                    renderRightButton={() => <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
+                    renderRightButton={() => 
+                    <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
                         <View>
                             <Text style={{ color: '#ffffff', fontSize: 16 }} onPress={this.CancelSearch.bind(this)}> Cancel </Text>
                         </View>

@@ -13,8 +13,9 @@ import {
   Platform,
   TouchableOpacity,
   AsyncStorage
-  
+
 } from "react-native";
+import Spinner from 'react-native-loading-spinner-overlay';
 import * as theme from '../../theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -28,18 +29,20 @@ import Login from '../Profile/Login';
 class Profile extends React.Component {
 
   state = {
-    user_id:'',
-    user_detail:[],
-    user_name:'',
-    user_surname:'',
-    user_profile:'',
-    user_volunteer:'',
+    user_id: '',
+    user_detail: [],
+    user_name: '',
+    user_surname: '',
+    user_profile: '',
+    user_volunteer: '',
     myhost: [],
-    refreshing : false,
-    id_user:'',
+    refreshing: false,
+    id_user: '',
+    loadingVisible: true
+
   }
-    scrollXHost = new Animated.Value(0);
-    scrollXJoin = new Animated.Value(0);
+  scrollXHost = new Animated.Value(0);
+  scrollXJoin = new Animated.Value(0);
 
   componentWillMountProfile() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
@@ -47,9 +50,9 @@ class Profile extends React.Component {
       this.setState({
         user_id: user_id,
       });
-      console.log("ID >>"+user_id);
+      console.log("ID >>" + user_id);
       this.GetUser();
-  });
+    });
   }
 
   GetUser() {
@@ -68,30 +71,31 @@ class Profile extends React.Component {
         // Showing response message coming from server after inserting records.
         // alert(responseJson);
 
-        responseJson.map(user => 
+        responseJson.map(user =>
           this.setState({
             user_name: user.name,
           })
         );
         console.log(this.state.user_name);
 
-        responseJson.map(user => 
+        responseJson.map(user =>
           this.setState({
             user_surname: user.surname,
           })
         );
         console.log(this.state.user_surname);
 
-        responseJson.map(user => 
+        responseJson.map(user =>
           this.setState({
             user_profile: user.profile,
           })
         );
         console.log(this.state.user_profile);
 
-        responseJson.map(user => 
+        responseJson.map(user =>
           this.setState({
             user_volunteer: user.volunteer,
+            loadingVisible: false
           })
         );
         console.log(this.state.user_volunteer);
@@ -104,18 +108,18 @@ class Profile extends React.Component {
 
   fetchData = async () => {
     const responseHost = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
         id_user: this.state.id_user
-        })
-        });
+      })
+    });
     const host = await responseHost.json();
     // console.log(host);
-    this.setState({ myhost: host });
+    this.setState({ myhost: host,  });
     // console.log(this.state.myhost);
   }
 
@@ -146,67 +150,67 @@ class Profile extends React.Component {
 
   renderHost = () => {
     return (
-      <View style={[styles.flex, styles.column, styles.recommended],{marginTop: 20}}>
-      <View
-        style={[
-          styles.row,
-          styles.recommendedHeader
-        ]}
-      >
-        <Text style={{ fontSize: theme.sizes.font * 1.4 }}>HOST</Text>
+      <View style={[styles.flex, styles.column, styles.recommended]}>
+        <View
+          style={[
+            styles.row,
+            styles.recommendedHeader
+          ]}
+        >
+          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>HOST</Text>
+        </View>
+        <View style={[styles.column, styles.recommendedList]}>
+          <FlatList
+            Vertical
+            pagingEnabled
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={[styles.shadow, { overflow: 'visible' }]}
+            data={this.state.myhost}
+            keyExtractor={(item, index) => `${item.id}`}
+            renderItem={({ item, index }) => this.renderDestination(item, index)}
+          />
+        </View>
       </View>
-      <View style={[styles.column, styles.recommendedList]}>
-        <FlatList
-          Vertical
-          pagingEnabled
-          scrollEnabled
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
-          snapToAlignment="center"
-          style={[styles.shadow, { overflow: 'visible' }]}
-          data={this.state.myhost}
-          keyExtractor={(item, index) => `${item.id}`}
-          renderItem={({ item, index }) => this.renderDestination(item, index)}
-        />
-      </View>
-    </View>
     );
   }
   refresh() {
-    this.setState({refreshing:true});
+    this.setState({ refreshing: true });
     return new Promise((resolve) => {
-      this.fetchData().then(()=>{
-        this.setState({refreshing:false})
+      this.fetchData().then(() => {
+        this.setState({ refreshing: false })
       });
-      setTimeout(()=>{resolve()}, 2000)
+      setTimeout(() => { resolve() }, 2000)
     });
   }
   componentWillMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
-        let user_id = data[0][1];
-        this.setState({
-          id_user: user_id,
-        });
-        this.fetchData();
-        console.log(this.state.id_user);
-        this.componentWillMountProfile()
+      let user_id = data[0][1];
+      this.setState({
+        id_user: user_id,
+      });
+      this.fetchData();
+      console.log(this.state.id_user);
+      this.componentWillMountProfile()
     });
   }
 
   renderDestination = item => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/'+item.profile;
+    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{uri : photoAc}}
+          source={{ uri: photoAc }}
         >
           <View style={[styles.row, { justifyContent: 'space-between' }]}>
             <View style={{ flex: 0 }}>
-              <Image source={{uri: photoUser}} style={styles.avatar} />
+              <Image source={{ uri: photoUser }} style={styles.avatar} />
             </View>
             <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
               <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname}...</Text>
@@ -220,13 +224,13 @@ class Profile extends React.Component {
               </Text>
             </View>
             <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-            <Text>
-            <MaterialCommunityIcons
+              <Text>
+                <MaterialCommunityIcons
                   name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
                 />
-              <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
+                <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
               </Text>
             </View>
           </View>
@@ -247,8 +251,8 @@ class Profile extends React.Component {
           </View>
         </View>
         <View>
-        <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
-            
+          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+
           </Text>
         </View>
       </TouchableOpacity>
@@ -276,14 +280,14 @@ class Profile extends React.Component {
           </View>
         </View> */}
         <View style={styles.shadow}>
-          <View style={{marginTop:100,justifyContent: 'center',alignItems: 'center',}}> 
+          <View style={{ marginTop: 100, justifyContent: 'center', alignItems: 'center', }}>
             <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
           </View>
-          <View style={{marginTop:150,justifyContent: 'center',alignItems: 'center',}}>
-            <Text style={{ color: theme.colors.black,fontSize:30, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
+          <View style={{ marginTop: 150, justifyContent: 'center', alignItems: 'center', }}>
+            <Text style={{ color: theme.colors.black, fontSize: 30, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
           </View>
-          <View style={{marginTop:20,justifyContent: 'center',alignItems: 'center',}}>
-            <Text style={{ color: theme.colors.black,fontSize:20, fontWeight: 'bold' }}>Volunteer Point: {this.state.user_volunteer}</Text>
+          <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', }}>
+            <Text style={{ color: theme.colors.black, fontSize: 20, fontWeight: 'bold' }}>Volunteer Point: {this.state.user_volunteer}</Text>
           </View>
         </View>
 
@@ -299,11 +303,6 @@ class Profile extends React.Component {
         /> */}
 
         <Button
-          title="Create Activities"
-          onPress={() => navigate('AddActivity')}
-        />
-
-        <Button
           title="My Interests"
           onPress={() => navigate('MyInterest')}
         />
@@ -313,7 +312,7 @@ class Profile extends React.Component {
           onPress={() => navigate('UserDashboard')}
         />
         {/* </View> */}
-        
+
       </View>
     );
   }
@@ -322,19 +321,22 @@ class Profile extends React.Component {
 
     return (
       <PTRView onRefresh={this.refresh.bind(this)} >
-      <LinearGradient
-      start={{ x: 0.0, y: 0.25 }}
-      end={{ x: 0.5, y: 1.0 }}
-      locations={[0, 0.5, 0.6]}
-      colors={['white', 'pink']} >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-        >
-          {this.renderProfile()}
-          {this.renderHost()}
-        </ScrollView>
-      </LinearGradient>
+        <LinearGradient
+           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+           start={{ x: 0.0, y: 0.5 }}
+           end={{ x: 1.0, y: 0.5 }}
+           style={{ flex: 1 }} >
+          <View style={{ flex: 1 }}>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+          >
+            {this.renderProfile()}
+            {this.renderHost()}
+          </ScrollView>
+        </LinearGradient>
       </PTRView>
     )
 
@@ -390,7 +392,7 @@ class Profile extends React.Component {
     //       onPress={() => navigate('MyInterest')}
     //     />
     //     {/* </View> */}
-        
+
     //   </View>
     // );
   }
@@ -418,8 +420,8 @@ const styles = StyleSheet.create({
   shadow: {
     shadowColor: "#000",
     shadowOffset: {
-	    width: 0,
-	    height: 3,
+      width: 0,
+      height: 3,
     },
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
@@ -520,7 +522,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.sizes.padding / 2,
   },
   rating: {
-    fontSize: theme.sizes.font *1.5,
+    fontSize: theme.sizes.font * 1.5,
     color: theme.colors.white,
     fontWeight: 'bold'
   },

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { createBottomTabNavigator,createAppContainer,createStackNavigator} from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 import Activity from '../Activity/Tabscene';
 import Checkin from '../Checkin/Checkin';
@@ -113,9 +114,9 @@ const TabStack = createBottomTabNavigator({
     History: {
       screen: NaHistory,
       navigationOptions: {
-        tabBarLabel:'MY ACTIVITIES',
+        tabBarLabel:'MY EVENTS',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-add-circle" color={tintColor} size={24}/>
+          <MaterialIcons name="event" color={tintColor} size={24}/>
         ),
       }
     },

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -67,10 +67,10 @@ export default class TabViewExample extends React.Component {
         end={{ x: 1, y: 0 }}>
         <View style={[styles.flex, styles.row, styles.header,]}>
           <View style={{ alignItems: 'flex-start' }}>
-            <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
+          <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
           </View>
           <View style={[styles.flex, styles.row]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun,styles.marginRight]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
               <FontAwesome name="search" size={20} />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
@@ -146,11 +146,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
-    backgroundColor: "#c0c0ff",
+    backgroundColor : '#FFFFFF50',
+    opacity: 0.5,
     borderRadius: 50,
     // marginRight : 10
   },
   marginRight:{
     marginRight : 10
+  },
+  logo:{
+    width: theme.sizes.padding*4,
+    height: theme.sizes.padding*1.5,
   }
 });
