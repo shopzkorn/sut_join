@@ -20,7 +20,6 @@ import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
@@ -59,7 +58,8 @@ export default class HomeScreen extends Component {
       imageName: null,
       imagePath: null,
       id_host: '',
-      address: ''
+      address:'',
+      Volunteer: 0,
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -224,14 +224,23 @@ export default class HomeScreen extends Component {
     event.preventDefault();
   }
 
-  renderPhoto(){
-    if(this.state.imageSource  != null){
-      return(
-      <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} />
-        ) ;
-    }
-    else {
-      return null;
+  volunteerCheck = () => {
+    if(this.state.type == 2){
+      return (
+      <View>
+      <Text style={styles.text}>Volunteer</Text>
+            <TextInput
+              placeholder='Volunteer'
+              value={this.state.Volunteer}
+              onChangeText={Volunteer => this.setState({ Volunteer })}
+              style={styles.input}
+              multiline={true}
+              numberOfLines={5}
+              underlineColorAndroid="transparent"
+              keyboardType={'email-address'}
+            />
+            </View>
+      )
     }
   }
 
@@ -285,7 +294,7 @@ export default class HomeScreen extends Component {
             <Picker
               style={{ height: 50, width: '80%' }}
               selectedValue={this.state.type}
-              onValueChange={(itemValue, itemIndex) => this.setState({ type: itemValue })}
+              onValueChange={this.volunteerCheck(),(itemValue, itemIndex) => this.setState({ type: itemValue }) }
             >
               <Picker.Item label="Learning" value="1" />
               <Picker.Item label="Volunteer" value="2" />
@@ -296,6 +305,9 @@ export default class HomeScreen extends Component {
               <Picker.Item label="Meet" value="7" />
               <Picker.Item label="Eat & Drink" value="8" />
             </Picker>
+
+            {this.volunteerCheck()}
+
             <Text style={styles.text}>Location event</Text>
             <Text style={{ color: '#ffffff', fontSize: 16, justifyContent: 'center', }}> {this.state.Location} </Text>
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>

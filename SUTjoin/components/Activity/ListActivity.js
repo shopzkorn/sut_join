@@ -382,6 +382,7 @@ class Articles extends Component {
       setTimeout(() => { resolve() }, 2000)
     });
   }
+  
   componentWillMount() {
     this.fetchData(); //connect backend
   }

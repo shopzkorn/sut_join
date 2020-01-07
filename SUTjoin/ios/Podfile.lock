@@ -40,10 +40,20 @@ PODS:
     - React-RCTSettings (= 0.61.5)
     - React-RCTText (= 0.61.5)
     - React-RCTVibration (= 0.61.5)
+  - React-ART (0.61.5):
+    - React-Core/ARTHeaders (= 0.61.5)
   - React-Core (0.61.5):
     - Folly (= 2018.10.22.00)
     - glog
     - React-Core/Default (= 0.61.5)
+    - React-cxxreact (= 0.61.5)
+    - React-jsi (= 0.61.5)
+    - React-jsiexecutor (= 0.61.5)
+    - Yoga
+  - React-Core/ARTHeaders (0.61.5):
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-Core/Default
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - React-jsiexecutor (= 0.61.5)
@@ -188,6 +198,8 @@ PODS:
     - React-Core
   - react-native-image-picker (1.1.0):
     - React
+  - react-native-maps (0.26.1):
+    - React
   - react-native-network-info (5.2.1):
     - React
   - React-RCTActionSheet (0.61.5):
@@ -225,9 +237,13 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNDeviceInfo (5.3.1):
+  - RNDeviceInfo (5.4.0):
     - React
-  - RNGestureHandler (1.5.1):
+  - RNGestureHandler (1.5.2):
+    - React
+  - RNReanimated (1.4.0):
+    - React
+  - RNSVG (10.0.0):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -243,6 +259,7 @@ DEPENDENCIES:
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
+  - React-ART (from `../node_modules/react-native/Libraries/ART`)
   - React-Core (from `../node_modules/react-native/`)
   - React-Core/DevSupport (from `../node_modules/react-native/`)
   - React-Core/RCTWebSocket (from `../node_modules/react-native/`)
@@ -253,6 +270,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-network-info (from `../node_modules/react-native-network-info`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -267,6 +285,8 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -293,6 +313,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/TypeSafety"
   React:
     :path: "../node_modules/react-native/"
+  React-ART:
+    :path: "../node_modules/react-native/Libraries/ART"
   React-Core:
     :path: "../node_modules/react-native/"
   React-CoreModules:
@@ -309,6 +331,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fetch-blob"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-network-info:
     :path: "../node_modules/react-native-network-info"
   React-RCTActionSheet:
@@ -335,6 +359,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -351,6 +379,7 @@ SPEC CHECKSUMS:
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
+  React-ART: 55e8252b97fbb378eea751592c04a49610562aab
   React-Core: 688b451f7d616cc1134ac95295b593d1b5158a04
   React-CoreModules: d04f8494c1a328b69ec11db9d1137d667f916dcb
   React-cxxreact: d0f7bcafa196ae410e5300736b424455e7fb7ba7
@@ -359,6 +388,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
+  react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -370,11 +400,13 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNDeviceInfo: e5976ab5c3bed0b5c78f188e0b8abb139b33a9da
-  RNGestureHandler: 7add966bb5d90ee8cf38d4341f87814474357972
+  RNDeviceInfo: d0fff8432ccdf276cb342a52e665ea6dd311472e
+  RNGestureHandler: 946a7691e41df61e2c4b1884deab41a4cdc3afff
+  RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
+  RNSVG: 9d45f03136ecc9b5497e12f6f20838b568acb9f4
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 1c940515d67bab5f5ba558d287e559a193a46198
+PODFILE CHECKSUM: ebb4bd9eecf805986da87145a526cedabe446a88
 
 COCOAPODS: 1.8.4

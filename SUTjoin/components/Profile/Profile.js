@@ -24,7 +24,6 @@ import { NetworkInfo } from "react-native-network-info";
 import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
 
-
 import Login from '../Profile/Login';
 
 class Profile extends React.Component {
@@ -307,6 +306,11 @@ class Profile extends React.Component {
           title="My Interests"
           onPress={() => navigate('MyInterest')}
         />
+
+        <Button
+          title="Dashboard"
+          onPress={() => navigate('UserDashboard')}
+        />
         {/* </View> */}
 
       </View>
@@ -546,6 +550,6 @@ const styles = StyleSheet.create({
     height: 12.5,
     borderRadius: 6.25,
     borderColor: theme.colors.active,
-  }
+  },
 
 });

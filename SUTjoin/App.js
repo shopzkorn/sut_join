@@ -12,6 +12,8 @@ import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
+import UserDashboard from './components/Profile/UserDashboard';
+
 //Route
 const App = createStackNavigator(
   {
@@ -27,6 +29,7 @@ const App = createStackNavigator(
     Article,
     ScanQrcode,
     CheckinActivity,
+    UserDashboard,
     SelectMap:{
       screen: SelectMap,
       navigationOptions: {
@@ -47,6 +50,12 @@ const App = createStackNavigator(
   },
   MyInterest:{
     screen:MyInterest,
+    navigationOptions:{
+      // header: null,
+    }
+  },
+  UserDashboard:{
+    screen:UserDashboard,
     navigationOptions:{
       // header: null,
     }
