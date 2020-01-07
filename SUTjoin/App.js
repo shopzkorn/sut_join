@@ -10,6 +10,8 @@ import SearchActivity from './components/Activity/SearchActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
+import ScanQrcode from './components/Checkin/ScanQrcode';
+import CheckinActivity from './components/Checkin/CheckinActivity';
 //Route
 const App = createStackNavigator(
   {
@@ -23,6 +25,8 @@ const App = createStackNavigator(
     Register,
     AddActivity,
     Article,
+    ScanQrcode,
+    CheckinActivity,
     SelectMap:{
       screen: SelectMap,
       navigationOptions: {

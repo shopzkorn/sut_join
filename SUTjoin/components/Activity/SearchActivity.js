@@ -106,12 +106,12 @@ export default class ListViewExample extends Component {
                 { label: '51-60', value: 6 },
                 { label: '60+', value: 7 },
             ],
-            valueType: 0,
-            valueGender: 0,
-            valueVolunteer: 0,
-            valueAge: 0,
-            valueDate: 0,
-            valuePeople: 0,
+            valueType: -1,
+            valueGender: -1,
+            valueVolunteer: -1,
+            valueAge: -1,
+            valueDate: -1,
+            valuePeople: -1,
         };
 
     }

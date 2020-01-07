@@ -6,8 +6,9 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment'
-import FAB from 'react-native-fab'
+import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import QRCode from 'react-native-qrcode-svg';
 import * as theme from '../../theme';
 
 const { width, height } = Dimensions.get('window');
@@ -141,7 +142,9 @@ class Article extends Component {
   state = {
     join: false,
     joiner: [],
-    id_user: ''
+    id_user: '',
+    qrcode:'',
+    visibleDialog:false
   }
 
   scrollX = new Animated.Value(0);
@@ -163,16 +166,50 @@ class Article extends Component {
   }
 
   componentWillMount() {
+    const { navigation } = this.props;
+    const article = navigation.getParam('article');
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
       this.setState({
         id_user: user_id,
+        qrcode : "IdActivity_" + article.id
       });
       this.setState({ joiner: [] })
       this.fetchData();
-      console.log(this.state.id_user);
+      console.log(this.state.qrcode);
     });
 
+  }
+
+  genQrcode(){
+    this.setState({
+      visibleDialog : true
+    });
+  }
+  DialogGenQrCode() {
+    return (
+      <View>
+        <Dialog
+          visible={this.state.visibleDialog}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{  justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialog: false });
+          }}
+          dialogTitle={<DialogTitle title="Check in" />}
+          width='100%'
+        >
+          <DialogContent style={{justifyContent : 'center' , alignItems: 'center',marginTop:20}}>
+              <QRCode
+                value={this.state.qrcode}
+                size={200}
+                 />            
+          </DialogContent>
+        </Dialog>
+      </View>
+
+
+    )
   }
 
   fetchData = async () => {
@@ -303,9 +340,9 @@ class Article extends Component {
       });
   }
 
-  renderJoinButton = (id_host, number_people, inviter) => {
+  renderJoinButton = (id_host, number_people, inviter,id) => {
     console.log("user is " + this.state.id_user.split('"')[1]);
-
+    
     console.log("id host is " + id_host);
     if (id_host == this.state.id_user.split('"')[1]) {
       return <TouchableOpacity
@@ -322,7 +359,7 @@ class Article extends Component {
           backgroundColor: 'green',
           borderRadius: 100,
         }}
-        onPress={this.updateStatusJoin.bind(this)}
+        onPress={this.genQrcode.bind(this)}
       >
         <FontAwesome5
           name="check-circle"
@@ -475,112 +512,112 @@ class Article extends Component {
     console.log(type);
     if (type == 1) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="book"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Learning</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="book"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Learning</Text>
+          </Text>
+        </View>
       )
     } else if (type == 2) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="heart"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="heart"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer</Text>
+          </Text>
+        </View>
       )
     } else if (type == 3) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="play"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Recreation</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Recreation</Text>
+          </Text>
+        </View>
       )
     } else if (type == 4) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="play"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hangout</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hangout</Text>
+          </Text>
+        </View>
       )
     } else if (type == 5) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="rocket"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Travel</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="rocket"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Travel</Text>
+          </Text>
+        </View>
       )
     } else if (type == 6) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="play"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hobby</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hobby</Text>
+          </Text>
+        </View>
       )
     } else if (type == 7) {
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="group"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Meet</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="group"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Meet</Text>
+          </Text>
+        </View>
       )
     } else if (type == 8) {
       console.log("this");
       return (
-      <View style={[styles.row]}>
-        <Text >
-          <FontAwesome
-            name="glass"
-            size={theme.sizes.font * 2}
-            color={theme.colors.black}
-          />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Eat & Drink</Text>
-        </Text>
-      </View>
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="glass"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Eat & Drink</Text>
+          </Text>
+        </View>
       )
-    }else {
+    } else {
       return (null);
-    } 
+    }
   }
 
   renderGender = (gender) => {
@@ -616,6 +653,7 @@ class Article extends Component {
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
     console.log(article);
+    
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
 
@@ -743,11 +781,12 @@ class Article extends Component {
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            {this.renderJoinButton(article.id_host, article.number_people, article.inviter)}
+            {this.renderJoinButton(article.id_host, article.number_people, article.inviter,article.id)}
 
           </View>
 
         </View>
+        {this.DialogGenQrCode()}
       </ScrollView>
 
     )
