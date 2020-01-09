@@ -35,20 +35,17 @@ export default class ListViewExample extends Component {
             page: 1,
             dataSource: '',
             search: 0,
-            filter: 1,
             visible: false,
             placeholder: '',
             horizontal: false,
             loadingVisible: false,
             buttonBG: [
-                { button_id: '1', backgroundcolor: true, text: 'Title' },
-                { button_id: '2', backgroundcolor: false, text: 'Type' },
-                { button_id: '3', backgroundcolor: false, text: 'Tag' },
-                { button_id: '4', backgroundcolor: false, text: 'Gender' },
-                { button_id: '5', backgroundcolor: false, text: 'Volunteer hour' },
-                { button_id: '6', backgroundcolor: false, text: 'Age' },
-                { button_id: '7', backgroundcolor: false, text: 'Date' },
-                { button_id: '8', backgroundcolor: false, text: 'Number of people' },
+                { button_id: '1', backgroundcolor: false, text: 'Type' },
+                { button_id: '2', backgroundcolor: false, text: 'Gender' },
+                { button_id: '3', backgroundcolor: false, text: 'Volunteer hour' },
+                { button_id: '4', backgroundcolor: false, text: 'Age' },
+                { button_id: '5', backgroundcolor: false, text: 'Date' },
+                { button_id: '6', backgroundcolor: false, text: 'Number of people' },
             ],
             colorTitle: true,
             visibleType: false,
@@ -59,6 +56,7 @@ export default class ListViewExample extends Component {
             visibleDate: false,
             visiblePeople: false,
             radio_type: [
+                { label: 'No filter', value: 0 },
                 { label: 'Learning', value: 1 },
                 { label: 'Volunteer', value: 2 },
                 { label: 'Recreation', value: 3 },
@@ -69,12 +67,14 @@ export default class ListViewExample extends Component {
                 { label: 'Eat & Drink', value: 8 },
             ],
             radio_Gender: [
+                { label: 'No filter', value: 0 },
                 { label: 'Male', value: 1 },
                 { label: 'Female', value: 2 },
                 { label: 'Male & Female', value: 3 },
             ],
             radio_Volunteer: [
-                { label: 'None', value: 1 },
+                { label: 'No filter', value: 0 },
+                { label: '0', value: 1 },
                 { label: '1-10', value: 2 },
                 { label: '11-20', value: 3 },
                 { label: '21-30', value: 4 },
@@ -83,6 +83,7 @@ export default class ListViewExample extends Component {
                 { label: '50+', value: 7 },
             ],
             radio_Age: [
+                { label: 'No filter', value: 0 },
                 { label: 'Less than 10 years old', value: 1 },
                 { label: 'Less than 20 years old', value: 2 },
                 { label: 'Less than 30 years old', value: 3 },
@@ -92,12 +93,15 @@ export default class ListViewExample extends Component {
                 { label: 'More than 60 years old', value: 7 },
             ],
             radio_Date: [
+                { label: 'No filter', value: 0 },
                 { label: 'Today', value: 1 },
                 { label: 'This week', value: 2 },
                 { label: 'This month', value: 3 },
                 { label: 'This year', value: 4 },
+                { label: 'Participated', value: 5},
             ],
             radio_People: [
+                { label: 'No filter', value: 0 },
                 { label: '1-10', value: 1 },
                 { label: '11-20', value: 2 },
                 { label: '21-30', value: 3 },
@@ -106,12 +110,12 @@ export default class ListViewExample extends Component {
                 { label: '51-60', value: 6 },
                 { label: '60+', value: 7 },
             ],
-            valueType: -1,
-            valueGender: -1,
-            valueVolunteer: -1,
-            valueAge: -1,
-            valueDate: -1,
-            valuePeople: -1,
+            valueType: 0,
+            valueGender: 0,
+            valueVolunteer: 0,
+            valueAge: 0,
+            valueDate: 0,
+            valuePeople: 0,
         };
 
     }
@@ -135,74 +139,104 @@ export default class ListViewExample extends Component {
 
     FilterType = (value) =>{
         console.log(value);
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[0].backgroundcolor = false;
+        }else{
+            buttonBG[0].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({ 
-            valueType: value-1,
-            dataSource: value,
+            valueType: value,
             visibleType: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible),
-        this.fetchData()
+        console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible)
+        //this.fetchData()
         })
         
     }
 
     FilterGender= (value) =>{
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[1].backgroundcolor = false;
+        }else{
+            buttonBG[1].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({ 
-            valueGender: value-1,
-            dataSource: value,
+            valueGender: value,
             visibleGender: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
-        this.fetchData()
+        console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource )
+        //this.fetchData()
         })
     }
      FilterVolunteer= (value) =>{
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[2].backgroundcolor = false;
+        }else{
+            buttonBG[2].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({ 
-            valueVolunteer: value-1,
-            dataSource: value,
+            valueVolunteer: value,
             visibleVolunteer: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
-        this.fetchData()
+        console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource )
+        //this.fetchData()
         })
     }
 
     FilterAge= (value) =>{
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[3].backgroundcolor = false;
+        }else{
+            buttonBG[3].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({ 
-            valueAge: value-1,
-            dataSource: value,
+            valueAge: value,
             visibleAge: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
-        this.fetchData()
+        console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource )
+        //this.fetchData()
         })
     }
 
     FilterDate= (value) =>{
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[4].backgroundcolor = false;
+        }else{
+            buttonBG[4].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({  
-            valueDate: value-1,
-            dataSource: value,
+            valueDate: value,
             visibleDate: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
-        this.fetchData()
+        console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource )
+        //this.fetchData()
         })
     }
 
     FilterPeople= (value) =>{
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if(value == 0){
+            buttonBG[5].backgroundcolor = false;
+        }else{
+            buttonBG[5].backgroundcolor = true;
+        }
         this.setState( (prevState, props) => ({  
-            valuePeople: value-1,
-            dataSource: value,
+            valuePeople: value,
             visiblePeople: false,
-            loadingVisible: true,
+            buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
-        this.fetchData()
+        console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource )
+        //this.fetchData()
         })
     }
 
@@ -210,7 +244,7 @@ export default class ListViewExample extends Component {
         this.setState( (prevState, props) => ({
             dataSource: text
         }), () => {
-        console.log('data is ' + this.state.dataSource + ' filter is ' + this.state.filter),
+        console.log('data is ' + this.state.dataSource )
         this.fetchData()
         })
 
@@ -356,6 +390,9 @@ export default class ListViewExample extends Component {
         )
     }
     componentWillMount() {
+        this.setState({
+            loadingVisible : true
+        })
         this.fetchDataTrending();
         // this.props.navigation.setParams({
         //     changeText: this.onChangeText.bind(this),
@@ -365,73 +402,62 @@ export default class ListViewExample extends Component {
     }
 
     Filter = item => {
-        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        this.setState({
-            filter: item.button_id
-        })
-        for (let x = 0; x < this.state.buttonBG.length; x++) {
-            if (this.state.buttonBG[x].button_id == item.button_id) {
-                buttonBG[x].backgroundcolor = true;
-
-                this.setState({
-                    buttonBG: buttonBG,
-                });
-            } else {
-                buttonBG[x].backgroundcolor = false;
-
-                this.setState({
-                    buttonBG: buttonBG,
-                });
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));        
+            if(this.state.valueType == 0){
+                buttonBG[0].backgroundcolor = false;
             }
-        }
-        if (item.button_id == 1) {
-            this.setState({
-                search: 0,
-                visible: true
-            })
-        }
-        if (item.button_id == 2) {
-            this.setState({
-                search: 0,
-                visibleType: true
-            })
-        }
-        if (item.button_id == 3) {
-            this.setState({
-                search: 3,
-                horizontal: false
-            })
-        }
-        if (item.button_id == 4) {
-            this.setState({
-                search: 0,
-                visibleGender: true
-            })
-        }
-        if (item.button_id == 5) {
-            this.setState({
-                search: 0,
-                visibleVolunteer: true
-            })
-        }
-        if (item.button_id == 6) {
-            this.setState({
-                search: 0,
-                visibleAge: true
-            })
-        }
-        if (item.button_id == 7) {
-            this.setState({
-                search: 0,
-                visibleDate: true
-            })
-        }
-        if (item.button_id == 8) {
-            this.setState({
-                search: 0,
-                visiblePeople: true
-            })
-        }
+            if(this.state.valueGender == 0){
+                buttonBG[1].backgroundcolor = false;
+            }
+            if(this.state.valueVolunteer == 0){
+                buttonBG[2].backgroundcolor = false;
+            }
+            if(this.state.valueAge == 0){
+                buttonBG[3].backgroundcolor = false;
+            }
+            if(this.state.valueDate == 0){
+                buttonBG[4].backgroundcolor = false;
+            }
+            if(this.state.valuePeople == 0){
+                buttonBG[5].backgroundcolor = false;
+            }
+            if (item.button_id == 1 ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visibleType: true
+                })
+            }
+            else if (item.button_id == 2  ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visibleGender: true
+                })
+            }
+            else if (item.button_id == 3  ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visibleVolunteer: true
+                })
+            }
+            else if (item.button_id == 4  ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visibleAge: true
+                })
+            }
+            else if (item.button_id == 5  ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visibleDate: true
+                })
+            }
+            else if (item.button_id == 6  ) {
+                this.setState({
+                    buttonBG: buttonBG,
+                    visiblePeople: true
+                })
+            }
+      
     };
 
     renderFilter() {
@@ -509,7 +535,7 @@ export default class ListViewExample extends Component {
             >
                 <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
                     <SearchBar
-                        placeholder='Search'
+                        placeholder='Search by title or tag'
                         onChangeText={this.onChangeText.bind(this)}
                         onCancelButtonPress={this.onCancelButtonPress.bind(this)}
                         onSearchButtonPress={this.onSearchButtonPress.bind(this)}
@@ -534,6 +560,7 @@ export default class ListViewExample extends Component {
     renderListActivity = () => {
         // console.log("status " + this.state.search);
         if (this.state.search == 1) {
+            console.log("status " + this.state.data);
             return (
                 <View style={[styles.flex, styles.row, styles.recommended], { marginTop: 20 }}>
                     <View
@@ -572,13 +599,13 @@ export default class ListViewExample extends Component {
                     alignItems: 'center',
                 }}>
 
-                    <Text style={{ fontSize: theme.sizes.font * 1.4 }}>NO Result</Text>
+                    <Text style={{ fontSize: theme.sizes.font * 1.4 }}>No result</Text>
 
 
                 </View>
             )
         }
-        else if (this.state.search == 3) {
+        else if (this.state.search == 0) {
             return (
                 <View >
                     <View
@@ -611,6 +638,7 @@ export default class ListViewExample extends Component {
     }
 
     renderItem = (item, index) => {
+        console.log(item);
         let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
         let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
         const { navigation } = this.props;
@@ -631,7 +659,7 @@ export default class ListViewExample extends Component {
                         HOST
                     </Text>
                     <Text style={{ fontSize: theme.sizes.font, fontWeight: '500', }}>
-                        {item.name}  {item.surname.split('').slice(0, 5)}...
+                        {item.name}  {item.surname}...
                     </Text>
                 </View>
 
@@ -724,14 +752,18 @@ export default class ListViewExample extends Component {
                 'Content-Type': 'application/json'
             }),
             body: JSON.stringify({
-                status: "update",
                 text: this.state.dataSource,
                 page: this.state.page,
-                filter: this.state.filter
+                valueType: this.state.valueType,
+                valueGender: this.state.valueGender,
+                valueVolunteer: this.state.valueVolunteer,
+                valueAge: this.state.valueAge,
+                valueDate: this.state.valueDate,
+                valuePeople: this.state.valuePeople,
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                // console.log('res ' + responseJson.length);
+                console.log('res ' + responseJson);
                 if (responseJson.length > 0) {
                     this.setState({
                         search: 1,
@@ -761,7 +793,8 @@ export default class ListViewExample extends Component {
             .then((responseJson) => {
                 // console.log('res ' + responseJson.length);
                 this.setState({
-                    trending: responseJson
+                    trending: responseJson,
+                    loadingVisible : false
                 });
             }).catch((error) => {
                 console.error(error);

@@ -10,7 +10,8 @@ import {
   ImageBackground,
   Dimensions,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -388,6 +389,7 @@ class Articles extends Component {
   }
   render() {
     return (
+      <SafeAreaView style={{flex:1}}>
       <PTRView onRefresh={this.refresh.bind(this)} >
         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
@@ -406,6 +408,7 @@ class Articles extends Component {
           </ScrollView>
         </LinearGradient>
       </PTRView>
+      </SafeAreaView>
     )
   }
 }
