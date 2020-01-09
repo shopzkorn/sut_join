@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking} from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -181,6 +181,30 @@ class Article extends Component {
 
   }
 
+  openGps = (lat,lng) => {
+    var location = lat+','+lng;
+    console.log(location);
+    var scheme = Platform.OS === 'ios' ? 'maps:' : 'geo:'
+    var url = scheme + location;
+    this.openExternalApp(url,location)
+  }
+
+  openExternalApp = (url,location) => {
+    var urlMap = "https://www.google.com/maps/dir/?api=1&destination=" + location;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(urlMap);
+      } else {
+        Alert.alert(
+          'ERROR',
+          'Unable to open: ' + url,
+          [
+            {text: 'OK'},
+          ]
+        );
+      }
+    });
+  }
   genQrcode(){
     this.setState({
       visibleDialog : true
@@ -478,7 +502,7 @@ class Article extends Component {
       return (
         <View >
           <View style={[styles.flex, styles.recommendationHeader]}>
-            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 10, marginBottom: 10, fontSize: 20 }}>No Joiner</Text>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 10, marginBottom: 10, fontSize: 20 }}>No joiner</Text>
           </View>
 
         </View>
@@ -694,10 +718,10 @@ class Article extends Component {
                   />
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
-
+                  
               </View>
               <Text style={{ color: theme.colors.black, fontWeight: 'bold', marginBottom: 10 }}> {article.location_address}</Text>
-              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => navigation.navigate('Map', { lat: article.location_lat, lng: article.location_long, title: article.title, location_name: article.location_name, address: article.location_address })}>
+              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat,article.location_long)}>
                 <View>
                   <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
                 </View>
