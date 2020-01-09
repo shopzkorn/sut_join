@@ -182,10 +182,13 @@ class Article extends Component {
   }
 
   openGps = (lat,lng) => {
-    var location = lat+','+lng;
+    const  location = lat+','+lng;
     console.log(location);
-    var scheme = Platform.OS === 'ios' ? 'maps:' : 'geo:'
-    var url = scheme + location;
+    var scheme = Platform.OS === 'ios' ? 'maps:${location}' : 'geo:${location}?center=${location}&q=${location}&z=16'
+    const url = Platform.select({
+      ios: "maps:" + location,
+      android: "geo:" + location + "?center=" + location + "&q=" + location + "&z=16"
+    });
     this.openExternalApp(url,location)
   }
 
@@ -193,7 +196,7 @@ class Article extends Component {
     var urlMap = "https://www.google.com/maps/dir/?api=1&destination=" + location;
     Linking.canOpenURL(url).then(supported => {
       if (supported) {
-        Linking.openURL(urlMap);
+        Linking.openURL(url);
       } else {
         Alert.alert(
           'ERROR',
