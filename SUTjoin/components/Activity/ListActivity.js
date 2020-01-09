@@ -390,13 +390,14 @@ class Articles extends Component {
   render() {
     return (
       <SafeAreaView style={{flex:1}}>
-      <PTRView onRefresh={this.refresh.bind(this)} >
-        <LinearGradient
+         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}
         >
+      <PTRView onRefresh={this.refresh.bind(this)} >
+       
           <View style={{ flex: 1 }}>
             <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
           </View>
@@ -406,8 +407,8 @@ class Articles extends Component {
             {this.renderListRecommended()}
             {this.renderListActivity()}
           </ScrollView>
-        </LinearGradient>
       </PTRView>
+      </LinearGradient>
       </SafeAreaView>
     )
   }

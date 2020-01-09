@@ -4,15 +4,16 @@ import {
     Text,
     Image,
     StyleSheet,
-    SafeAreaView,
-    TextInput,
+    TouchableOpacity,
+    Dimensions,
     Platform,
     StatusBar
 } from "react-native";
-import { createBottomTabNavigator,createAppContainer,createStackNavigator} from 'react-navigation'
+import { createBottomTabNavigator,createAppContainer,createStackNavigator,createDrawerNavigator} from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-
+import SideMenu from '../Navigation/SideMenu';
+import stackNav from '../Navigation/stacknav';
 import Activity from '../Activity/Tabscene';
 import Checkin from '../Checkin/Checkin';
 import Learning from '../Learning/Learning';
@@ -89,7 +90,8 @@ const NaLearning = createStackNavigator(
     },
   }
 );
-const NaProfile = createStackNavigator(
+
+const ProfileScreen = createStackNavigator(
   {
     Profile: {
       screen: Profile,
@@ -99,6 +101,18 @@ const NaProfile = createStackNavigator(
     },
   }
 );
+
+const NaProfile = createDrawerNavigator({
+  Item1: {
+      screen: ProfileScreen,
+    }
+  }, {
+    contentComponent: SideMenu,
+    drawerWidth: Dimensions.get('window').width - 120, 
+    overlayColor:0.8,
+    drawerType: 'back',
+    
+});
 
 //Create Tabbar
 const TabStack = createBottomTabNavigator({
@@ -139,7 +153,7 @@ const TabStack = createBottomTabNavigator({
       }
     },
     Profile: {
-      screen: NaProfile,
+      screen: ProfileScreen,
       navigationOptions: {
         tabBarLabel:'PROFILE',
         tabBarIcon: ({ tintColor }) => (

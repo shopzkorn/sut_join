@@ -1,6 +1,6 @@
 //import createStackNavigator
-import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { AsyncStorage,StatusBar,View  } from "react-native";
+import { createStackNavigator, createAppContainer, createSwitchNavigator,createDrawerNavigator } from 'react-navigation';
+import { AsyncStorage,StatusBar,View,Dimensions   } from "react-native";
 import React, { Component } from "react";
 import Article from './components/Activity/DetailActivity';
 import Login from './components/Profile/Login';
@@ -14,6 +14,7 @@ import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import UserDashboard from './components/Profile/UserDashboard';
+
 
 //Route
 const App = createStackNavigator(
