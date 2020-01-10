@@ -10,7 +10,8 @@ import {
   ImageBackground,
   Dimensions,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -166,30 +167,30 @@ class Articles extends Component {
   scrollX = new Animated.Value(0);
 
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}>
-          <View style={[styles.flex, styles.row, styles.header,]}>
-            <View style={{ alignItems: 'flex-start' }}>
-              <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
-            </View>
-            <View style={[styles.flex, styles.row]}>
-              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun, styles.marginRight]}>
-                <FontAwesome name="search" size={20} />
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-                <Icon name="ios-add-circle" size={20} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </LinearGradient>
-      ),
-      tabBarOnPress: (scene, jumpToIndex) => { console.log('Tab is pressed!') },
-    }
-  }
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     header: (
+  //       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+  //         start={{ x: 0, y: 1 }}
+  //         end={{ x: 1, y: 0 }}>
+  //         <View style={[styles.flex, styles.row, styles.header,]}>
+  //           <View style={{ alignItems: 'flex-start' }}>
+  //             <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
+  //           </View>
+  //           <View style={[styles.flex, styles.row]}>
+  //             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun, styles.marginRight]}>
+  //               <FontAwesome name="search" size={20} />
+  //             </TouchableOpacity>
+  //             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
+  //               <Icon name="ios-add-circle" size={20} />
+  //             </TouchableOpacity>
+  //           </View>
+  //         </View>
+  //       </LinearGradient>
+  //     ),
+  //     tabBarOnPress: (scene, jumpToIndex) => { console.log('Tab is pressed!') },
+  //   }
+  // }
   renderDots() {
     const { destinations } = this.props;
     // console.log(this.state.data);
@@ -388,13 +389,15 @@ class Articles extends Component {
   }
   render() {
     return (
-      <PTRView onRefresh={this.refresh.bind(this)} >
-        <LinearGradient
+      <SafeAreaView style={{flex:1}}>
+         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}
         >
+      <PTRView onRefresh={this.refresh.bind(this)} >
+       
           <View style={{ flex: 1 }}>
             <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
           </View>
@@ -404,8 +407,9 @@ class Articles extends Component {
             {this.renderListRecommended()}
             {this.renderListActivity()}
           </ScrollView>
-        </LinearGradient>
       </PTRView>
+      </LinearGradient>
+      </SafeAreaView>
     )
   }
 }

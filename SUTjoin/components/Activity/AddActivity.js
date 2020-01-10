@@ -148,6 +148,17 @@ export default class HomeScreen extends Component {
 
   }
 
+  renderPhoto(){
+    if(this.state.imageSource  != null){
+      return(
+      <Image style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} />
+        ) ;
+    }
+    else {
+      return null;
+    }
+  }
+  
   selectPhoto() {
     ImagePicker.showImagePicker(options, (response) => {
       // console.log('Response = ', response);
