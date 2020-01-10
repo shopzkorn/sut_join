@@ -141,6 +141,19 @@ class UserDashboard extends React.Component {
             <Text style={{fontSize:30,marginBottom:20,marginTop:20}}>Dashboard</Text>
 
             <View style={{flexDirection:'row',alignItems: 'center',justifyContent: 'center',marginTop: 20}}>
+              
+            <View style={{marginTop: 40,alignItems: 'center'}}>
+              <PieChart
+                chart_wh={chart_wh}
+                series={series}
+                sliceColor={sliceColor}
+                doughnut={true}
+                coverRadius={0.45}
+                coverFill={'#FFF'}
+              />
+              <Text style={{marginTop: 10,alignItems: 'center'}}>All Of Joined</Text>
+              </View>
+              
               <View style={{marginRight: 20,alignItems: 'center'}}>
               <ProgressCircle
                     percent={this.state.percent1}
@@ -255,17 +268,7 @@ class UserDashboard extends React.Component {
               </View>
               
 
-              <View style={{marginTop: 40,alignItems: 'center'}}>
-              <PieChart
-                chart_wh={chart_wh}
-                series={series}
-                sliceColor={sliceColor}
-                doughnut={true}
-                coverRadius={0.45}
-                coverFill={'#FFF'}
-              />
-              <Text style={{marginTop: 10,alignItems: 'center'}}>All Of Joined</Text>
-              </View>
+              
             </View>
         );
       }

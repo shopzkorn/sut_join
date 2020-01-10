@@ -71,7 +71,7 @@ class History extends React.Component {
 
       fetchDataSearch = async () => {
         console.log('fecth');
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Expolre.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
@@ -327,13 +327,14 @@ class History extends React.Component {
     render() {
         
             return (
-              <PTRView onRefresh={this.refresh.bind(this)} >
-                <LinearGradient
+              <LinearGradient
                   colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
                   start={{ x: 0.0, y: 0.5 }}
                   end={{ x: 1.0, y: 0.5 }}
                   style ={{flex : 1}}
                 >
+              <PTRView onRefresh={this.refresh.bind(this)} >
+                
                   <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
@@ -344,8 +345,9 @@ class History extends React.Component {
                     
 
                   </ScrollView>
-                </LinearGradient>
+                
               </PTRView>
+              </LinearGradient>
             )
           }
     
