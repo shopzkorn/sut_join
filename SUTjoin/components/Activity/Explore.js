@@ -104,34 +104,74 @@ class History extends React.Component {
   }
 
 
-  renderListActivity = () => {
-    if (this.state.search == 1) {
-      return (
-        <View style={[styles.flex, styles.column, styles.recommended], { marginTop: 20 }}>
-          <View
-            style={[
-              styles.row,
-              styles.recommendedHeader
-            ]}
-          >
-            <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Activities</Text>
+      // fetchData = async () => {
+      //   console.log(this.state.searchKey);
+      //   const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
+      //   const users = await response.json();
+      //   this.setState({ data: users ,search:1});
+      // }
+
+      fetchDataSearch = async () => {
+        console.log('fecth');
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Expolre.php', {
+            method: 'post',
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                text: this.state.searchKey,
+                page: this.state.page,
+                filter: this.state.filter,
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                // console.log('res ' + responseJson.length);
+                if (responseJson.length > 0) {
+                    this.setState({
+                        search: 1,
+                        data: responseJson,
+                        loadingVisible: false,
+                    });
+                } else {
+                    this.setState({
+                        search: 2,
+                        loadingVisible: false,
+                    });
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+    }
+    
+
+      renderListActivity = () => {
+        if (this.state.search == 1){
+        return (
+          <View style={[styles.flex, styles.column, styles.recommended], { marginTop: 20 }}>
+            <View
+              style={[
+                styles.row,
+                styles.recommendedHeader
+              ]}
+            >
+              <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Activities</Text>
+            </View>
+            <View style={[styles.column, styles.recommendedList]}>
+              <FlatList
+                Vertical
+                pagingEnabled
+                scrollEnabled
+                showsHorizontalScrollIndicator={false}
+                scrollEventThrottle={16}
+                snapToAlignment="center"
+                style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
+                data={this.state.data}
+                keyExtractor={(item, index) => `${item.id}`}
+                renderItem={({ item, index }) => this.renderItem(item, index)}
+              />
+            </View>
           </View>
-          <View style={[styles.column, styles.recommendedList]}>
-            <FlatList
-              Vertical
-              pagingEnabled
-              scrollEnabled
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              snapToAlignment="center"
-              style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
-              data={this.state.data}
-              keyExtractor={(item, index) => `${item.id}`}
-              renderItem={({ item, index }) => this.renderItem(item, index)}
-            />
-          </View>
-        </View>
       );
     } else if (this.state.search == 2) {
       return (
@@ -375,6 +415,33 @@ class History extends React.Component {
     )
   }
 
+    render() {
+        
+            return (
+              <LinearGradient
+                  colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+                  start={{ x: 0.0, y: 0.5 }}
+                  end={{ x: 1.0, y: 0.5 }}
+                  style ={{flex : 1}}
+                >
+              <PTRView onRefresh={this.refresh.bind(this)} >
+                
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
+                    
+                    {this.renderTypeFilter()}
+                    {this.InterestBtn()}
+                    {this.renderListActivity()}
+                    
+
+                  </ScrollView>
+                
+              </PTRView>
+              </LinearGradient>
+            )
+          }
+    
 }
 export default History;
 
