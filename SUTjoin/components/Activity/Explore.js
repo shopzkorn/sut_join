@@ -141,7 +141,7 @@ class History extends React.Component {
           alignItems: 'center',
         }}>
 
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>NO Result</Text>
+          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>No result</Text>
 
 
         </View>

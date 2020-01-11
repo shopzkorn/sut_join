@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Animated,
     Text,
     StyleSheet,
     View,
@@ -11,7 +10,6 @@ import {
     Dimensions,
     Platform,
     TouchableOpacity,
-    CheckBox
 } from 'react-native';
 import SearchBar from 'react-native-search-bar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -23,7 +21,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
-
 export default class ListViewExample extends Component {
     constructor(props) {
         super(props);
@@ -535,6 +532,8 @@ export default class ListViewExample extends Component {
             >
                 <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
                     <SearchBar
+                        ref="search1"
+                        barStyle="black"
                         placeholder='Search by title or tag'
                         onChangeText={this.onChangeText.bind(this)}
                         onCancelButtonPress={this.onCancelButtonPress.bind(this)}
@@ -896,7 +895,7 @@ const styles = StyleSheet.create({
         height: theme.sizes.padding,
         borderRadius: theme.sizes.padding / 2,
         borderWidth: 2,
-        borderColor: '#ffc9de'
+        // borderColor: '#ffc9de'
     },
     rating: {
         fontSize: theme.sizes.font * 1.5,

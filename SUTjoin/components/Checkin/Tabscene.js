@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
-import ListActivity from './ListActivity';
-import SearchActivity from './Explore';
+import ScanQr from './CheckinActivity';
+import ScanCh from './ScanQrcode';
 
 export default class TabViewExample extends React.Component {
 
@@ -49,44 +49,44 @@ export default class TabViewExample extends React.Component {
   FirstRoute = () => {
     const { navigation } = this.props;
     return (
-      <ListActivity navigation={navigation} />
+      <ScanQr navigation={navigation} />
     );
   }
 
   SecondRoute = () => {
     const { navigation } = this.props;
     return (
-      <SearchActivity navigation={navigation} />
+      <ScanCh navigation={navigation} />
     );
   }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}>
-        <View style={[styles.flex, styles.row, styles.header,]}>
-          <View style={{ alignItems: 'flex-start' }}>
-          <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
-          </View>
-          <View style={[styles.flex, styles.row]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
-              <FontAwesome name="search" size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-              <Icon name="ios-add-circle" size={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </LinearGradient>
-      ),
-    }
-  }
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     header: (
+  //       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+  //       start={{ x: 0, y: 1 }}
+  //       end={{ x: 1, y: 0 }}>
+  //       <View style={[styles.flex, styles.row, styles.header,]}>
+  //         <View style={{ alignItems: 'flex-start' }}>
+  //         <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
+  //         </View>
+  //         <View style={[styles.flex, styles.row]}>
+  //           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
+  //             <FontAwesome name="search" size={20} />
+  //           </TouchableOpacity>
+  //           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
+  //             <Icon name="ios-add-circle" size={20} />
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     </LinearGradient>
+  //     ),
+  //   }
+  // }
   state = {
     index: 0,
     routes: [
       { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'Explore' },
+      { key: 'second', title: 'EXPLORE' },
     ],
   };
 

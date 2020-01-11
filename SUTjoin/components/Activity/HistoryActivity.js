@@ -233,6 +233,9 @@ class Articles extends Component {
             ]}
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+            <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ color: theme.colors.gray }}>More</Text>
+          </TouchableOpacity>
           </View>
           <FlatList
             horizontal
@@ -262,6 +265,7 @@ class Articles extends Component {
             ]}
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
+            
           </View>
           <View style={[styles.flex]}>
             <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO PARTICIPATED</Text>
@@ -340,6 +344,9 @@ class Articles extends Component {
             ]}
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>UPCOMING</Text>
+            <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ color: theme.colors.gray }}>More</Text>
+          </TouchableOpacity>
           </View>
           <FlatList
             horizontal

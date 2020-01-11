@@ -11,7 +11,9 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator,
+  RefreshControl
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -158,39 +160,23 @@ const styles = StyleSheet.create({
 
 
 class Articles extends Component {
+  constructor(props) {
+    super(props);
+    this.onEndReachedCalledDuringMomentum = true;
+  }
   state = {
     data: [],
     refreshing: false,
     page: 1,
-    loadingVisible: true
+    loadingVisible: true,
+    loading: false,
+    lastItem: true
   }
   scrollX = new Animated.Value(0);
 
-
-  // static navigationOptions = ({ navigation }) => {
-  //   return {
-  //     header: (
-  //       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-  //         start={{ x: 0, y: 1 }}
-  //         end={{ x: 1, y: 0 }}>
-  //         <View style={[styles.flex, styles.row, styles.header,]}>
-  //           <View style={{ alignItems: 'flex-start' }}>
-  //             <Text style={{ fontSize: theme.sizes.font * 2, fontWeight: 'bold' }}>SUT JOIN</Text>
-  //           </View>
-  //           <View style={[styles.flex, styles.row]}>
-  //             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun, styles.marginRight]}>
-  //               <FontAwesome name="search" size={20} />
-  //             </TouchableOpacity>
-  //             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-  //               <Icon name="ios-add-circle" size={20} />
-  //             </TouchableOpacity>
-  //           </View>
-  //         </View>
-  //       </LinearGradient>
-  //     ),
-  //     tabBarOnPress: (scene, jumpToIndex) => { console.log('Tab is pressed!') },
-  //   }
-  // }
+  loadmore = () => {
+    console.log('loadmore');
+  }
   renderDots() {
     const { destinations } = this.props;
     // console.log(this.state.data);
@@ -233,7 +219,21 @@ class Articles extends Component {
       })
     )
   }
+  renderFooter = () => {
+    if (!this.state.loading) return null;
 
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
   renderListRecommended = () => {
     return (
       <View style={[styles.column, styles.destinations], { marginTop: 20 }}>
@@ -278,10 +278,11 @@ class Articles extends Component {
         <View style={[styles.column, styles.recommendedList]}>
           <FlatList
             Vertical
-            pagingEnabled
+            // pagingEnabled
             scrollEnabled
             showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
+            // scrollEventThrottle={16}
+            // ListFooterComponent={() =>this.renderFooter}
             snapToAlignment="center"
             style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
             data={this.state.data}
@@ -369,47 +370,102 @@ class Articles extends Component {
 
   }
 
-  fetchData = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
+  fetchData = async (status) => {
+    var page = 0;
+    if (status == 1) {
+      page = 1;
+      this.setState({ page: 1 })
+    }
+    else {
+      page = this.state.page;
+    }
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        page: page,
+      })
+    });
     const users = await response.json();
-    this.setState({ data: users, loadingVisible: false });
+    console.log(users.length);
+    if (users.length > 0) {
+      this.setState({ lastItem: false })
+    } else {
+      this.setState({ lastItem: true })
+    }
+    if (status == 2) {
+      this.setState({ data: this.state.data.concat(users), loadingVisible: false, loading: false });
+    }
+    else {
+      this.setState({ data: users, loadingVisible: false });
+    }
   }
   refresh() {
     this.setState({ refreshing: true });
     return new Promise((resolve) => {
-      this.fetchData().then(() => {
+      this.fetchData(1).then(() => {
         this.setState({ refreshing: false })
       });
       setTimeout(() => { resolve() }, 2000)
     });
   }
-  
+
   componentWillMount() {
-    this.fetchData(); //connect backend
+    this.fetchData(1); //connect backend
   }
   render() {
     return (
-      <SafeAreaView style={{flex:1}}>
-         <LinearGradient
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}
         >
-      <PTRView onRefresh={this.refresh.bind(this)} >
-       
-          <View style={{ flex: 1 }}>
-            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-          </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-            {this.renderListRecommended()}
+            style={{ flex: 1 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.refresh.bind(this)}
+              />
+            }
+            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+            onScroll={(e) => {
+              var windowHeight = Dimensions.get('window').height,
+                height = e.nativeEvent.contentSize.height,
+                offset = e.nativeEvent.contentOffset.y;
+              // console.log(windowHeight+' '+height+' '+offset)
+              if (windowHeight + offset >= height && this.state.lastItem == false) {
+                console.log('End Scroll')
+                this.setState((prevState, props) => ({
+                  page: this.state.page + 1,
+                  loading: true,
+                  lastItem: true
+                }), () => {
+                  this.fetchData(2)
+                })
+              }
+            }}
+          >
+
+
+            <View style={{ flex: 1 }}>
+              <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+            </View>
+
+            {/* {this.renderListRecommended()} */}
             {this.renderListActivity()}
+            {this.renderFooter()}
           </ScrollView>
-      </PTRView>
-      </LinearGradient>
+        </LinearGradient>
       </SafeAreaView>
+
     )
   }
 }

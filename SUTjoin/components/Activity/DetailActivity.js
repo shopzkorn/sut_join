@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking} from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment'
 import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
@@ -143,8 +144,8 @@ class Article extends Component {
     join: false,
     joiner: [],
     id_user: '',
-    qrcode:'',
-    visibleDialog:false
+    qrcode: '',
+    visibleDialog: false
   }
 
   scrollX = new Animated.Value(0);
@@ -156,9 +157,9 @@ class Article extends Component {
           <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" color={theme.colors.white} size={theme.sizes.font * 1} />
           </TouchableOpacity>
-          {/* <TouchableOpacity>
+          <TouchableOpacity>
             <MaterialIcons name="more-horiz" color={theme.colors.white} size={theme.sizes.font * 1.5} />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       ),
       headerTransparent: true,
@@ -167,12 +168,16 @@ class Article extends Component {
 
   componentWillMount() {
     const { navigation } = this.props;
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    console.log(date + '/' + month + '/' + year);
     const article = navigation.getParam('article');
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
       this.setState({
         id_user: user_id,
-        qrcode : "IdActivity_" + article.id
+        qrcode: "IdActivity_" + article.id + '_' + date + '/' + month + '/' + year
       });
       this.setState({ joiner: [] })
       this.fetchData();
@@ -181,18 +186,18 @@ class Article extends Component {
 
   }
 
-  openGps = (lat,lng) => {
-    const  location = lat+','+lng;
+  openGps = (lat, lng) => {
+    const location = lat + ',' + lng;
     console.log(location);
     var scheme = Platform.OS === 'ios' ? 'maps:${location}' : 'geo:${location}?center=${location}&q=${location}&z=16'
     const url = Platform.select({
       ios: "maps:" + location,
       android: "geo:" + location + "?center=" + location + "&q=" + location + "&z=16"
     });
-    this.openExternalApp(url,location)
+    this.openExternalApp(url, location)
   }
 
-  openExternalApp = (url,location) => {
+  openExternalApp = (url, location) => {
     var urlMap = "https://www.google.com/maps/dir/?api=1&destination=" + location;
     Linking.canOpenURL(url).then(supported => {
       if (supported) {
@@ -202,15 +207,15 @@ class Article extends Component {
           'ERROR',
           'Unable to open: ' + url,
           [
-            {text: 'OK'},
+            { text: 'OK' },
           ]
         );
       }
     });
   }
-  genQrcode(){
+  genQrcode() {
     this.setState({
-      visibleDialog : true
+      visibleDialog: true
     });
   }
   DialogGenQrCode() {
@@ -219,18 +224,18 @@ class Article extends Component {
         <Dialog
           visible={this.state.visibleDialog}
           dialogStyle={{ bottom: 0 }}
-          containerStyle={{  justifyContent: 'center' }}
+          containerStyle={{ justifyContent: 'center' }}
           onTouchOutside={() => {
             this.setState({ visibleDialog: false });
           }}
           dialogTitle={<DialogTitle title="Check in" />}
           width='100%'
         >
-          <DialogContent style={{justifyContent : 'center' , alignItems: 'center',marginTop:20}}>
-              <QRCode
-                value={this.state.qrcode}
-                size={200}
-                 />            
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <QRCode
+              value={this.state.qrcode}
+              size={200}
+            />
           </DialogContent>
         </Dialog>
       </View>
@@ -367,9 +372,9 @@ class Article extends Component {
       });
   }
 
-  renderJoinButton = (id_host, number_people, inviter,id) => {
+  renderJoinButton = (id_host, number_people, inviter, id) => {
     console.log("user is " + this.state.id_user.split('"')[1]);
-    
+
     console.log("id host is " + id_host);
     if (id_host == this.state.id_user.split('"')[1]) {
       return <TouchableOpacity
@@ -487,11 +492,12 @@ class Article extends Component {
           </View>
           <View style={[styles.column, styles.recommendedList]}>
             <FlatList
-              horizontal
+              Vertical
               pagingEnabled
               scrollEnabled
               showsHorizontalScrollIndicator={false}
               scrollEventThrottle={16}
+              numColumns={3}
               snapToAlignment="center"
               style={[styles.shadow, { overflow: 'visible' }]}
               data={this.state.joiner}
@@ -514,6 +520,8 @@ class Article extends Component {
   }
 
   renderJoinerinActivity = (item, index) => {
+    const { navigation } = this.props;
+    console.log(item)
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     console.log("p " + photoUser);
     const isLastItem = index === item.length - 1;
@@ -524,12 +532,13 @@ class Article extends Component {
         index === 0 ? { marginLeft: theme.sizes.margin / 2 } : null,
         isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
       ]}>
-        <View style={[styles.flex, styles.recommendationHeader]}>
-          <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
-          <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
-        </View>
-
+        <TouchableOpacity activeOpacity={0.8} onPress={() =>  navigation.navigate('userProfile', { User: item.user_id })}>
+          <View style={[styles.flex, styles.recommendationHeader]}>
+            <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     )
 
@@ -679,8 +688,8 @@ class Article extends Component {
     const article = navigation.getParam('article');
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
-    console.log(article);
-    
+    // console.log(article);
+
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
     return (
 
@@ -700,13 +709,26 @@ class Article extends Component {
           </View>
           <View style={[styles.flex, styles.content]}>
             <View style={[styles.flex, styles.contentHeader]}>
-              <Image style={[styles.avatar, styles.shadow]} source={{ uri: photoUser }} />
+              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: article.id_host })} style={{
+                position: 'absolute',
+                top: -theme.sizes.margin,
+                right: theme.sizes.margin,
+              }}>
+                <Image style={[styles.shadow], {
+                  width: theme.sizes.padding * 2,
+                  height: theme.sizes.padding * 2,
+                  borderRadius: theme.sizes.padding,
+                  backgroundColor:'white'
+                }} source={{ uri: photoUser }} />
+              </TouchableOpacity>
               <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.title}>{article.title}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }}>{article.name} {article.surname}</Text>
+                  <TouchableOpacity activeOpacity={0.8} onPress={() =>  navigation.navigate('userProfile', { User: article.id_host })}>
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }} >{article.name} {article.surname}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={[
@@ -721,10 +743,10 @@ class Article extends Component {
                   />
                   <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
                 </Text>
-                  
+
               </View>
               <Text style={{ color: theme.colors.black, fontWeight: 'bold', marginBottom: 10 }}> {article.location_address}</Text>
-              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat,article.location_long)}>
+              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat, article.location_long)}>
                 <View>
                   <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
                 </View>
@@ -808,7 +830,7 @@ class Article extends Component {
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            {this.renderJoinButton(article.id_host, article.number_people, article.inviter,article.id)}
+            {this.renderJoinButton(article.id_host, article.number_people, article.inviter, article.id)}
 
           </View>
 
