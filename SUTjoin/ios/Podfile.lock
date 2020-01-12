@@ -21,6 +21,27 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - Google-Maps-iOS-Utils (2.1.0):
+    - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
+    - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
+    - Google-Maps-iOS-Utils/Heatmap (= 2.1.0)
+    - Google-Maps-iOS-Utils/QuadTree (= 2.1.0)
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Clustering (2.1.0):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Geometry (2.1.0):
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Heatmap (2.1.0):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/QuadTree (2.1.0):
+    - GoogleMaps
+  - GoogleMaps (3.2.0):
+    - GoogleMaps/Maps (= 3.2.0)
+  - GoogleMaps/Base (3.2.0)
+  - GoogleMaps/Maps (3.2.0):
+    - GoogleMaps/Base
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -194,8 +215,22 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
+  - react-native-camera (3.15.1):
+    - React
+    - react-native-camera/RCT (= 3.15.1)
+    - react-native-camera/RN (= 3.15.1)
+  - react-native-camera/RCT (3.15.1):
+    - React
+  - react-native-camera/RN (3.15.1):
+    - React
   - react-native-fetch-blob (0.10.6):
     - React-Core
+  - react-native-geolocation (1.4.2):
+    - React
+  - react-native-google-maps (0.26.1):
+    - Google-Maps-iOS-Utils (= 2.1.0)
+    - GoogleMaps (= 3.2.0)
+    - React
   - react-native-image-picker (1.1.0):
     - React
   - react-native-maps (0.26.1):
@@ -241,7 +276,13 @@ PODS:
     - React
   - RNGestureHandler (1.5.2):
     - React
+  - RNI18n (2.0.12):
+    - React
+  - RNPermissions (2.0.9):
+    - React
   - RNReanimated (1.4.0):
+    - React
+  - RNSearchBar (3.5.1):
     - React
   - RNSVG (10.0.0):
     - React
@@ -256,6 +297,8 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Google-Maps-iOS-Utils
+  - GoogleMaps
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -268,7 +311,10 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-network-info (from `../node_modules/react-native-network-info`)
@@ -285,7 +331,10 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNI18n (from `../node_modules/react-native-i18n`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - RNSearchBar (from `../node_modules/react-native-search-bar`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -293,6 +342,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -327,8 +378,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-fetch-blob:
     :path: "../node_modules/react-native-fetch-blob"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
+  react-native-google-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-maps:
@@ -359,8 +416,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNI18n:
+    :path: "../node_modules/react-native-i18n"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
+  RNSearchBar:
+    :path: "../node_modules/react-native-search-bar"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -376,6 +439,8 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
+  GoogleMaps: 5046d7edfe381c1a0b20fdaf293915a375c3122b
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -386,7 +451,10 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
+  react-native-camera: d5b131588a2d1f0ad377a321793f58794dbdc768
   react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
+  react-native-geolocation: 79c743ad7a2e86617811ef23f49308824e92520c
+  react-native-google-maps: 2e2e697dab576abd5809d78cd74e775865b62bf7
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
@@ -402,11 +470,14 @@ SPEC CHECKSUMS:
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNDeviceInfo: d0fff8432ccdf276cb342a52e665ea6dd311472e
   RNGestureHandler: 946a7691e41df61e2c4b1884deab41a4cdc3afff
+  RNI18n: ee831694f1eaa69b270d345e4617f70735d4cdb9
+  RNPermissions: 6db7e0a4d94c9c02390d11020b1d3d187aaf77e5
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
+  RNSearchBar: 54ad41edd78385681730b02b5e069900436d996b
   RNSVG: 9d45f03136ecc9b5497e12f6f20838b568acb9f4
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: ebb4bd9eecf805986da87145a526cedabe446a88
+PODFILE CHECKSUM: aba0d31b9e74ad66953bdb89a596e9bea05a81b5
 
 COCOAPODS: 1.8.4

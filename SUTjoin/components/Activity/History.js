@@ -412,35 +412,8 @@ class History extends React.Component {
           </PTRView>
         </LinearGradient>
       
-    )
+    );
   }
-
-    render() {
-        
-            return (
-              <LinearGradient
-                  colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                  start={{ x: 0.0, y: 0.5 }}
-                  end={{ x: 1.0, y: 0.5 }}
-                  style ={{flex : 1}}
-                >
-              <PTRView onRefresh={this.refresh.bind(this)} >
-                
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-                    
-                    {this.renderTypeFilter()}
-                    {this.InterestBtn()}
-                    {this.renderListActivity()}
-                    
-
-                  </ScrollView>
-                
-              </PTRView>
-              </LinearGradient>
-            )
-          }
     
 }
 export default History;
