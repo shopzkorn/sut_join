@@ -13,17 +13,70 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 
 export default class ScanScreen extends Component {
   state = {
+    lat: '',
+    lng: '',
+    macAddress: '',
     user_id:'',
-    id_activity:''
+    id_activity:'',
+    date:''
   }
   onSuccess = (e) => {
     console.log(e.data)
     this.setState( (prevState, props) => ({
-        id_activity: e.data.split('_')[1]
+        id_activity: e.data.split('_')[1],
+        date: e.data.split('_')[2],
     }), () => {
     console.log(this.state.id_activity),
     this.checked()
   })
+  }
+
+  permisions = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the location")
+      } else {
+        console.log("Location permission denied")
+      }
+    } catch (err) {
+      console.warn(err)
+    }
+
+    const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    if (granted) {
+      console.log("You can use the ACCESS_FINE_LOCATION")
+    }
+    else {
+      console.log("ACCESS_FINE_LOCATION permission denied")
+    }
+
+    Geolocation.getCurrentPosition(
+      (position) => {
+        this.setState(
+          {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+        )
+        console.log(position);
+        console.log(position.coords.latitude);
+      },
+      (error) => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+    DeviceInfo.getMacAddress().then(mac => {
+      // "E5:12:D8:E5:69:97"
+      this.setState({
+        macAddress : mac
+      })
+      console.log(mac);
+    });
   }
 
   checked(){
@@ -55,6 +108,7 @@ export default class ScanScreen extends Component {
       });
     });
     // Instead of navigator.geolocation, just use Geolocation.
+    this.permisions();
   }
   render() {
     return (

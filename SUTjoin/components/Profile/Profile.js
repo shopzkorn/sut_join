@@ -44,17 +44,6 @@ class Profile extends React.Component {
   scrollXHost = new Animated.Value(0);
   scrollXJoin = new Animated.Value(0);
 
-  componentWillMountProfile() {
-    AsyncStorage.multiGet(['user_id']).then((data) => {
-      let user_id = data[0][1];
-      this.setState({
-        user_id: user_id,
-      });
-      console.log("ID >>" + user_id);
-      this.GetUser();
-    });
-  }
-
   GetUser() {
     const { navigate } = this.props.navigation;
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -64,7 +53,7 @@ class Profile extends React.Component {
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({
-        user_id: this.state.user_id.split('"')[1],
+        user_id: this.state.id_user
       })
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -185,15 +174,14 @@ class Profile extends React.Component {
       setTimeout(() => { resolve() }, 2000)
     });
   }
-  componentWillMount() {
+  componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
-      let user_id = data[0][1];
+      let user_id = data[0][1].split('"')[1];
       this.setState({
         id_user: user_id,
       });
       this.fetchData();
-      console.log(this.state.id_user);
-      this.componentWillMountProfile()
+      this.GetUser();
     });
   }
 
@@ -340,61 +328,6 @@ class Profile extends React.Component {
       </PTRView>
     )
 
-    // const { navigate } = this.props.navigation;
-    // const { navigation } = this.props;
-    // const user_idreg = navigation.getParam('user_id');
-    // // this.state.user_detail.map( (user,index) =>
-    // let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.user_profile;
-    // console.log(photoUser)
-    // // );
-    // return (
-    //   <View>
-    //     {/* <Text style={styles.text}>PROFILE</Text> */}
-
-    //     {/* <View style={{ justifyContent: 'center' }}>
-    //       <View style={{ flex: 1 }}>
-    //         <Image source={{ uri: photoUser }} style={styles.avatar} />
-    //       </View>
-    //       <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-    //         <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
-    //       </View>
-    //     </View> */}
-    //     <View style={styles.shadow}>
-    //       <View style={{marginTop:100,justifyContent: 'center',alignItems: 'center',}}> 
-    //         <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
-    //       </View>
-    //       <View style={{marginTop:150,justifyContent: 'center',alignItems: 'center',}}>
-    //         <Text style={{ color: theme.colors.black,fontSize:30, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
-    //       </View>
-    //       <View style={{marginTop:20,justifyContent: 'center',alignItems: 'center',}}>
-    //         <Text style={{ color: theme.colors.black,fontSize:20, fontWeight: 'bold' }}>Volunteer Point: {this.state.user_volunteer}</Text>
-    //       </View>
-    //     </View>
-
-    //     {/* <View style={{marginTop:220}}> */}
-    //     {/* <Button
-    //       title="Login"
-    //       onPress={() => navigate('Login')}
-    //     />
-
-    //     <Button
-    //       title="Register"
-    //       onPress={() => navigate('Register')}
-    //     /> */}
-
-    //     <Button
-    //       title="Create Activities"
-    //       onPress={() => navigate('AddActivity')}
-    //     />
-
-    //     <Button
-    //       title="My Interests"
-    //       onPress={() => navigate('MyInterest')}
-    //     />
-    //     {/* </View> */}
-
-    //   </View>
-    // );
   }
 }
 

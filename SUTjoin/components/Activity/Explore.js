@@ -164,6 +164,7 @@ class History extends React.Component {
                 scrollEnabled
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
+                numColumns={2}
                 snapToAlignment="center"
                 style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
                 data={this.state.data}
@@ -181,7 +182,7 @@ class History extends React.Component {
           alignItems: 'center',
         }}>
 
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>NO Result</Text>
+          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>No result</Text>
 
 
         </View>
@@ -414,7 +415,6 @@ class History extends React.Component {
       
     );
   }
-    
 }
 export default History;
 

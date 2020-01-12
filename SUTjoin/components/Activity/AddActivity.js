@@ -19,14 +19,14 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import ImageResizer from 'react-native-image-resizer'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
 const options = {
   title: 'Select a photo',
   chooseFromLibraryButtonTitle: 'Choose from gallery',
-  quality: 1
+  quality: 1, maxWidth: 1280, maxHeight: 1280
 
 };
 
@@ -55,8 +55,8 @@ export default class HomeScreen extends Component {
       chosendate: '',
       datetimes: '',
       imageSource: null,
-      imageName: null,
-      imagePath: null,
+      imageName: '',
+      imagePath: '',
       id_host: '',
       address:'',
       Volunteer: 0,
@@ -161,7 +161,6 @@ export default class HomeScreen extends Component {
   
   selectPhoto() {
     ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
       // const uriPart = response.uri.split('.');
       // const fileExtension = uriPart[uriPart.length - 1];
       if (response.didCancel) {
@@ -169,12 +168,20 @@ export default class HomeScreen extends Component {
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        const source = { uri: response.uri };
-        this.setState({
-          imageSource: source,
-          imageName: response.fileName,
-          imagePath: response.data
-        });
+        console.log('Response = ', response);
+
+        // ImageResizer.createResizedImage(response.uri, 1000, 1000, 'JPG', 80) 
+        // .then(resizedImageUri => {
+          const source = { uri: response.uri }
+          this.setState({
+            imageSource: source,
+            imageName: response.fileName,
+            imagePath: response.data
+           });
+        // }).catch(error => console.log('error resize image'+error))
+
+        //const source = { uri: response.uri };
+        
       }
     });
     console.log(this.state.imageName);
@@ -182,24 +189,7 @@ export default class HomeScreen extends Component {
   _getOptionList() {
     return this.refs['OPTIONLIST'];
   }
-  register = (event) => {
-
-
-    console.log(this.state.type);
-
-    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
-      Authorization: "Bearer access-token",
-      otherHeader: "foo",
-      'Content-Type': 'multipart/form-data',
-    }, [
-      // custom content type
-      { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
-    ]).then((resp) => {
-      console.log(resp);
-    }).catch((err) => {
-      console.log(err);
-    })
-
+  create = () => {
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
       method: 'post',
       headers: new Headers({
@@ -225,14 +215,36 @@ export default class HomeScreen extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-
         // Showing response message coming from server after inserting records.
         alert(responseJson);
-
       }).catch((error) => {
         console.error(error);
       });
-    event.preventDefault();
+  }
+  register = (event) => {
+    console.log(this.state.type);
+    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+      Authorization: "Bearer access-token",
+      otherHeader: "foo",
+      'Content-Type': 'multipart/form-data',
+    }, [
+      // custom content type
+      { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
+    ]).then((resp) => {
+      console.log(resp.text())
+      if(resp.text() == '"Success"'){
+        this.create();
+      }else if(resp.text() == '"Fail"'){
+        alert('Upload failed');
+      }else{
+        alert(resp.text());
+    }
+      
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    
   }
 
   volunteerCheck = () => {

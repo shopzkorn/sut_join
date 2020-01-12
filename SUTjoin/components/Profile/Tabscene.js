@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
 import ListActivity from './ListActivity';
-import SearchActivity from './Explore';
+import SearchActivity from './History';
 
 export default class TabViewExample extends React.Component {
 
@@ -86,7 +86,7 @@ export default class TabViewExample extends React.Component {
     index: 0,
     routes: [
       { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'Explore' },
+      { key: 'second', title: 'EXPLORE' },
     ],
   };
 

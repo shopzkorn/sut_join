@@ -4,6 +4,7 @@ import { AsyncStorage,StatusBar,View,Dimensions   } from "react-native";
 import React, { Component } from "react";
 import Article from './components/Activity/DetailActivity';
 import Login from './components/Profile/Login';
+import userProfile from './components/Profile/ProfileUser';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
@@ -25,6 +26,7 @@ const App = createStackNavigator(
 
       },
     },
+    userProfile,
     SearchActivity,
     Register,
     AddActivity,
