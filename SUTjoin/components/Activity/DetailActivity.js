@@ -166,7 +166,7 @@ class Article extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { navigation } = this.props;
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month

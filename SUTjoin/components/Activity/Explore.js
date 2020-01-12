@@ -164,6 +164,7 @@ class History extends React.Component {
                 scrollEnabled
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
+                numColumns={2}
                 snapToAlignment="center"
                 style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
                 data={this.state.data}
@@ -415,33 +416,6 @@ class History extends React.Component {
     )
   }
 
-    render() {
-        
-            return (
-              <LinearGradient
-                  colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                  start={{ x: 0.0, y: 0.5 }}
-                  end={{ x: 1.0, y: 0.5 }}
-                  style ={{flex : 1}}
-                >
-              <PTRView onRefresh={this.refresh.bind(this)} >
-                
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-                    
-                    {this.renderTypeFilter()}
-                    {this.InterestBtn()}
-                    {this.renderListActivity()}
-                    
-
-                  </ScrollView>
-                
-              </PTRView>
-              </LinearGradient>
-            )
-          }
-    
 }
 export default History;
 

@@ -429,7 +429,7 @@ class Articles extends Component {
       setTimeout(() => { resolve() }, 2000)
     });
   }
-  componentWillMount() {
+  componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
       this.setState({

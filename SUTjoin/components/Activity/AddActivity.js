@@ -19,14 +19,14 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import ImageResizer from 'react-native-image-resizer'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
 const options = {
   title: 'Select a photo',
   chooseFromLibraryButtonTitle: 'Choose from gallery',
-  quality: 1
+  quality: 1, maxWidth: 1280, maxHeight: 1280
 
 };
 
@@ -161,7 +161,6 @@ export default class HomeScreen extends Component {
   
   selectPhoto() {
     ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
       // const uriPart = response.uri.split('.');
       // const fileExtension = uriPart[uriPart.length - 1];
       if (response.didCancel) {
@@ -169,12 +168,20 @@ export default class HomeScreen extends Component {
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        const source = { uri: response.uri };
-        this.setState({
-          imageSource: source,
-          imageName: response.fileName,
-          imagePath: response.data
-        });
+        console.log('Response = ', response);
+
+        // ImageResizer.createResizedImage(response.uri, 1000, 1000, 'JPG', 80) 
+        // .then(resizedImageUri => {
+          const source = { uri: response.uri }
+          this.setState({
+            imageSource: source,
+            imageName: response.fileName,
+            imagePath: response.data
+           });
+        // }).catch(error => console.log('error resize image'+error))
+
+        //const source = { uri: response.uri };
+        
       }
     });
     console.log(this.state.imageName);

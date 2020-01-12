@@ -107,7 +107,7 @@ class Profile extends React.Component {
                 id_user: this.state.id_user
             })
         });
-        const host = await responseHost.text();
+        const host = await responseHost.json();
          console.log(host);
         this.setState({ myhost: host, });
         // console.log(this.state.myhost);
@@ -183,7 +183,7 @@ class Profile extends React.Component {
         }), () => {
             console.log(this.state.id_user);
             this.fetchData(),
-                this.GetUser()
+            this.GetUser()
         })
     }
 
