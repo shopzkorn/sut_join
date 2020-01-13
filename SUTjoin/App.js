@@ -15,6 +15,11 @@ import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import UserDashboard from './components/Profile/UserDashboard';
+import UserDashboardUserdata from './components/Profile/UserDashboardUserdata';
+import FirstPage from './components/Navigation/FirstPage';
+import manage_gpa from './components/Learning/manage_gpa';
+import manage_subject from './components/Learning/manage_subject';
+import add_subject from './components/Learning/add_subject';
 
 
 //Route
@@ -55,6 +60,36 @@ const App = createStackNavigator(
     },
     UserDashboard: {
       screen: UserDashboard,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    UserDashboardUserdata: {
+      screen: UserDashboardUserdata,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    FirstPage: {
+      screen: FirstPage,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    manage_gpa: {
+      screen: manage_gpa,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    manage_subject: {
+      screen: manage_subject,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    add_subject: {
+      screen: add_subject,
       navigationOptions: {
         // header: null,
       }

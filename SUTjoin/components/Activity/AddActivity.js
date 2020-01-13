@@ -19,7 +19,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import ImageResizer from 'react-native-image-resizer'
+// import ImageResizer from 'react-native-image-resizer'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 

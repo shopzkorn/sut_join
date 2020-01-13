@@ -299,6 +299,11 @@ class Profile extends React.Component {
           title="Dashboard"
           onPress={() => navigate('UserDashboard')}
         />
+
+        <Button
+          title="FirstPage"
+          onPress={() => navigate('FirstPage')}
+        />
         {/* </View> */}
 
       </View>

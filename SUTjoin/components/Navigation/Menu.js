@@ -146,7 +146,7 @@ const TabStack = createBottomTabNavigator({
     Learning: {
       screen: NaLearning,
       navigationOptions: {
-        tabBarLabel:'EDUCATION',
+        tabBarLabel:'LEARNING',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-bookmarks" color={tintColor} size={24}/>
         ),

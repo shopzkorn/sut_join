@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  AsyncStorage
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -170,7 +171,8 @@ class Articles extends Component {
     page: 1,
     loadingVisible: true,
     loading: false,
-    lastItem: true
+    lastItem: true,
+    user_id: ''
   }
   scrollX = new Animated.Value(0);
 
@@ -387,10 +389,11 @@ class Articles extends Component {
       }),
       body: JSON.stringify({
         page: page,
+        user_id : this.state.user_id
       })
     });
     const users = await response.json();
-    console.log(users.length);
+    console.log(users);
     if (users.length > 0) {
       this.setState({ lastItem: false })
     } else {
@@ -414,7 +417,16 @@ class Articles extends Component {
   }
 
   componentWillMount() {
-    this.fetchData(1); //connect backend
+    AsyncStorage.multiGet(['user_id']).then((data) => {
+      let user_id = data[0][1].split('"')[1];
+      this.setState((prevState, props) => ({
+        user_id: user_id
+    }), () => {
+        console.log(this.state.id_user);
+        this.fetchData(1)
+    })
+    });
+    //connect backend
   }
   render() {
     return (
