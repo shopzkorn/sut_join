@@ -14,19 +14,21 @@ import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
+import Follow from './components/Follow/Follow';
 import UserDashboard from './components/Profile/UserDashboard';
 
 
 //Route
 const App = createStackNavigator(
   {
-    Map: {
-      screen: Maps,
+    Map,
+    userProfile: {
+      screen: userProfile,
       navigationOptions: {
-
+        header: null,
       },
     },
-    userProfile,
+    Follow,
     SearchActivity,
     Register,
     AddActivity,
