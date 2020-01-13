@@ -38,7 +38,9 @@ class Profile extends React.Component {
     myhost: [],
     refreshing: false,
     id_user: '',
-    loadingVisible: true
+    loadingVisible: true,
+    follower: 0,
+    following: 0
 
   }
   scrollXHost = new Animated.Value(0);
@@ -94,22 +96,74 @@ class Profile extends React.Component {
         console.error(error);
       });
   }
-
-  fetchData = async () => {
-    const responseHost = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
-      method: 'post',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({
-        id_user: this.state.id_user
+  setFollow = (data) => {
+    console.log(data)
+    this.setState({
+      following: data[0],
+      follower: data[1]
+    })
+  }
+  setHost = (data) => {
+    this.setState({
+      myhost: data,
+    })
+  }
+  setProfile = (data) => {
+    data.map(user =>
+      this.setState({
+        user_name: user.name,
+        user_surname: user.surname,
+        user_profile: user.profile,
+        user_volunteer: user.volunteer
       })
-    });
-    const host = await responseHost.json();
-    // console.log(host);
-    this.setState({ myhost: host,  });
+    )
+  }
+  fetchData = async () => {
     // console.log(this.state.myhost);
+    Promise.all([
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          id_user: this.state.id_user
+        })
+      }),
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          user_id: this.state.id_user,
+        })
+      }),
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          status: '5',
+          id_user: this.state.id_user,
+        })
+      })
+    ])
+      .then(([res1, res2, res3]) => Promise.all([res1.json(), res2.json(), res3.json()]))
+      .then(([data1, data2, data3]) => {
+        console.log(data3),
+          this.setHost(data1),
+          this.setProfile(data2),
+          this.setFollow(data3),
+          this.setState({
+            loadingVisible: false
+          })
+      }
+      )
   }
 
   renderDotsHost() {
@@ -138,32 +192,34 @@ class Profile extends React.Component {
   }
 
   renderHost = () => {
-    return (
-      <View style={[styles.flex, styles.column, styles.recommended]}>
-        <View
-          style={[
-            styles.row,
-            styles.recommendedHeader
-          ]}
-        >
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>HOST</Text>
+    if (!this.state.loadingVisible) {
+      return (
+        <View style={[styles.flex, styles.column, styles.recommended]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            <Text style={{ fontSize: theme.sizes.font * 1.4, marginBottom: 10 }}>{this.state.user_name}'timeline</Text>
+          </View>
+          <View style={[styles.column, styles.recommendedList]}>
+            <FlatList
+              Vertical
+              pagingEnabled
+              scrollEnabled
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              snapToAlignment="center"
+              style={[styles.shadow, { overflow: 'visible' }]}
+              data={this.state.myhost}
+              keyExtractor={(item, index) => `${item.id}`}
+              renderItem={({ item, index }) => this.renderDestination(item, index)}
+            />
+          </View>
         </View>
-        <View style={[styles.column, styles.recommendedList]}>
-          <FlatList
-            Vertical
-            pagingEnabled
-            scrollEnabled
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            snapToAlignment="center"
-            style={[styles.shadow, { overflow: 'visible' }]}
-            data={this.state.myhost}
-            keyExtractor={(item, index) => `${item.id}`}
-            renderItem={({ item, index }) => this.renderDestination(item, index)}
-          />
-        </View>
-      </View>
-    );
+      );
+    }
   }
   refresh() {
     this.setState({ refreshing: true });
@@ -177,11 +233,12 @@ class Profile extends React.Component {
   componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1].split('"')[1];
-      this.setState({
-        id_user: user_id,
-      });
-      this.fetchData();
-      this.GetUser();
+      this.setState((prevState, props) => ({
+        id_user: user_id
+      }), () => {
+        console.log(this.state.id_user);
+        this.fetchData()
+      })
     });
   }
 
@@ -255,82 +312,113 @@ class Profile extends React.Component {
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.user_profile;
     console.log(photoUser)
     // );
-    return (
-      <View>
-        {/* <Text style={styles.text}>PROFILE</Text> */}
+    if (!this.state.loadingVisible) {
+      return (
+        <View style={{ backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
 
-        {/* <View style={{ justifyContent: 'center' }}>
-          <View style={{ flex: 1 }}>
-            <Image source={{ uri: photoUser }} style={styles.avatar} />
-          </View>
-          <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-            <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
-          </View>
-        </View> */}
-        <View style={styles.shadow}>
-          <View style={{ marginTop: 100, justifyContent: 'center', alignItems: 'center', }}>
-            <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
-          </View>
-          <View style={{ marginTop: 150, justifyContent: 'center', alignItems: 'center', }}>
-            <Text style={{ color: theme.colors.black, fontSize: 30, fontWeight: 'bold' }}>{this.state.user_name} {this.state.user_surname}</Text>
-          </View>
-          <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', }}>
-            <Text style={{ color: theme.colors.black, fontSize: 20, fontWeight: 'bold' }}>Volunteer Point: {this.state.user_volunteer}</Text>
+          <View style={styles.shadow}>
+            <View style={{ marginTop: 50, justifyContent: 'center', alignItems: 'center', }}>
+              <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
+              <Text style={{ color: theme.colors.black, fontSize: 24, fontWeight: 'bold', marginTop: -20 }}>{this.state.user_name} {this.state.user_surname}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+                // onPress={() => navigate('MyInterest')}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  fontSize: 16,
+                  paddingVertical:5,
+                  fontWeight: 'bold'
+                }}>Volunteer Point: {this.state.user_volunteer}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 ,marginBottom:10}}>
+             
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+                onPress={() => navigate('MyInterest')}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  paddingVertical:5,
+                  fontSize: 16,
+                  fontWeight: 'bold'
+                }}>My Interests</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+                onPress={() => navigate('UserDashboard')}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  fontSize: 16,
+                  paddingVertical:5,
+                  fontWeight: 'bold'
+                }}> Dashboard</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
+            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('Follow', { Status: 4, id: this.state.id_user })}>
+                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followings</Text>
+                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold', alignItems: 'center' }}>{this.state.following}</Text>
+
+              </TouchableOpacity>
+              <TouchableOpacity style={{ alignItems: 'center', }} onPress={() => navigation.navigate('Follow', { Status: 3, id: this.state.id_user })}>
+                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followers</Text>
+                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>{this.state.follower}</Text>
+
+              </TouchableOpacity>
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+              // onPress={this.processFollow.bind(this)}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  fontSize: 16,
+                  fontWeight: 'bold'
+                }}>Edit profile</Text>
+              </TouchableOpacity>
+            </View>
+            
           </View>
         </View>
-
-        {/* <View style={{marginTop:220}}> */}
-        {/* <Button
-          title="Login"
-          onPress={() => navigate('Login')}
-        />
-
-        <Button
-          title="Register"
-          onPress={() => navigate('Register')}
-        /> */}
-
-        <Button
-          title="My Interests"
-          onPress={() => navigate('MyInterest')}
-        />
-
-        <Button
-          title="Dashboard"
-          onPress={() => navigate('UserDashboard')}
-        />
-
-        <Button
-          title="FirstPage"
-          onPress={() => navigate('FirstPage')}
-        />
-        {/* </View> */}
-
-      </View>
-    );
+      );
+    }
   }
 
   render() {
 
     return (
-      <PTRView onRefresh={this.refresh.bind(this)} >
-        <LinearGradient
-           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-           start={{ x: 0.0, y: 0.5 }}
-           end={{ x: 1.0, y: 0.5 }}
-           style={{ flex: 1 }} >
-          <View style={{ flex: 1 }}>
-            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-          </View>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-          >
-            {this.renderProfile()}
-            {this.renderHost()}
-          </ScrollView>
-        </LinearGradient>
-      </PTRView>
+
+      <LinearGradient
+        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0.0, y: 0.5 }}
+        end={{ x: 1.0, y: 0.5 }}
+        style={{ flex: 1 }} >
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+        >
+          {this.renderProfile()}
+          {this.renderHost()}
+        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+        </View>
+      </LinearGradient >
+
     )
 
   }
@@ -348,7 +436,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   MainAvatar: {
-    position: 'absolute',
+    // position: 'absolute',
     top: -theme.sizes.margin,
     // right: theme.sizes.margin,
     width: theme.sizes.padding * 4,
@@ -489,5 +577,24 @@ const styles = StyleSheet.create({
     borderRadius: 6.25,
     borderColor: theme.colors.active,
   },
-
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStylenoFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: '#ffa8c0',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#ffa8c0',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
 });

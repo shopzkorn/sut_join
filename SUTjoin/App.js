@@ -14,6 +14,8 @@ import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
+import Follow from './components/Follow/Follow';
+import DetailNews from './components/News/DetailNews';
 import UserDashboard from './components/Profile/UserDashboard';
 import UserDashboardUserdata from './components/Profile/UserDashboardUserdata';
 import FirstPage from './components/Navigation/FirstPage';
@@ -25,13 +27,15 @@ import add_subject from './components/Learning/add_subject';
 //Route
 const App = createStackNavigator(
   {
-    Map: {
-      screen: Maps,
+    Map,
+    userProfile: {
+      screen: userProfile,
       navigationOptions: {
-
+        header: null,
       },
     },
-    userProfile,
+    Follow,
+    DetailNews,
     SearchActivity,
     Register,
     AddActivity,

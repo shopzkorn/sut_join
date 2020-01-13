@@ -72,7 +72,7 @@ class History extends React.Component {
 
   fetchDataSearch = async () => {
     console.log('fecth');
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Expolre.php', {
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Explore.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -274,38 +274,6 @@ class History extends React.Component {
     </View>
   }
 
-  // renderTypeFilter = () => {
-  //   return (
-  //     <View style={[styles.flex, styles.column, styles.recommended]}>
-  //       <View
-  //         style={[
-  //           styles.row,
-  //           styles.recommendedHeader
-  //         ]}
-  //       >
-  //         <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Join with Interest</Text>
-  //         <TouchableOpacity activeOpacity={0.5}>
-  //           <Text style={{ color: theme.colors.caption }}>More</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //       <View style={[styles.column, styles.recommendedList]}>
-  //         <FlatList
-  //           horizontal
-  //           pagingEnabled
-  //           scrollEnabled
-  //           showsHorizontalScrollIndicator={false}
-  //           scrollEventThrottle={16}
-  //           snapToAlignment="center"
-  //           style={[styles.shadow, { overflow: 'visible' }]}
-  //           data={this.state.buttonBG}
-  //           keyExtractor={(item, index) => `${item.id}`}
-  //           renderItem={({ item, index }) => this.renderTypeFilteration(item, index)}
-  //         />
-  //       </View>
-  //     </View>
-  //   );
-  // }
-
   renderTypeFilterScoll(){
     return(
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -330,39 +298,6 @@ class History extends React.Component {
     </ScrollView>
     )
   }
-
-  // renderTypeFilteration = (item, index) => {
-  //   const isLastItem = index === item.length - 1;
-  //   console.log(item);
-  //   let bg = item.background;
-  //   return (
-  //     <View style={[
-  //       styles.flex, styles.row, styles.recommendation, styles.shadow,
-  //       index === 0 ? { marginLeft: theme.sizes.margin / 2 } : null,
-  //       isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
-  //     ]}>
-  //       <View style={[styles.flex, styles.recommendationHeader]}>
-  //         <TouchableOpacity activeOpacity={0.8} style={{ backgroundColor: item.backgroundcolor ? "#cccccc" : "#eeeeee", }}
-  //           onPress={() => this.changBG(item)}>
-  //           <Image style={[styles.recommendationImage]} source={item.background} />
-  //           <View style={{ width: 100, height: 100, position: 'absolute', backgroundColor: item.backgroundcolor ? "white" : "black", opacity: 0.5 }} />
-  //           <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
-  //             <Text style={{ fontSize: theme.sizes.font * 0.62, color: item.backgroundcolor ? "black" : "white", fontWeight: 'bold', }}>
-  //               {item.text}
-  //             </Text>
-  //             {/* <FontAwesome
-  //                   name={item.saved ? 'bookmark' : 'bookmark-o'}
-  //                   color={theme.colors.white}
-  //                   size={theme.sizes.font * 1.25}
-  //                 /> */}
-  //           </View>
-  //         </TouchableOpacity>
-
-  //       </View>
-
-  //     </View>
-  //   )
-  // }
 
   changBG = item => {
     let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));

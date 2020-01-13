@@ -134,12 +134,15 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
+   
     // paddingTop: Constants.statusBarHeight,
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
-    padding: 16,
+    padding: 10,
+    // borderColor: '#ffa8c0',
+    // borderWidth:1
   },
   circleButtun: {
     alignItems: 'center',

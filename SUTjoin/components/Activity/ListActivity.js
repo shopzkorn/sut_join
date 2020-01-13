@@ -172,13 +172,11 @@ class Articles extends Component {
     loadingVisible: true,
     loading: false,
     lastItem: true,
-    user_id: ''
+    user_id: '',
+    new_img: [],
   }
   scrollX = new Animated.Value(0);
 
-  loadmore = () => {
-    console.log('loadmore');
-  }
   renderDots() {
     const { destinations } = this.props;
     // console.log(this.state.data);
@@ -188,7 +186,7 @@ class Articles extends Component {
         styles.flex, styles.row,
         { justifyContent: 'center', alignItems: 'center', marginTop: 10 }
       ]}>
-        {this.state.data.map((item, index) => {
+        {this.state.new_img.map((item, index) => {
           const borderWidth = dotPosition.interpolate({
             inputRange: [index - 1, index, index + 1],
             outputRange: [0, 2.5, 0],
@@ -205,22 +203,7 @@ class Articles extends Component {
     )
   }
 
-  renderRatings(rating) {
-    const stars = new Array(5).fill(0);
-    return (
-      stars.map((_, index) => {
-        const activeStar = Math.floor(rating) >= (index + 1);
-        return (
-          <FontAwesome
-            name="star"
-            key={`star-${index}`}
-            size={theme.sizes.font}
-            color={theme.colors[activeStar ? 'active' : 'gray']}
-          />
-        )
-      })
-    )
-  }
+
   renderFooter = () => {
     if (!this.state.loading) return null;
 
@@ -236,17 +219,9 @@ class Articles extends Component {
       </View>
     );
   };
-  renderListRecommended = () => {
+  renderNews = () => {
     return (
-      <View style={[styles.column, styles.destinations], { marginTop: 20 }}>
-        <View
-          style={[
-            styles.row,
-            styles.recommendedHeader
-          ]}
-        >
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Recommended</Text>
-        </View>
+      <View style={{ marginTop: 10 }}>
         <FlatList
           horizontal
           pagingEnabled
@@ -254,29 +229,66 @@ class Articles extends Component {
           showsHorizontalScrollIndicator={false}
           decelerationRate={0}
           scrollEventThrottle={16}
-          snapToAlignment="center"
-          style={{ overflow: 'visible', height: 280, marginTop: 20 }}
-          data={this.state.data}
+          style={{ overflow: 'visible' }}
+          data={this.state.new_img}
           keyExtractor={(item, index) => `${item.id}`}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
-          renderItem={({ item }) => this.renderItem(item)}
+          renderItem={({ item }) => this.renderNewsItem(item)}
         />
         {this.renderDots()}
       </View>
     );
   }
 
+  renderNewsItem = (item, index) => {
+    let photoNews = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.url;
+    const { navigation } = this.props;
+    if (item.news_status == 2) {
+      return (
+        <ImageBackground
+          resizeMode='contain'
+          style={{
+            height: height / 7,
+            width: width,
+          }}
+          imageStyle={{ borderRadius: theme.sizes.radius }}
+          source={{ uri: photoNews }}
+        >
+          <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 20 }}>
+            <Text style={{ color: theme.colors.white, fontSize: 15 }}>{item.text1}</Text>
+          </View>
+          <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 5 }}>
+            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: 24 }}>{item.text2}</Text>
+          </View>
+        </ImageBackground>
+      )
+    } else {
+      return (
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailNews', { article: item })}>
+          <ImageBackground
+            resizeMode='contain'
+            style={{
+              height: height / 7,
+              width: width,
+            }}
+            imageStyle={{ borderRadius: theme.sizes.radius }}
+            source={{ uri: photoNews }}
+          >
+            <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 20 }}>
+              <Text style={{ color: theme.colors.white, fontSize: 15 }}>{item.text1}</Text>
+            </View>
+            <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 5 }}>
+              <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: 24 }}>{item.text2}</Text>
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   renderListActivity = () => {
     return (
       <View style={[styles.flex, styles.column, styles.recommended], { marginTop: 20 }}>
-        <View
-          style={[
-            styles.row,
-            styles.recommendedHeader
-          ]}
-        >
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>Activity</Text>
-        </View>
         <View style={[styles.column, styles.recommendedList]}>
           <FlatList
             Vertical
@@ -286,7 +298,7 @@ class Articles extends Component {
             // scrollEventThrottle={16}
             // ListFooterComponent={() =>this.renderFooter}
             snapToAlignment="center"
-            style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
+            style={[styles.shadow, { overflow: 'visible' }]}
             data={this.state.data}
             keyExtractor={(item, index) => `${item.id}`}
             renderItem={({ item, index }) => this.renderItem(item, index)}
@@ -371,6 +383,23 @@ class Articles extends Component {
     )
 
   }
+  getnews = async () => {
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetNews.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.user_id
+      })
+    });
+    const news = await response.json();
+    this.setState({
+      new_img: news
+    })
+    // console.log(this.state.new_img);
+  }
 
   fetchData = async (status) => {
     var page = 0;
@@ -389,11 +418,17 @@ class Articles extends Component {
       }),
       body: JSON.stringify({
         page: page,
-        user_id : this.state.user_id
+        user_id: this.state.user_id
       })
     });
     const users = await response.json();
-    console.log(users);
+    // console.log(users);
+    this.getnews();
+    users.map(user =>
+      this.setState({
+        user_surname: user.surname,
+      })
+    );
     if (users.length > 0) {
       this.setState({ lastItem: false })
     } else {
@@ -416,15 +451,15 @@ class Articles extends Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1].split('"')[1];
       this.setState((prevState, props) => ({
         user_id: user_id
-    }), () => {
-        console.log(this.state.id_user);
+      }), () => {
+        // console.log(this.state.id_user);
         this.fetchData(1)
-    })
+      })
     });
     //connect backend
   }
@@ -465,16 +500,13 @@ class Articles extends Component {
               }
             }}
           >
-
-
-            <View style={{ flex: 1 }}>
-              <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-            </View>
-
-            {/* {this.renderListRecommended()} */}
+            {this.renderNews()}
             {this.renderListActivity()}
             {this.renderFooter()}
           </ScrollView>
+          <View >
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
         </LinearGradient>
       </SafeAreaView>
 
