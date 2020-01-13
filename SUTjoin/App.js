@@ -15,6 +15,7 @@ import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import Follow from './components/Follow/Follow';
+import DetailNews from './components/News/DetailNews';
 import UserDashboard from './components/Profile/UserDashboard';
 
 
@@ -29,6 +30,7 @@ const App = createStackNavigator(
       },
     },
     Follow,
+    DetailNews,
     SearchActivity,
     Register,
     AddActivity,

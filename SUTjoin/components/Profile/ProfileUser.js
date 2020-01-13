@@ -70,18 +70,10 @@ class Profile extends React.Component {
         data.map(user =>
             this.setState({
                 user_name: user.name,
+                user_surname: user.surname,
+                user_profile: user.profile,
             })
-        ),
-            data.map(user =>
-                this.setState({
-                    user_surname: user.surname,
-                })
-            ),
-            data.map(user =>
-                this.setState({
-                    user_profile: user.profile,
-                })
-            )
+        )    
     }
     processFollow = () => {
         console.log('this');
@@ -285,7 +277,7 @@ class Profile extends React.Component {
         let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.user_profile;
         if (!this.state.loadingVisible) {
             return (
-                <View style={{ backgroundColor: '#c0c0ff' }}>
+                <View style={{ backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
 
                     <View style={styles.shadow}>
                         <View style={{ marginTop: 50, justifyContent: 'center', alignItems: 'center', }}>

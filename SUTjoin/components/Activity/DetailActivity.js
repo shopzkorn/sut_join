@@ -532,7 +532,13 @@ class Article extends Component {
         index === 0 ? { marginLeft: theme.sizes.margin / 2 } : null,
         isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
       ]}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() =>  navigation.navigate('userProfile', { User: item.user_id })}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => {
+          if (item.user_id != this.state.id_user.split('"')[1]) {
+            navigation.navigate('userProfile', { User: item.user_id })
+          } else {
+            navigation.navigate('Profile')
+          }
+        }}>
           <View style={[styles.flex, styles.recommendationHeader]}>
             <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
             <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
@@ -709,7 +715,13 @@ class Article extends Component {
           </View>
           <View style={[styles.flex, styles.content]}>
             <View style={[styles.flex, styles.contentHeader]}>
-              <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: article.id_host })} style={{
+              <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                if (article.user_id != this.state.id_user.split('"')[1]) {
+                  navigation.navigate('userProfile', { User: article.id_host })
+                } else {
+                  navigation.navigate('Profile')
+                }
+              }} style={{
                 position: 'absolute',
                 top: -theme.sizes.margin,
                 right: theme.sizes.margin,
@@ -718,7 +730,7 @@ class Article extends Component {
                   width: theme.sizes.padding * 2,
                   height: theme.sizes.padding * 2,
                   borderRadius: theme.sizes.padding,
-                  backgroundColor:'white'
+                  backgroundColor: 'white'
                 }} source={{ uri: photoUser }} />
               </TouchableOpacity>
               <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -726,7 +738,7 @@ class Article extends Component {
                   <Text style={styles.title}>{article.title}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <TouchableOpacity activeOpacity={0.8} onPress={() =>  navigation.navigate('userProfile', { User: article.id_host })}>
+                  <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: article.id_host })}>
                     <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }} >{article.name} {article.surname}</Text>
                   </TouchableOpacity>
                 </View>
