@@ -348,9 +348,8 @@ class History extends React.Component {
           </PTRView>
         </LinearGradient>
       
-    )
+    );
   }
-
 }
 export default History;
 
