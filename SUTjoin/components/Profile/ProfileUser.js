@@ -195,6 +195,10 @@ class Profile extends React.Component {
             setTimeout(() => { resolve() }, 2000)
         });
     }
+
+    componentWillMount(){
+        console.log("thisssss");
+    }
     componentDidMount() {
         const { navigation } = this.props;
         const User = navigation.getParam('User');
@@ -285,14 +289,14 @@ class Profile extends React.Component {
                             <Text style={{ color: theme.colors.black, fontSize: 24, fontWeight: 'bold', marginTop: -20 }}>{this.state.user_name} {this.state.user_surname}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20 }}>
-                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('Follow', { Status: 4,id: this.state.id_user})}>
-                                <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: 'bold' }}>Followings</Text>
-                                <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: 'bold', alignItems: 'center' }}>{this.state.following}</Text>
+                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('FollowUser', { Status: 4,id: this.state.id_user})}>
+                                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followings</Text>
+                                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold', alignItems: 'center' }}>{this.state.following}</Text>
 
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ alignItems: 'center', }} onPress={() => navigation.navigate('Follow', { Status: 3,id: this.state.id_user })}>
-                                <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: 'bold' }}>Followers</Text>
-                                <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: 'bold' }}>{this.state.follower}</Text>
+                            <TouchableOpacity style={{ alignItems: 'center', }} onPress={() => navigation.navigate('FollowUser', { Status: 3,id: this.state.id_user })}>
+                                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followers</Text>
+                                <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>{this.state.follower}</Text>
 
                             </TouchableOpacity>
                             <TouchableOpacity style={[
@@ -305,8 +309,8 @@ class Profile extends React.Component {
                             >
                                 <Text style={{
                                     color: this.state.follow
-                                        ? "#ffa8c0"
-                                        : "black",
+                                        ? "#fe53bb"
+                                        : "#fff",
                                     fontSize: 16,
                                     fontWeight: 'bold'
                                 }}>{this.state.followText}</Text>
@@ -496,11 +500,11 @@ const styles = StyleSheet.create({
     },
     buttonStylenoFollow: {
         paddingHorizontal: 30,
-        backgroundColor: '#ffa8c0',
+        backgroundColor: '#fe53bb',
         justifyContent: 'center',
         borderRadius: 10,
         borderWidth: 2.5,
-        borderColor: '#ffa8c0',
+        borderColor: '#fe53bb',
     },
     buttonStyleFollow: {
         paddingHorizontal: 30,
@@ -508,6 +512,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         borderWidth: 2.5,
-        borderColor: '#ffa8c0',
+        borderColor: '#fe53bb',
     },
 });

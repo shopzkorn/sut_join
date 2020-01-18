@@ -15,6 +15,7 @@ import MyInterest from './components/Profile/MyInterests';
 import ScanQrcode from './components/Checkin/ScanQrcode';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import Follow from './components/Follow/Follow';
+import FollowUser from './components/Follow/Follow_user';
 import DetailNews from './components/News/DetailNews';
 import UserDashboard from './components/Profile/UserDashboard';
 import UserDashboardUserdata from './components/Profile/UserDashboardUserdata';
@@ -41,6 +42,7 @@ const App = createStackNavigator(
     AddActivity,
     Article,
     ScanQrcode,
+    FollowUser,
     CheckinActivity,
     UserDashboard,
     SelectMap: {

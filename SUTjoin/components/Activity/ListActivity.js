@@ -255,10 +255,10 @@ class Articles extends Component {
           source={{ uri: photoNews }}
         >
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 20 }}>
-            <Text style={{ color: theme.colors.white, fontSize: 15 }}>{item.text1}</Text>
+            <Text style={{ color: theme.colors.white, fontSize:  width / 27 }}>{item.text1}</Text>
           </View>
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 5 }}>
-            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: 24 }}>{item.text2}</Text>
+            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize:  width / 17 }}>{item.text2}</Text>
           </View>
         </ImageBackground>
       )
@@ -422,7 +422,7 @@ class Articles extends Component {
       })
     });
     const users = await response.json();
-    // console.log(users);
+    //  console.log(users);
     this.getnews();
     users.map(user =>
       this.setState({

@@ -438,7 +438,8 @@ const styles = StyleSheet.create({
   MainAvatar: {
     // position: 'absolute',
     top: -theme.sizes.margin,
-    // right: theme.sizes.margin,
+    borderWidth: 2.5,
+    borderColor: '#fff',
     width: theme.sizes.padding * 4,
     height: theme.sizes.padding * 4,
     borderRadius: theme.sizes.padding,

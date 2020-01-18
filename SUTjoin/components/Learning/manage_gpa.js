@@ -76,21 +76,20 @@ class manage_gpa extends Component {
             // Showing response message coming from server after inserting records.
             // alert(responseJson);
             console.log(responseJson);
-                this.setState({gpa_1_1: responseJson[0],}),
-                this.setState({gpa_1_2: responseJson[1],});
-                this.setState({gpa_1_3: responseJson[2],}),
-
-                this.setState({gpa_2_1: responseJson[3],});
-                this.setState({gpa_2_2: responseJson[4],}),
-                this.setState({gpa_2_3: responseJson[5],});
-
-                this.setState({gpa_3_1: responseJson[6],}),
-                this.setState({gpa_3_2: responseJson[7],});
-                this.setState({gpa_3_3: responseJson[8],}),
-
-                this.setState({gpa_4_1: responseJson[9],});
-                this.setState({gpa_4_2: responseJson[10],}),
-                this.setState({gpa_4_3: responseJson[11],});
+                this.setState({
+                  gpa_1_1: responseJson[0],
+                  gpa_1_2: responseJson[1],
+                  gpa_1_3: responseJson[2],
+                  gpa_2_1: responseJson[3],
+                  gpa_2_2: responseJson[4],
+                  gpa_2_3: responseJson[5],
+                  gpa_3_1: responseJson[6],
+                  gpa_3_2: responseJson[7],
+                  gpa_3_3: responseJson[8],
+                  gpa_4_1: responseJson[9],
+                  gpa_4_2: responseJson[10],
+                  gpa_4_3: responseJson[11],
+                })
 
           })
           .catch((error) => {
