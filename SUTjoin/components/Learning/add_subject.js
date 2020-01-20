@@ -63,7 +63,7 @@ class add_subject extends Component {
           .then((responseJson) => {
             // Showing response message coming from server after inserting records.
             alert(responseJson);
-            navigate('Learning')
+            navigate('manage_subject')
           }).catch((error) => {
             console.error(error);
           });
@@ -137,12 +137,28 @@ class add_subject extends Component {
                     </Picker>
                     </View>
                 </View>
-                    <TouchableOpacity onPress={this.AddSubject}
+                    {/* <TouchableOpacity onPress={this.AddSubject}
                     style={{flex:0.2 , backgroundColor: '#ff1694', borderRadius:5, padding: 25,marginTop:200}}>
                         <Text style={{ alignSelf:"center" , fontSize : 16 , color : '#fff' }}>Save</Text>
+                    </TouchableOpacity> */}
+                <View style={{marginTop:200,marginBottom:20}}>
+                    <TouchableOpacity style={[
+                      styles.buttonStyleFollow,
+                      styles.centerEverything]}
+                      activeOpacity={0.5}
+                      onPress={this.AddSubject}
+                    >
+                      <Text style={{
+                        color:"#fe53bb",
+                        fontSize: 20,
+                        paddingVertical:5,
+                        fontWeight: 'bold'
+                      }}>Save Course</Text>
                     </TouchableOpacity>
-
                 </View>
+                
+                </View>
+                
                 </ScrollView>
                 </LinearGradient>
             </SafeAreaView>
@@ -173,13 +189,25 @@ const styles = StyleSheet.create({
       flex: 1,
     //   justifyContent: 'center',
       alignItems: 'center',
-      padding:36
+      padding:30
     },
     row_underline:{
         flexDirection: "row",
         borderBottomWidth: 1,
         borderBottomColor: '#ff1694'
-    }
+    },
+    buttonStyleFollow: {
+      paddingHorizontal: 30,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      borderRadius: 10,
+      borderWidth: 2.5,
+      borderColor: '#fe53bb',
+    },
+    centerEverything: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   });
 
   export default add_subject;

@@ -191,7 +191,7 @@ class Article extends Component {
     console.log(location);
     var scheme = Platform.OS === 'ios' ? 'maps:${location}' : 'geo:${location}?center=${location}&q=${location}&z=16'
     const url = Platform.select({
-      ios: "maps:" + location,
+      ios: "maps:" + location + "?center=" + location + "&q=" + location + "&z=16",
       android: "geo:" + location + "?center=" + location + "&q=" + location + "&z=16"
     });
     this.openExternalApp(url, location)

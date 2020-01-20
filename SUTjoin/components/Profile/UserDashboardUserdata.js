@@ -138,7 +138,7 @@ class UserDashboard_user__data extends React.Component {
     
         return (
           <View>
-            <Text style={{fontSize:30,marginBottom:20,marginTop:20}}>My Activities Joined</Text>
+            <Text style={{fontSize:30,marginBottom:20,marginTop:20,padding:10}}>My Activities Joined</Text>
             <View style={{flexDirection:'row',alignItems: 'center',justifyContent: 'center',marginTop: 20}}>
               
               <View style={{marginRight: 20,alignItems: 'center'}}>
@@ -262,11 +262,11 @@ class UserDashboard_user__data extends React.Component {
     render() {
         
             return (
-              <PTRView onRefresh={this.refresh.bind(this)} >
                 <LinearGradient
                   colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
                   start={{ x: 0.0, y: 0.5 }}
                   end={{ x: 1.0, y: 0.5 }}
+                  style={{ flex: 1 }}
                 >
                   <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -279,7 +279,6 @@ class UserDashboard_user__data extends React.Component {
 
                   </ScrollView>
                 </LinearGradient>
-              </PTRView>
             )
           }
     

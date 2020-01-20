@@ -19,25 +19,26 @@ import {
   Icon,
   SwipeRow,
   Button,
-
-
 } from "native-base";
+
 import LinearGradient from 'react-native-linear-gradient';
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
 
-class manage_subject extends Component {
+class volunteer extends Component {
     constructor(props) {
         super(props);
         this.onEndReachedCalledDuringMomentum = true;
       }
       state = {
         user_id:'',
+        id_user:'',
 
         user_detail: [],
 
         id_subject_del: '',
+        user_volunteer: '',
 
       }
 
@@ -47,13 +48,44 @@ class manage_subject extends Component {
           this.setState({
             user_id: user_id,
           });
-          console.log("Learbibg-ID :"+user_id);
-          this.GetSubject();
+          this.GetUser();
+          this.GetVolunteer();
       });
       }
+
+      GetUser() {
+        const { navigate } = this.props.navigation;
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
+          method: 'post',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify({
+            user_id: this.state.user_id.split('"')[1],
+          })
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            // Showing response message coming from server after inserting records.
+            // alert(responseJson);
+            console.log(responseJson);
+            
+            responseJson.map(user =>
+              this.setState({
+                user_volunteer: user.volunteer,
+                loadingVisible: false
+              })
+            );
+            console.log(this.state.user_volunteer);
+    
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
       
-      GetSubject() {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetCourse.php', {
+      GetVolunteer() {
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetVolunteer.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',
@@ -78,37 +110,6 @@ class manage_subject extends Component {
 
       }
 
-      setDeleteValue(item_id){
-        this.setState({ id_subject_del: item_id})
-        {this.DeleteSubject()}
-      }
-
-      DeleteSubject() {
-        const { navigate } = this.props.navigation;
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/deleteSubject.php', {
-          method: 'post',
-          headers: new Headers({
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }),
-          body: JSON.stringify({
-            user_id: this.state.user_id.split('"')[1],
-            id_subject: this.state.id_subject_del,
-          })
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            // Showing response message coming from server after inserting records.
-            // alert(responseJson);
-            console.log(responseJson);
-            alert(responseJson);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-        console.log('delllll'+ this.state.id_subject_del)
-        navigate('manage_subject')
-      }
-
       renderFollow = () => {
         if (!this.state.loadingVisible) {
             return (
@@ -129,79 +130,20 @@ class manage_subject extends Component {
 
       renderDestination = item => {
         const { navigation } = this.props;
-        var grade = ''
-        if(item.grade == 0){
-          grade = 'F'
-        }else if(item.grade == 1){
-          grade = 'D'
-        }else if(item.grade == 1.5){
-          grade = 'D+'
-        }else if(item.grade == 2){
-          grade = 'C'
-        }else if(item.grade == 2.5){
-          grade = 'C+'
-        }else if(item.grade == 3){
-          grade = 'B'
-        }else if(item.grade == 3.5){
-          grade = 'B+'
-        }else if(item.grade == 4){
-          grade = 'A'
-        }
+        
         return (
-            <View style={{justifyContent: 'flex-start'}}>
-
-                    {/* <View style={[styles.row]}>
+            <View style={{justifyContent: 'flex-start',marginTop:10}}>
+                    <View style={[styles.row],{alignItems:'center'}}>
                         <View style={{ marginHorizontal: 10, justifyContent: 'center', }}>
-                            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: theme.sizes.padding * 0.4 }}>{item.id_subject} {item.name_subject} [Grade] {item.grade}</Text>
+                            <Text style={{ color: '#fe53bb', fontWeight: 'bold', fontSize: theme.sizes.padding * 0.6 }}>Activities : {item.title}</Text>
+                            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: theme.sizes.padding * 0.4 ,marginTop:10}}>
+                                Volunteer Point : {item.volunteer}   Date :  {item.date_checked}
+                            </Text>
+                            <View style={{ borderBottomColor: '#fff', borderBottomWidth: 3, marginTop:5,marginBottom:10}} />
                         </View>
-                    </View> */}
-
-                  <SwipeRow
-                  leftOpenValue={75}
-                  rightOpenValue={-75}
-                  
-                  left={
-                    <Button success onPress={() => Alert.alert(
-                      item.id_subject ,
-                      item.name_subject+'\n'+
-                      "Grade : " + grade+'\n'+
-                      "Credit : " + item.credit ,
-                      [
-                        {text: 'OK', onPress: () => console.log('OK Pressed')},
-                      ],
-                      {cancelable: false},
-                    )}>
-                      <Icon active name="paper" />
-                    </Button>
-                  }
-
-                  right={
-                    <Button danger onPress={() => Alert.alert(
-                      'Delete',
-                      'Are you delete "' + item.name_subject + '"',
-                      [
-                        {
-                          text: 'Cancel',
-                          onPress: () => console.log('Cancel Pressed'),
-                          style: 'cancel',
-                        },
-                        {text: 'OK', onPress: () => this.setDeleteValue(item.id_subject)},
-                      ],
-                      {cancelable: false},
-                    )}>
-                      <Icon active name="trash" />
-                    </Button>
-                  }
-                  body={
-                    <View style={{ paddingLeft: 20 }}>
-                      <Text>{item.name_subject}</Text>
                     </View>
-                  }
-                  />
-
                 <View style={{ alignItems: 'flex-end', justifyContent: 'center', marginRight: 10 }}>
                 </View>
-
             </View>
         )
     }
@@ -217,37 +159,17 @@ class manage_subject extends Component {
                 style={{ flex: 1 }}>
                 <View style={styles.container1}>
                   <View style={{alignItems: 'center'}}>
-                <Text style={{ fontSize: 25 ,marginTop: 20, marginBottom:20}}>Course</Text>
+                    <Text style={{ fontSize: 25 ,marginTop: 20, marginBottom:20,fontWeight: 'bold',}}>Volunteer</Text>
                   </View>
-                {this.renderFollow()}
-                </View>  
-                <View style={styles.container}>
-                {/* <TouchableOpacity onPress={() => navigate('add_subject')}
-                        style={{ backgroundColor: '#ff1694', borderRadius:5, padding: 30,paddingVertical:20, marginTop: 10, marginBottom:20}}>
-                            <Text style={{ alignSelf:"center" , fontSize : 16 , color : '#fff' }}>Add Course</Text>
-                </TouchableOpacity> */}
+                  <View>
+                    <Text style={[styles.row],{fontSize: 20,padding:10,alignSelf: 'center',fontWeight: 'bold',}}>Your Volunteer Point : {this.state.user_volunteer}</Text>
+                    <View style={{ borderBottomColor: '#000', borderBottomWidth: 3, marginTop:5,marginBottom:10}} />
+                  </View>
 
-                <View style={{marginTop:10,marginBottom:20}}>
-                          <TouchableOpacity style={[
-                            styles.buttonStyleFollow,
-                            styles.centerEverything]}
-                            activeOpacity={0.5}
-                            onPress={() => navigate('add_subject')}
-                          >
-                            <Text style={{
-                              color:"#fe53bb",
-                              fontSize: 20,
-                              paddingVertical:5,
-                              fontWeight: 'bold'
-                            }}>Add Course</Text>
-                          </TouchableOpacity>
-                  </View>
+                {this.renderFollow()}
+
+                </View>  
                 
-                {/* <Button
-                title="Add Course"
-                onPress={() => navigate('add_subject')}
-                /> */}
-                </View>
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -301,4 +223,4 @@ const styles = StyleSheet.create({
     },
   });
 
-  export default manage_subject;
+  export default volunteer;

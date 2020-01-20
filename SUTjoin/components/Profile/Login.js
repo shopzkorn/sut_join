@@ -7,9 +7,13 @@ import {
     TextInput,
     Platform,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
+    Image,
 } from "react-native";
 // import { TouchableOpacity } from "react-native-gesture-handler";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Sae } from 'react-native-textinput-effects';
 
 class Login extends Component {
     
@@ -63,8 +67,11 @@ class Login extends Component {
         return (
             
             <View style={styles.container}>
-            <Text style={styles.text}>Login</Text>
-            <View>
+            <Image style={{alignSelf:'center',width:200,height:200}}
+                source={require('../../asset/image/logo.png')}
+            />
+            {/* <Text style={styles.text}>Login</Text> */}
+            {/* <View>
                 <TextInput 
                 style={styles.inputbox}
                 placeholder='Username'
@@ -81,10 +88,33 @@ class Login extends Component {
                 onChangeText={Password => this.setState({ Password })}
                 />
                 
+            </View> */}
+            <View style={[styles.card2]}>
+            
+            <Sae
+            label={'Username'}
+            iconClass={FontAwesomeIcon}
+            iconName={'pencil'}
+            iconColor={'white'}
+            labelStyle={{ color: '#fff' }}
+            value={this.state.Username}
+            onChangeText={Username => this.setState({ Username })}
+          />
+          <Sae
+            style={styles.input}
+            label={'Password'}
+            iconClass={FontAwesomeIcon}
+            secureTextEntry={true}
+            labelStyle={{ color: '#fff' }}
+            value={this.state.Password}
+            onChangeText={Password => this.setState({ Password })}
+          />
             </View>
-            <TouchableOpacity style={styles.button} onPress={this.login.bind(this)}>
-                <Text style={styles.buttontext} onPress={this.login.bind(this)}> Login </Text>
-            </TouchableOpacity>
+            <View style={{alignItems: 'center'}}>
+                <TouchableOpacity style={styles.button} onPress={this.login.bind(this)}>
+                    <Text style={styles.buttontext} onPress={this.login.bind(this)}> Login </Text>
+                </TouchableOpacity>
+            </View>
             <View style={styles.signuptextcont}>
                 <Text style={styles.signuptext}> Don't have an account yet?</Text>
                 <Text style={styles.signuptextLink} onPress={() => navigate('Register')}>Register</Text>
@@ -99,9 +129,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFC0CB',
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
+        // alignItems: 'center',
+        justifyContent: 'center',
     },
+    card2: {
+        padding: 16,
+        justifyContent: 'center',
+      },
     inputbox: {
         width: 300,
         height: 50,
@@ -130,8 +164,9 @@ const styles = StyleSheet.create({
         paddingVertical: 16
     },
     signuptextcont: {
-        alignItems: 'flex-end',
-        flexGrow: 1,
+        // alignItems: 'flex-end',
+        // flexGrow: 1,
+        marginTop: 20,
         justifyContent: 'center',
         paddingVertical: 16,
         flexDirection: 'row',

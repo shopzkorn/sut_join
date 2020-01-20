@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image ,SafeAreaView} from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -62,6 +62,7 @@ export default class TabViewExample extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
+        <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>
@@ -79,6 +80,7 @@ export default class TabViewExample extends React.Component {
           </View>
         </View>
       </LinearGradient>
+      </SafeAreaView>
       ),
     }
   }

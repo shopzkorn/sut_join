@@ -189,10 +189,7 @@ class UserDashboard extends React.Component {
         return (
           <View>
             <Text style={{fontSize:30,marginBottom:10,marginTop:20,padding:10}}>Dashboard</Text>
-            <Button
-              title="My Activities Joined"
-              onPress={() => navigate('UserDashboardUserdata')}
-              />
+            
             <Text style={{fontSize:20,marginBottom:10,padding:10}}>Joined</Text>
             <View style={{marginTop: 40,alignItems: 'center'}}>
               <PieChart
@@ -352,7 +349,7 @@ class UserDashboard extends React.Component {
               </View>
               <View style={{marginRight: 20,alignItems: 'center'}}>
               <ProgressCircle
-                    percent={this.state.percent2}
+                    percent={this.state.createpercent2}
                     radius={50}
                     borderWidth={8}
                     color="#2196F3"
@@ -449,6 +446,23 @@ class UserDashboard extends React.Component {
                   <Text>Eat&Drink</Text>
               </View>
               </View>
+
+              {/* <Button
+              title="My Activities Joined"
+              onPress={() => navigate('UserDashboardUserdata')}
+              /> */}
+            <View style={{padding:30}}>
+              <TouchableOpacity onPress={() => navigate('UserDashboardUserdata')}
+                          style={{ backgroundColor: '#ff1694', borderRadius:5, paddingHorizontal: 20,paddingVertical:20, marginTop: 10}}>
+                              <Text style={{ alignSelf:"center" , fontSize : 16 , color : '#fff' }}>My Activities Joined</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{padding:30}}>
+              <TouchableOpacity onPress={() => navigate('Login')}
+                          style={{ backgroundColor: '#ff1694', borderRadius:5, paddingHorizontal: 20,paddingVertical:20, marginTop: 10}}>
+                              <Text style={{ alignSelf:"center" , fontSize : 16 , color : '#fff' }}>Login</Text>
+                </TouchableOpacity>
+            </View>
               
             </View>
         );
@@ -456,11 +470,11 @@ class UserDashboard extends React.Component {
     render() {
         
             return (
-              <PTRView onRefresh={this.refresh.bind(this)} >
                 <LinearGradient
                   colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
                   start={{ x: 0.0, y: 0.5 }}
                   end={{ x: 1.0, y: 0.5 }}
+                  style={{ flex: 1 }}
                 >
                   <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -473,7 +487,6 @@ class UserDashboard extends React.Component {
 
                   </ScrollView>
                 </LinearGradient>
-              </PTRView>
             )
           }
     

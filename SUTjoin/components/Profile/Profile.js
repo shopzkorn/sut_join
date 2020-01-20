@@ -322,11 +322,11 @@ class Profile extends React.Component {
               <Text style={{ color: theme.colors.black, fontSize: 24, fontWeight: 'bold', marginTop: -20 }}>{this.state.user_name} {this.state.user_surname}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-              <TouchableOpacity style={[
+            <TouchableOpacity style={[
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
-                // onPress={() => navigate('MyInterest')}
+                onPress={() => navigate('volunteer')}
               >
                 <Text style={{
                   color:"#fe53bb",
