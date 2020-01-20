@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import SwitchToggle from "react-native-switch-toggle";
+import LinearGradient from 'react-native-linear-gradient';
 
 class MyInterest extends React.Component {
 
@@ -211,6 +212,12 @@ class MyInterest extends React.Component {
         // console.log(user_idreg);
 
         return (
+          <LinearGradient
+                colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+                start={{ x: 0.0, y: 0.5 }}
+                end={{ x: 1.0, y: 0.5 }}
+                style={{ flex: 1 }}>
+          
           <ScrollView
           showsVerticalScrollIndicator={true}
         >
@@ -452,7 +459,9 @@ class MyInterest extends React.Component {
             </View>
             
           </View>
+          
           </ScrollView>
+          </LinearGradient>
         );
     }
     onPress1 = () => {
@@ -544,7 +553,7 @@ const styles = StyleSheet.create({
 },
   button: {
     // width: 110,
-    backgroundColor: '#ffc9de',
+    backgroundColor:'#ffc9de',
     borderRadius: 25,
     paddingVertical: 20,
     marginTop: 20,

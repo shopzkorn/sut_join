@@ -18,12 +18,13 @@ import CheckinActivity from './components/Checkin/CheckinActivity';
 import Follow from './components/Follow/Follow';
 import FollowUser from './components/Follow/Follow_user';
 import DetailNews from './components/News/DetailNews';
-import UserDashboard from './components/Profile/UserDashboard';
+import UserDashboard from './components/Profile/Tabscene';
 import UserDashboardUserdata from './components/Profile/UserDashboardUserdata';
 import FirstPage from './components/Navigation/FirstPage';
 import manage_gpa from './components/Learning/manage_gpa';
 import manage_subject from './components/Learning/manage_subject';
 import add_subject from './components/Learning/add_subject';
+import volunteer from './components/Profile/Volunteer';
 import SplashScreen from './components/Navigation/FirstPage'
 
 //Route
@@ -103,6 +104,12 @@ const App = createStackNavigator(
     },
     add_subject: {
       screen: add_subject,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    volunteer: {
+      screen: volunteer,
       navigationOptions: {
         // header: null,
       }

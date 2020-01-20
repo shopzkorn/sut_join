@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image,SafeAreaView } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
-import ListActivity from './ListActivity';
-import SearchActivity from './History';
+
+import DashboardAll from './UserDashboard';
+import DashboardUser from './UserDashboardUserdata';
 
 export default class TabViewExample extends React.Component {
 
@@ -49,44 +50,22 @@ export default class TabViewExample extends React.Component {
   FirstRoute = () => {
     const { navigation } = this.props;
     return (
-      <ListActivity navigation={navigation} />
+      <DashboardAll navigation={navigation} />
     );
   }
 
   SecondRoute = () => {
     const { navigation } = this.props;
     return (
-      <SearchActivity navigation={navigation} />
+      <DashboardUser navigation={navigation} />
     );
   }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}>
-        <View style={[styles.flex, styles.row, styles.header,]}>
-          <View style={{ alignItems: 'flex-start' }}>
-          <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
-          </View>
-          <View style={[styles.flex, styles.row]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
-              <FontAwesome name="search" size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-              <Icon name="ios-add-circle" size={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </LinearGradient>
-      ),
-    }
-  }
+  
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'EXPLORE' },
+      { key: 'first', title: 'Dashboard' },
+      { key: 'second', title: 'My Data' },
     ],
   };
 
@@ -94,6 +73,7 @@ export default class TabViewExample extends React.Component {
     const { navigation } = this.props;
     // console.log(navigation);
     return (
+      <SafeAreaView style={{ flex: 1 }}>
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
@@ -104,6 +84,7 @@ export default class TabViewExample extends React.Component {
         onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
+      </SafeAreaView>
     );
   }
 }
