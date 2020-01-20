@@ -763,31 +763,9 @@ return (
         );
     }
   
-  render() {
-    const { navigate } = this.props.navigation;
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }}
-          end={{ x: 1.0, y: 0.5 }}
-          style={{ flex: 1 }}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-          >
-            {this.renderLearning()}
-          </ScrollView>
-          <View style={{ flex: 1 }}>
-          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-        </View>
-        </LinearGradient>
-      </SafeAreaView>
-    );
+  
+
   }
-}
-
-
 const styles = StyleSheet.create({
     flex: {
       flex: 0,
