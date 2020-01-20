@@ -6,32 +6,39 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  PermissionsAndroid
+  TextInput,
+  PermissionsAndroid,
+  View,
+  Dimensions
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import LinearGradient from 'react-native-linear-gradient';
+const { width, height } = Dimensions.get('window');
 
 export default class ScanScreen extends Component {
   state = {
     lat: '',
     lng: '',
     macAddress: '',
-    user_id:'',
-    subject:'',
-    date:''
+    user_id: '',
+    id_activity: '',
+    date: '',
+    OTP: ''
   }
-  onSuccess = (e) => {
-    // Linking
-    //   .openURL(e.data)
-    //   .catch(err => console.error('An error occured', err));
-    console.log(e.data)
-    this.setState( (prevState, props) => ({
-      subject: e.data.split('_')[0],
-      date: e.data.split('_')[1],
+  onSuccess = () => {
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    if(month < 10){
+      month = '0'+month;
+    }
+    this.setState((prevState, props) => ({
+      id_activity: this.state.OTP.split('-')[0],
+      date: date + '/'+month+'/'+year
     }), () => {
-    console.log(this.state.subject+this.state.date),
-    this.checked()
-  })
+      console.log(this.state.id_activity + this.state.date),
+        this.checked()
+    })
   }
   permisions = async () => {
     try {
@@ -75,35 +82,35 @@ export default class ScanScreen extends Component {
     DeviceInfo.getMacAddress().then(mac => {
       // "E5:12:D8:E5:69:97"
       this.setState({
-        macAddress : mac
+        macAddress: mac
       })
       console.log(mac);
     });
   }
 
-  checked(){
+  checked() {
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
-            method: 'post',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify({
-              lat: this.state.lat,
-              lng: this.state.lng,
-              macAddress: this.state.macAddress,
-              user_id: this.state.user_id,
-              subject: this.state.subject,
-              date: this.state.date,
-              status: 1
-            })
-        }).then((response) => response.text())
-            .then((responseJson) => {
-                // console.log('res ' + responseJson.length);
-               alert(responseJson);
-            }).catch((error) => {
-                console.error(error);
-            });
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        lat: this.state.lat,
+        lng: this.state.lng,
+        macAddress: this.state.macAddress,
+        user_id: this.state.user_id,
+        id_activity: this.state.id_activity,
+        date: this.state.date,
+        status: 2
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+        // console.log('res ' + responseJson.length);
+        alert(responseJson);
+      }).catch((error) => {
+        console.error(error);
+      });
   }
 
   componentDidMount() {
@@ -119,14 +126,44 @@ export default class ScanScreen extends Component {
   render() {
     return (
       <LinearGradient
-      colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-      start={{ x: 0.0, y: 0.5 }}
-      end={{ x: 1.0, y: 0.5 }}
-      style={{ flex: 1 }} >
-      <ScrollView>
-          
-      </ScrollView>
-  </LinearGradient>
+        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0.0, y: 0.5 }}
+        end={{ x: 1.0, y: 0.5 }}
+        style={{ flex: 1 }} >
+
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+          <Text style={{
+            color: "#fe53bb",
+            fontSize: 20,
+            fontWeight: 'bold'
+          }}>OTP</Text>
+          <TextInput style={{
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: 10,
+            width: width / 1.2,
+            paddingLeft: 10,
+            marginTop: 10
+          }}
+            placeholder='insert OTP'
+            value={this.state.OTP}
+            keyboardType={'number-pad'}
+            onChangeText={OTP => this.setState({ OTP })}
+          ></TextInput>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+          <TouchableOpacity style={[
+            styles.buttonStyleFollow,
+            styles.centerEverything]}
+            activeOpacity={0.5}
+            onPress={() => this.onSuccess()}>
+            <Text style={{
+              color: "#fe53bb",
+              fontSize: 20,
+              fontWeight: 'bold'
+            }}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
     );
   }
 }
@@ -148,5 +185,25 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
+  },
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStylenoFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: '#ffa8c0',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#ffa8c0',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
   },
 });
