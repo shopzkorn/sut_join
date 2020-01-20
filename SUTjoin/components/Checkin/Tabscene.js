@@ -85,8 +85,8 @@ export default class TabViewExample extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'EXPLORE' },
+      { key: 'first', title: 'OTP' },
+      { key: 'second', title: 'Scan Qrcode' },
     ],
   };
 

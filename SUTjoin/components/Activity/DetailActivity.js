@@ -278,7 +278,7 @@ class Article extends Component {
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold'
-              }}>{item.id}_{item.random_code}</Text>
+              }}>{item.id}-{item.random_code}</Text>
             </View>
           </DialogContent>
           <DialogFooter>
