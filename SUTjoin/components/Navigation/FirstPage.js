@@ -3,46 +3,78 @@ import {
   StyleSheet,
   Image,
   Dimensions,
-  SafeAreaView,
+  StatusBar,
   View,
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
 class FirstPage extends Component {
-  constructor(props) {
-    super(props);
-    this.onEndReachedCalledDuringMomentum = true;
+  state ={
+    Username : '',
+    Password : ''
   }
-  state = {
-    data: [],
-    refreshing: false,
-    page: 1,
-    loadingVisible: true,
-    loading: false,
-    lastItem: true
-  }
+  componentDidMount() {
+    setTimeout(() => {
+      AsyncStorage.getItem('user_id').then((user) => { return JSON.parse(user) }).then((user_data) => {
+        console.log(user_data)
+        if (user_data == null) {
+          this.props.navigation.navigate('Auth');
+        } else {
+         AsyncStorage.getItem('Username').then((user_data) => { this.setState({Username : user_data })});
+         AsyncStorage.getItem('Password').then((user) => { return JSON.parse(user) }).then((user_data) => { this.setState({Password : user_data })});
+         console.log(this.state.Password);
+          fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
+            method: 'post',
+            headers: new Headers({
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+              username: this.state.Username,
+              password: this.state.Password,
+            })
+          }).then((response) => response.json()) 
+          .then((responseJson) =>{
+            console.log(responseJson)
+            if (responseJson == false) {
+              this.props.navigation.navigate('Auth');
+            } else if (responseJson.length == 0) {
+              this.props.navigation.navigate('Auth');
+            } else {
+              this.props.navigation.navigate('App')
+            }
+          });
+        }
+       
+      });
 
+    }, 1000)
+  }
   render() {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }}
-          end={{ x: 1.0, y: 0.5 }}
-          style={{ flex: 1 }}>
+
+      <LinearGradient
+        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0.0, y: 0.5 }}
+        end={{ x: 1.0, y: 0.5 }}
+        style={{ flex: 1 }}>
         <View style={styles.container}>
-        
-        <Image style={{alignSelf:'center',width:200,height:200}}
-          source={require('../../asset/image/logo.png')}
-        />
-        <Image style={{alignSelf:'center',width:300,height:100}}
+          <StatusBar hidden={true} />
+          <Image style={{ alignSelf: 'center', width: 200, height: 200 }}
+            source={require('../../asset/image/logo.png')}
+          />
+          <ActivityIndicator style={{ marginBottom: 8, }} size="large" color="#25aae1" />
+
+          {/* <Image style={{alignSelf:'center',width:300,height:100}}
           source={require('../../asset/image/logo1.png')}
-        />
+        /> */}
         </View>
-        </LinearGradient>
-      </SafeAreaView>
+      </LinearGradient>
+
 
     )
   }

@@ -15,7 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import SideMenu from '../Navigation/SideMenu';
 import stackNav from '../Navigation/stacknav';
 import Activity from '../Activity/Tabscene';
-import Checkin from '../Checkin/Checkin';
+import Checkin from '../Checkin/Tabscene';
 import Learning from '../Learning/Learning';
 import Add from '../Activity/AddActivity';
 import Profile from '../Profile/Profile';

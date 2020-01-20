@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Animated, Image, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking } from 'react-native'
+import { Text, StyleSheet, View, Animated, Image, BackHandler, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -137,6 +137,26 @@ const styles = StyleSheet.create({
     height: theme.sizes.padding * 2,
     borderRadius: theme.sizes.padding / 2,
   },
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStylenoFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: '#fe53bb',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
 });
 
 class Article extends Component {
@@ -145,7 +165,8 @@ class Article extends Component {
     joiner: [],
     id_user: '',
     qrcode: '',
-    visibleDialog: false
+    visibleDialog: false,
+    lastCount: 6
   }
 
   scrollX = new Animated.Value(0);
@@ -157,16 +178,19 @@ class Article extends Component {
           <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" color={theme.colors.white} size={theme.sizes.font * 1} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <MaterialIcons name="more-horiz" color={theme.colors.white} size={theme.sizes.font * 1.5} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       ),
       headerTransparent: true,
     }
   }
-
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
   componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     const { navigation } = this.props;
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
@@ -185,7 +209,17 @@ class Article extends Component {
     });
 
   }
-
+  handleBackPress = () => {
+    if (this.state.visibleDialog) {
+      this.setState({
+        visibleDialog: false
+      })
+    }
+    else {
+      this.props.navigation.goBack(); // works best when the goBack is async
+    }
+    return true;
+  }
   openGps = (lat, lng) => {
     const location = lat + ',' + lng;
     console.log(location);
@@ -218,7 +252,7 @@ class Article extends Component {
       visibleDialog: true
     });
   }
-  DialogGenQrCode() {
+  DialogGenQrCode = (item) => {
     return (
       <View>
         <Dialog
@@ -236,7 +270,27 @@ class Article extends Component {
               value={this.state.qrcode}
               size={200}
             />
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+              <Text style={{
+                fontSize: 16,
+                fontWeight: 'bold'
+              }}>OR OTP</Text>
+              <Text style={{
+                fontSize: 16,
+                fontWeight: 'bold'
+              }}>{item.id}_{item.random_code}</Text>
+            </View>
           </DialogContent>
+          <DialogFooter>
+        <DialogButton
+          text="CANCEL"
+          onPress={() => { this.setState({ visibleDialog: false })}}
+        />
+        <DialogButton
+          text="CHECK"
+          onPress={() => { this.updateStatusJoin()}}
+        />
+      </DialogFooter>
         </Dialog>
       </View>
 
@@ -304,7 +358,7 @@ class Article extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-
+        
         // Showing response message coming from server after inserting records.
         alert(responseJson);
 
@@ -347,6 +401,7 @@ class Article extends Component {
 
   updateStatusJoin() {
     console.log(1);
+    this.setState({ visibleDialog: false })
     const { navigation } = this.props;
     const article = navigation.getParam('article');
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
@@ -363,7 +418,7 @@ class Article extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-
+        
         // Showing response message coming from server after inserting records.
         alert(responseJson);
 
@@ -475,7 +530,48 @@ class Article extends Component {
       }
     }
   }
-
+  renderSeeallJoiner = () => {
+    if (this.state.joiner.length > this.state.lastCount) {
+      console.log(this.state.lastCount)
+      return (
+        <TouchableOpacity style={[
+          styles.buttonStyleFollow,
+          styles.centerEverything]}
+          activeOpacity={0.5}
+          onPress={() => this.setState({
+            lastCount: this.state.joiner.length
+          })}>
+          <Text style={{
+            color: "#fe53bb",
+            fontSize: 16,
+            fontWeight: 'bold'
+          }}
+          >See all people</Text>
+        </TouchableOpacity>
+      )
+    } else {
+      if (this.state.joiner.length != 6) {
+        if (this.state.joiner.length == this.state.lastCount) {
+          return (
+            <TouchableOpacity style={[
+              styles.buttonStyleFollow,
+              styles.centerEverything]}
+              activeOpacity={0.5}
+              onPress={() => this.setState({
+                lastCount: 6
+              })}>
+              <Text style={{
+                color: "#fe53bb",
+                fontSize: 16,
+                fontWeight: 'bold'
+              }}
+              >Hide</Text>
+            </TouchableOpacity>
+          )
+        }
+      }
+    }
+  }
   renderJoiner = () => {
     if (this.state.joiner.length > 0) {
       return (
@@ -500,11 +596,12 @@ class Article extends Component {
               numColumns={3}
               snapToAlignment="center"
               style={[styles.shadow, { overflow: 'visible' }]}
-              data={this.state.joiner}
+              data={this.state.joiner.slice(0, this.state.lastCount)}
               keyExtractor={(item, index) => `${item.id}`}
               renderItem={({ item, index }) => this.renderJoinerinActivity(item, index)}
             />
           </View>
+          {this.renderSeeallJoiner()}
         </View>
       );
     } else {
@@ -671,23 +768,6 @@ class Article extends Component {
       return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
   }
 
-  renderRatings = (rating) => {
-    const stars = new Array(5).fill(0);
-    return (
-      stars.map((_, index) => {
-        const activeStar = Math.floor(rating) >= (index + 1);
-        return (
-          <FontAwesome
-            name="star"
-            key={`star-${index}`}
-            size={theme.sizes.font}
-            color={theme.colors[activeStar ? 'active' : 'gray']}
-            style={{ marginRight: 4 }}
-          />
-        )
-      })
-    )
-  }
 
   render() {
     const { navigation } = this.props;
@@ -710,7 +790,6 @@ class Article extends Component {
               resizeMode='cover'
               style={{ width, height: width * 0.7 }}
             />
-            {/* {this.renderDots()} */}
 
           </View>
           <View style={[styles.flex, styles.content]}>
@@ -837,6 +916,19 @@ class Article extends Component {
 
                 </Text>
               </View>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event tag</Text>
+              </View>
+              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+              </Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
+                  {article.tag}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -847,7 +939,7 @@ class Article extends Component {
           </View>
 
         </View>
-        {this.DialogGenQrCode()}
+        {this.DialogGenQrCode(article)}
       </ScrollView>
 
     )

@@ -14,19 +14,35 @@ import {
   SafeAreaView,
   ActivityIndicator,
   RefreshControl,
-  AsyncStorage
+  AsyncStorage,
+  PixelRatio
 } from 'react-native'
+import {
+  Container,
+  Title,
+  Content,
+  Button,
+  Card,
+  CardItem,
+  Thumbnail,
+  Left,
+  Body,
+  Right
+} from "native-base";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { NetworkInfo } from "react-native-network-info";
 import Icon from 'react-native-vector-icons/Ionicons'
 import moment from 'moment'
 import * as theme from '../../theme';
 import Spinner from 'react-native-loading-spinner-overlay';
-import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
-
+var FONT_BACK_LABEL = 24;
+if (PixelRatio.get() <= 3) { //responsive font
+  FONT_BACK_LABEL = 19;
+}
 const styles = StyleSheet.create({
   flex: {
     flex: 0,
@@ -156,7 +172,19 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 10
-  }
+  },
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 15,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
 });
 
 
@@ -255,10 +283,10 @@ class Articles extends Component {
           source={{ uri: photoNews }}
         >
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 20 }}>
-            <Text style={{ color: theme.colors.white, fontSize:  width / 27 }}>{item.text1}</Text>
+            <Text style={{ color: theme.colors.white, fontSize: width / 27 }}>{item.text1}</Text>
           </View>
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 5 }}>
-            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize:  width / 17 }}>{item.text2}</Text>
+            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: FONT_BACK_LABEL }}>{item.text2}</Text>
           </View>
         </ImageBackground>
       )
@@ -288,7 +316,7 @@ class Articles extends Component {
 
   renderListActivity = () => {
     return (
-      <View style={[styles.flex, styles.column, styles.recommended], { marginTop: 20 }}>
+      <View style={[styles.flex, styles.column, styles.recommended]}>
         <View style={[styles.column, styles.recommendedList]}>
           <FlatList
             Vertical
@@ -307,76 +335,87 @@ class Articles extends Component {
       </View>
     );
   }
-
+  
   renderItem = (item, index) => {
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY');
+    let surname = item.surname
+    if(item.surname.split('').length){
+      surname = item.surname.split('').slice(0, 7)
+    }
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
-        <ImageBackground
-          style={[styles.flex, styles.destination, styles.shadow]}
-          imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{ uri: photoAc }}
-        >
-          <View style={[styles.row, { justifyContent: 'space-between' }]}>
-            <View style={{ flex: 0 }}>
-              <Image source={{ uri: photoUser }} style={styles.avatar} />
-            </View>
-            <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname.split('').slice(0, 5)}...</Text>
-              <Text style={{ color: theme.colors.white }}>
-                <MaterialCommunityIcons
+        <View style={{ padding: 15 }}>
+          <Card >
+            <CardItem>
+              <Left>
+                <Thumbnail source={{ uri: photoUser }} />
+                <Body>
+                  <Text>{item.name} {surname}</Text>
+                  <View style={{flexDirection:'row'}}>
+                  <MaterialCommunityIcons
                   name="map-marker-outline"
-                  size={theme.sizes.font * 0.8}
-                  color={theme.colors.white}
+                  size={theme.sizes.font * 1}
+                  color={theme.colors.black}
                 />
-                <Text> {item.location_name.split('').slice(0, 5)}...</Text>
-              </Text>
-            </View>
-            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-              <Text>
-                <MaterialCommunityIcons
+                  <Text> {item.location_name}</Text>
+                  </View>
+                </Body>
+              </Left>
+              <Right style={{justifyContent:'flex-end'}}>
+              <View style={{flexDirection:'row'}}>
+              <MaterialCommunityIcons
                   name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
+                  color={theme.colors.black}
                 />
-                <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
-              </Text>
-            </View>
-          </View>
-          <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end' }}>
-            <Text style={{
-              fontSize: theme.sizes.font,
-              color: 'white',
-              fontWeight: 'bold',
-              // backgroundColor : 'rgba(52, 52, 52, 0.8)',
-              // opacity: 0.5,
-            }}>
-              {dates}
-            </Text>
-          </View>
-        </ImageBackground>
-        <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
-            {item.title}
-          </Text>
-          <View style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
-            <Text style={{ color: theme.colors.caption }}>
-              {item.description.split('').slice(0, 50)}...
-              </Text>
-            <FontAwesome
-              name="chevron-right"
-              size={theme.sizes.font * 0.75}
-              color={theme.colors.caption}
-            />
-          </View>
-        </View>
-        <View>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+              <Text> {item.inviter}/{item.number_people}</Text>  
+              </View> 
+              <Text>{dates}</Text>
+              </Right>
+            </CardItem>
 
-          </Text>
+            <CardItem cardBody>
+              <Image
+                style={{
+                  resizeMode: "cover",
+                  width: null,
+                  height: 200,
+                  flex: 1
+                }}
+                source={{ uri: photoAc }}
+              />
+            </CardItem>
+
+            <CardItem style={{ paddingVertical: 0 }}>
+              <Left style={{justifyContent:'flex-start'}}>  
+              <View style={[styles.row]}>     
+              <MaterialIcons
+              name="title"
+              size={theme.sizes.font * 1.5}
+              color={theme.colors.black}
+            />
+              <Text style={{fontWeight:'bold'}}>| {item.title}</Text>
+              </View> 
+              </Left>
+              <Right style={{justifyContent:'flex-end'}}>
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+                onPress={() => navigation.navigate('Article', { article: item })}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  fontWeight: 'bold'
+                }}>View</Text>
+              </TouchableOpacity>
+              </Right>
+            </CardItem>
+          </Card>
         </View>
 
       </TouchableOpacity>
@@ -452,12 +491,13 @@ class Articles extends Component {
   }
 
   componentDidMount() {
+    console.log(PixelRatio.get())
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1].split('"')[1];
       this.setState((prevState, props) => ({
         user_id: user_id
       }), () => {
-        // console.log(this.state.id_user);
+        // console.log(this.state.user_id);
         this.fetchData(1)
       })
     });

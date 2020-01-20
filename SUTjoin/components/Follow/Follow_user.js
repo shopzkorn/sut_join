@@ -149,7 +149,8 @@ class Profile extends React.Component {
         const { navigation } = this.props;
         if (item.user_id != this.state.user_id) {
             return (
-                <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: item.user_id })} >
+                <TouchableOpacity activeOpacity={0.8} onPress={() =>{ this.props.navigation.state.params.onNavigateBack(item.user_id);
+                 navigation.navigate('userProfile', { User: item.user_id })}} >
                     <View style={[styles.row]}>
                         <View style={{ flex: 0 }}>
                             <Image source={{ uri: photoUser }} style={styles.avatar} />

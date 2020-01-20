@@ -9,7 +9,10 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
-  Picker
+  BackHandler,
+  SafeAreaView,
+  FlatList,
+  Alert
 } from 'react-native';
 import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -42,7 +45,7 @@ export default class HomeScreen extends Component {
       longitude: '',
       Title: '',
       description: '',
-      Tag: '',
+      tag: '',
       Location: '',
       start: '',
       End: '',
@@ -81,7 +84,13 @@ export default class HomeScreen extends Component {
         { label: 'Male & Female', value: 2 },
       ],
       Texttype: 'Learning',
-      Textgender: 'Male'
+      Textgender: 'Male',
+      valueType: 0,
+      valueGender: 0,
+      dataTag: [],
+      itemsCount: 5,
+      visibleTag: false,
+      dataSource:  []
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -97,7 +106,7 @@ export default class HomeScreen extends Component {
               <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
             </TouchableOpacity>
             <View style={{ alignSelf: 'center', paddingHorizontal: width / 8 }}>
-              <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' }}>
+              <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff' }}>
                 Create new event
           </Text>
             </View>
@@ -188,6 +197,29 @@ export default class HomeScreen extends Component {
       //this.fetchData()
     })
 
+  }
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    this.loadData();
+  }
+  handleBackPress = () => {
+    if (this.state.visibleGender) {
+      this.setState({
+        visibleGender: false
+      })
+    }
+    else if (this.state.visibleType) {
+      this.setState({
+        visibleType: false
+      })
+    }
+    else {
+      this.props.navigation.goBack(); // works best when the goBack is async
+    }
+    return true;
   }
   DialogFilter() {
     return (
@@ -306,13 +338,33 @@ export default class HomeScreen extends Component {
     });
 
   }
-
+  loadData() {
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        status: 2,
+      })
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log('res ' + responseJson.length);
+        this.setState({
+          dataTag: responseJson,
+          dataSource: responseJson
+        });
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
   renderPhoto() {
     if (this.state.imageSource != null) {
       return (
         <ImageBackground style={[styles.flex, styles.destination, styles.shadow]} source={this.state.imageSource} >
-          <TouchableOpacity style={{justifyContent:'flex-end',alignItems:'flex-end',marginRight:20, marginTop:-10}} onPress={()=> this.setState({imageSource : null})}>
-          <Ionicons name="md-close-circle" color={theme.colors.black} size={ width / 15} />
+          <TouchableOpacity style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 20, marginTop: -10 }} onPress={() => this.setState({ imageSource: null })}>
+            <Ionicons name="md-close-circle" color={theme.colors.black} size={width / 15} />
           </TouchableOpacity>
         </ImageBackground>
       );
@@ -363,7 +415,7 @@ export default class HomeScreen extends Component {
         id_host: this.state.id_host,
         title: this.state.Title,
         description: this.state.description,
-        tag: this.state.Tag,
+        tag: this.state.tag,
         location: this.state.Location,
         datetimes: this.state.datetimes,
         number_people: this.state.sliderOneValue[0],
@@ -374,12 +426,20 @@ export default class HomeScreen extends Component {
         latitude: this.state.latitude,
         longitude: this.state.longitude,
         address: this.state.address,
-        type: this.state.type
+        type: this.state.type,
+        volunteer: this.state.Volunteer
       })
     }).then((response) => response.text())
       .then((responseJson) => {
         // Showing response message coming from server after inserting records.
-        alert(responseJson);
+        Alert.alert(
+          'Sucess',
+          responseJson,
+          [
+            {text: 'OK', onPress: () => this.props.navigation.goBack()},
+          ],
+          {cancelable: false},
+        );
       }).catch((error) => {
         console.error(error);
       });
@@ -427,193 +487,244 @@ export default class HomeScreen extends Component {
       )
     }
   }
+  renderTag = () => {
+    if (this.state.visibleTag) {
+      return (
+        <FlatList
+          Vertical
+          pagingEnabled
+          scrollEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          style={[styles.shadow, { overflow: 'visible' }]}
+          data={this.state.dataSource.slice(0, this.state.itemsCount)}
+          keyExtractor={(item, index) => `${item.id}`}
+          renderItem={({ item, index }) => this.renderDestination(item, index)}
+        />
+      );
+    }
+  }
+  renderDestination = item => {
 
+    return (
+      <TouchableOpacity activeOpacity={0.7} style={{
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        width: width / 1.2,
+        paddingLeft: 10,
+        paddingVertical: 5,
+        marginBottom: 1
+      }}
+        onPress={() => this.setState({
+          tag: item.activity_tag
+        })}>
+        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+          <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}>{item.activity_tag}  </Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+  onChangeText(e) {
+    // console.log(this.state.dataSource)
+    this.setState({
+      tag: e,
+      dataSource: this.state.dataTag.filter((item) =>
+        item.activity_tag.toLowerCase().includes(e.toLowerCase())),
+    });
+  }
   render() {
     const { navigation } = this.props;
     return (
-      <LinearGradient
-        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0.0, y: 0.5 }}
-        end={{ x: 1.0, y: 0.5 }}
-        style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}>
 
-        <ScrollView style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}>
-          <View style={{ paddingHorizontal: width / 12 }}>
-            <Text style={{color: '#ffffff', fontSize: width / 25,marginVertical:15}}>Event title</Text>
-            <TextInput
-              placeholder='Title'
-              value={this.state.Title}
-              onChangeText={Title => this.setState({ Title })}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-              keyboardType={'email-address'}
-            />
-          </View>
-          <View style={{ paddingHorizontal: width / 12 }}>
-            <Text style={{color: '#ffffff', fontSize: width / 25,marginVertical:15}}>Event description</Text>
-            <TextInput
-              placeholder='Description'
-              value={this.state.description}
-              onChangeText={description => this.setState({ description })}
-              style={styles.input}
-              placeholderStyle={{ justifyContent: 'flex-start' }}
-              multiline={true}
-              numberOfLines={4}
-              underlineColorAndroid="transparent"
-              keyboardType={'email-address'}
-            />
-          </View>
-          <View style={{ paddingHorizontal: width / 12 }}>
-            <Text style={{color: '#ffffff', fontSize: width / 25,marginVertical:15}}>Event tag</Text>
-            <TextInput
-              placeholder='Tag'
-              value={this.state.tag}
-              onChangeText={tag => this.setState({ tag })}
-              style={styles.input}
-              placeholderStyle={{ justifyContent: 'flex-start' }}
-              multiline={true}
-              underlineColorAndroid="transparent"
-              keyboardType={'email-address'}
-            />
-          </View>
-          <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical:20 }} />
-
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleType: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Ionicons name="md-pricetags" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Event type </Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Texttype} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-          {this.volunteerCheck()}
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
-            <View style={{ flexDirection: 'row', marginLeft: 18 }}>
-              <MaterialCommunityIcons name="map-marker-outline" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Choose location </Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Location} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} title="Choose date" onPress={this.showDateTimePicker} >
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Ionicons name="md-calendar" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, marginLeft: 10 }}> Date & Time </Text>
-            </View>
-            <DateTimePicker
-              isVisible={this.state.isDateTimePickerVisible}
-              onConfirm={this.handleDatePicked}
-              onCancel={this.hideDateTimePicker}
-              mode={'datetime'}
-              is24Hour={false}
-            />
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}>{this.state.chosendate}</Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add cover event</Text>
-            </View>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>       
-          </TouchableOpacity>
-          {this.renderPhoto()}
-          <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical:20 }} />
-          <View style={{ paddingHorizontal: width / 12 }}>
-            <Text style={{color: '#ffffff', fontSize: width / 25,marginBottom:15}}>Looking for</Text>
-          </View>
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-
-          <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', width: width, }}>
-
-            <View style={styles.sliderOne}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Number of people: </Text>
-              <Text
-                style={{ color: '#ffffff', fontSize: width / 25, }}>
-                {this.state.sliderOneValue}
-              </Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <MultiSlider
-                values={this.state.sliderOneValue}
-                sliderLength={280}
-                onValuesChangeStart={this.sliderOneValuesChangeStart}
-                onValuesChange={this.sliderOneValuesChange}
-                onValuesChangeFinish={this.sliderOneValuesChangeFinish}
-                min={1}
-                max={30}
+          <ScrollView 
+          style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
+          keyboardShouldPersistTaps="handled"
+                >
+            <View style={{ paddingHorizontal: width / 12 }}>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event title</Text>
+              <TextInput
+                placeholder='Title'
+                value={this.state.Title}
+                onChangeText={Title => this.setState({ Title })}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+                keyboardType={'email-address'}
               />
             </View>
-            <View style={styles.sliderOne}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Age range: </Text>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, }}>{this.state.multiSliderValue[0]} - {this.state.multiSliderValue[1]}</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <MultiSlider
-                values={[
-                  this.state.multiSliderValue[0],
-                  this.state.multiSliderValue[1],
-                ]}
-                sliderLength={280}
-                onValuesChange={this.multiSliderValuesChange}
-                min={0}
-                max={60}
-                step={1}
-                allowOverlap
-                snapped
+            <View style={{ paddingHorizontal: width / 12 }}>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event description</Text>
+              <TextInput
+                placeholder='Description'
+                value={this.state.description}
+                onChangeText={description => this.setState({ description })}
+                style={styles.input}
+                placeholderStyle={{ justifyContent: 'flex-start' }}
+                multiline={true}
+                numberOfLines={4}
+                underlineColorAndroid="transparent"
+                keyboardType={'email-address'}
               />
             </View>
-          </View>
+            <View style={{ paddingHorizontal: width / 12 }}>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event tag</Text>
+              <TextInput
+                placeholder='Tag'
+                value={this.state.tag}
+                onChangeText={(tag) => this.onChangeText(tag)}
+                style={styles.input}
+                placeholderStyle={{ justifyContent: 'flex-start' }}
+                multiline={true}
+                onFocus={() => this.setState({ visibleTag: true })}
+                // onEndEditing={() => this.setState({ visibleTag: false })}
+                underlineColorAndroid="transparent"
+                keyboardType={'email-address'}
+              />
+              {this.renderTag()}
+            </View>
+            <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical: 20 }} />
 
-          {this.DialogFilter()}
-          <View style={{ alignItems: 'center', marginTop: 10 }}>
-            <TouchableOpacity activeOpacity={0.7} style={{
-              borderWidth: 6,
-              borderColor: '#fe53bb',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: width / 2.5,
-              height: width / 2.5,
-              backgroundColor: 'transparent',
-              borderRadius: width / 2.5 / 2,
-              marginBottom: -60,
-            }} onPress={this.register.bind(this)}>
-              <View style={{
-                borderWidth: 2,
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleType: true })}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <Ionicons name="md-pricetags" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Event type </Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Texttype} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+            {this.volunteerCheck()}
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
+              <View style={{ flexDirection: 'row', marginLeft: 18 }}>
+                <MaterialCommunityIcons name="map-marker-outline" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Choose location </Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Location} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} title="Choose date" onPress={this.showDateTimePicker} >
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <Ionicons name="md-calendar" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, marginLeft: 10 }}> Date & Time </Text>
+              </View>
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+                mode={'datetime'}
+                is24Hour={false}
+              />
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}>{this.state.chosendate}</Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add cover event</Text>
+              </View>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+            {this.renderPhoto()}
+            <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical: 20 }} />
+            <View style={{ paddingHorizontal: width / 12 }}>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginBottom: 15 }}>Looking for</Text>
+            </View>
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+
+            <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', width: width, }}>
+
+              <View style={styles.sliderOne}>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Number of people: </Text>
+                <Text
+                  style={{ color: '#ffffff', fontSize: width / 25, }}>
+                  {this.state.sliderOneValue}
+                </Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <MultiSlider
+                  values={this.state.sliderOneValue}
+                  sliderLength={280}
+                  onValuesChangeStart={this.sliderOneValuesChangeStart}
+                  onValuesChange={this.sliderOneValuesChange}
+                  onValuesChangeFinish={this.sliderOneValuesChangeFinish}
+                  min={1}
+                  max={30}
+                />
+              </View>
+              <View style={styles.sliderOne}>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Age range: </Text>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>{this.state.multiSliderValue[0]} - {this.state.multiSliderValue[1]}</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <MultiSlider
+                  values={[
+                    this.state.multiSliderValue[0],
+                    this.state.multiSliderValue[1],
+                  ]}
+                  sliderLength={280}
+                  onValuesChange={this.multiSliderValuesChange}
+                  min={0}
+                  max={60}
+                  step={1}
+                  allowOverlap
+                  snapped
+                />
+              </View>
+            </View>
+
+            {this.DialogFilter()}
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
                 borderColor: '#fe53bb',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: width / 2.8,
-                height: width / 2.8,
+                width: width / 2.5,
+                height: width / 2.5,
                 backgroundColor: 'transparent',
-                borderRadius: width / 2.8 / 2,
-              }}>
-                <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Create </Text>
-              </View>
+                borderRadius: width / 2.5 / 2,
+                marginBottom: -60,
+              }} onPress={this.register.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.8,
+                  height: width / 2.8,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.8 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Create </Text>
+                </View>
 
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      </SafeAreaView>
     );
   }
 }
@@ -631,7 +742,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   input: {
-    fontFamily: 'SukhumvitSet-Text',
+
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     width: width / 1.2,
@@ -644,7 +755,7 @@ const styles = StyleSheet.create({
     // elevation: 1,
   },
   textbox: {
-    fontFamily: 'SukhumvitSet-Text',
+
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     fontSize: 18,
@@ -675,7 +786,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     width: width,
     height: height / 16,
-    
+
   },
   sliderOne: {
     flexDirection: 'row',
@@ -696,7 +807,7 @@ const styles = StyleSheet.create({
     width: width,
     height: width * 0.6,
     paddingVertical: theme.sizes.padding * 0.66,
-    marginTop:10,
+    marginTop: 10,
   },
   shadow: {
     shadowColor: theme.colors.black,

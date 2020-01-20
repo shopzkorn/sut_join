@@ -5,30 +5,43 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Linking,
+  View,
   PermissionsAndroid
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-
-export default class ScanScreen extends Component {
+import { withNavigationFocus } from "react-navigation";
+class ScanScreen extends Component {
   state = {
     lat: '',
     lng: '',
     macAddress: '',
-    user_id:'',
-    id_activity:'',
-    date:''
+    user_id: '',
+    id_activity: '',
+    subject: '',
+    date: ''
   }
   onSuccess = (e) => {
-    console.log(e.data)
-    this.setState( (prevState, props) => ({
+    console.log(e.data.split('_').length)
+    if (e.data.split('_').length == 3) {
+      this.setState((prevState, props) => ({
         id_activity: e.data.split('_')[1],
         date: e.data.split('_')[2],
-    }), () => {
-    console.log(this.state.id_activity),
-    this.checked()
-  })
+      }), () => {
+        console.log(this.state.id_activity),
+          this.checked(2)
+      })
+    } else if (e.data.split('_').length == 2) {
+      this.setState((prevState, props) => ({
+        subject: e.data.split('_')[0],
+        date: e.data.split('_')[1],
+      }), () => {
+        console.log(this.state.subject + this.state.date),
+          this.checked(1)
+      })
+    }else{
+      alert("Can't scan this qrcode");
+    }
   }
 
   permisions = async () => {
@@ -73,23 +86,51 @@ export default class ScanScreen extends Component {
     DeviceInfo.getMacAddress().then(mac => {
       // "E5:12:D8:E5:69:97"
       this.setState({
-        macAddress : mac
+        macAddress: mac
       })
       console.log(mac);
     });
   }
 
-  checked(){
+  checked = (num) => {
+    if(num == 2){
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        lat: this.state.lat,
+        lng: this.state.lng,
+        macAddress: this.state.macAddress,
+        user_id: this.state.user_id,
+        id_activity: this.state.id_activity,
+        date: this.state.date,
+        status: 2
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+        // console.log('res ' + responseJson.length);
+        alert(responseJson);
+      }).catch((error) => {
+        console.error(error);
+      });
+    }else{
+      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }),
             body: JSON.stringify({
+              lat: this.state.lat,
+              lng: this.state.lng,
+              macAddress: this.state.macAddress,
               user_id: this.state.user_id,
-              id_activity: this.state.id_activity,
-              status: 2
+              subject: this.state.subject,
+              date: this.state.date,
+              status: 1
             })
         }).then((response) => response.text())
             .then((responseJson) => {
@@ -98,8 +139,32 @@ export default class ScanScreen extends Component {
             }).catch((error) => {
                 console.error(error);
             });
+    }
   }
+  renderCamera() {
+    const isFocused = this.props.navigation.isFocused();
+    console.log(isFocused)
+    if (!isFocused) {
+      return null;
+    } else if (isFocused) {
+      return (
+        <QRCodeScanner
+          onRead={this.onSuccess}
 
+          // topContent={
+          //   <Text style={styles.centerText}>
+          //     Scan for check in join
+          //   </Text>
+          // }
+        // bottomContent={
+        //   <TouchableOpacity style={styles.buttonTouchable}>
+        //     <Text style={styles.buttonText}>OK. Got it!</Text>
+        //   </TouchableOpacity>
+        // }
+        />
+      )
+    }
+  }
   componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
@@ -110,22 +175,13 @@ export default class ScanScreen extends Component {
     // Instead of navigator.geolocation, just use Geolocation.
     this.permisions();
   }
+
   render() {
     return (
-      <QRCodeScanner
-        onRead={this.onSuccess}
 
-        topContent={
-          <Text style={styles.centerText}>
-            Scan for check in join
-          </Text>
-        }
-        // bottomContent={
-        //   <TouchableOpacity style={styles.buttonTouchable}>
-        //     <Text style={styles.buttonText}>OK. Got it!</Text>
-        //   </TouchableOpacity>
-        // }
-      />
+      <View style={{ flex: 1 }}>
+        {this.renderCamera()}
+      </View>
     );
   }
 }
@@ -149,3 +205,5 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 });
+
+export default withNavigationFocus(ScanScreen);

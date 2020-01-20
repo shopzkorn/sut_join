@@ -34,15 +34,21 @@ class Login extends Component {
           username : this.state.Username,
           password : this.state.Password,
         })
-        }).then((response) => response.text())
+        }).then((response) => response.json())
         .then((responseJson) => {
           // Showing response message coming from server after inserting records.
-        //   alert(responseJson);
+        //   console.log(responseJson[0]);
           if(responseJson != 0){
+              let user_id = '"' + responseJson[0].user_id + '"'
             navigate('Menu', {user_id: responseJson })
-            AsyncStorage.multiSet([
-                ["user_id", responseJson]
-            ])
+            // AsyncStorage.multiSet([
+            //     ["Username", responseJson[0].Username],
+            //     ["Password", responseJson[0].Password],
+            // ])
+            AsyncStorage.setItem('user_id', user_id)
+            AsyncStorage.setItem('Username', responseJson[0].Username)
+            AsyncStorage.setItem('Password', responseJson[0].Password)
+            AsyncStorage.setItem('user_status', responseJson[0].user_status)
         }else{
             alert("username or password incorrect");
         }
@@ -50,11 +56,11 @@ class Login extends Component {
         .catch((error) => {
           console.error(error);
         });
-        AsyncStorage.multiGet(['user_id']).then((data) => {
-            let user_id = data[0][1];
-            console.log("Session id is"+user_id);
+        // AsyncStorage.multiGet(['user_id']).then((data) => {
+        //     let user_id = data;
+        //     console.log("Session id is"+user_id);
           
-        });
+        // });
       }
       
     render() {

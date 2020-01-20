@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     map: {
         ...StyleSheet.absoluteFillObject,
     },
+    back: {
+        justifyContent: 'center',
+        marginHorizontal: 15
+      },
     button: {
         // flexDirection: 'row',
         justifyContent: 'center',
@@ -192,12 +196,14 @@ class selectLocation extends Component {
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>}
-                    renderRightButton={() => 
-                    <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
-                        <View>
-                            <Text style={{ color: '#ffffff', fontSize: 16 }} onPress={this.CancelSearch.bind(this)}> Cancel </Text>
-                        </View>
-                    </TouchableOpacity>}
+                    // renderRightButton={() => 
+                    // <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }} onPress={() => this.setState({
+                        
+                    // })}>
+                    //     <View>
+                    //         <Text style={{ color: '#ffffff', fontSize: 16 }} onPress={this.CancelSearch.bind(this)}> Cancel </Text>
+                    //     </View>
+                    // </TouchableOpacity>}
                 >
                     <View style={{
                         position: 'absolute',

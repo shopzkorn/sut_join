@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
 import ScanQr from './CheckinActivity';
-import ScanCh from './ScanQrcode';
+import CheckOTP from './CheckOTP';
 
 export default class TabViewExample extends React.Component {
 
@@ -46,17 +46,17 @@ export default class TabViewExample extends React.Component {
     );
   };
 
-  FirstRoute = () => {
+  SecondRoute = () => {
     const { navigation } = this.props;
     return (
       <ScanQr navigation={navigation} />
     );
   }
 
-  SecondRoute = () => {
+  FirstRoute = () => {
     const { navigation } = this.props;
     return (
-      <ScanCh navigation={navigation} />
+      <CheckOTP navigation={navigation} />
     );
   }
   // static navigationOptions = ({ navigation }) => {
