@@ -5,11 +5,11 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Linking,
+  ScrollView,
   PermissionsAndroid
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default class ScanScreen extends Component {
   state = {
@@ -118,20 +118,15 @@ export default class ScanScreen extends Component {
   }
   render() {
     return (
-      <QRCodeScanner
-        onRead={this.onSuccess}
-
-        topContent={
-          <Text style={styles.centerText}>
-            Scan for check the student name
-          </Text>
-        }
-        // bottomContent={
-        //   <TouchableOpacity style={styles.buttonTouchable}>
-        //     <Text style={styles.buttonText}>OK. Got it!</Text>
-        //   </TouchableOpacity>
-        // }
-      />
+      <LinearGradient
+      colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+      start={{ x: 0.0, y: 0.5 }}
+      end={{ x: 1.0, y: 0.5 }}
+      style={{ flex: 1 }} >
+      <ScrollView>
+          
+      </ScrollView>
+  </LinearGradient>
     );
   }
 }

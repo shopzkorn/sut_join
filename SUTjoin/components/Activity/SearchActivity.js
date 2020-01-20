@@ -10,6 +10,8 @@ import {
     Dimensions,
     Platform,
     TouchableOpacity,
+    BackHandler,
+    SafeAreaView
 } from 'react-native';
 import SearchBar from 'react-native-search-bar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -95,7 +97,7 @@ export default class ListViewExample extends Component {
                 { label: 'This week', value: 2 },
                 { label: 'This month', value: 3 },
                 { label: 'This year', value: 4 },
-                { label: 'Participated', value: 5},
+                { label: 'Participated', value: 5 },
             ],
             radio_People: [
                 { label: 'No filter', value: 0 },
@@ -134,115 +136,115 @@ export default class ListViewExample extends Component {
     }
 
 
-    FilterType = (value) =>{
+    FilterType = (value) => {
         console.log(value);
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[0].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[0].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({ 
+        this.setState((prevState, props) => ({
             valueType: value,
             visibleType: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible)
-        //this.fetchData()
+            console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible)
+            //this.fetchData()
         })
-        
+
     }
 
-    FilterGender= (value) =>{
+    FilterGender = (value) => {
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[1].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[1].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({ 
+        this.setState((prevState, props) => ({
             valueGender: value,
             visibleGender: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource )
-        //this.fetchData()
+            console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource)
+            //this.fetchData()
         })
     }
-     FilterVolunteer= (value) =>{
+    FilterVolunteer = (value) => {
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[2].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[2].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({ 
+        this.setState((prevState, props) => ({
             valueVolunteer: value,
             visibleVolunteer: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource )
-        //this.fetchData()
+            console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource)
+            //this.fetchData()
         })
     }
 
-    FilterAge= (value) =>{
+    FilterAge = (value) => {
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[3].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[3].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({ 
+        this.setState((prevState, props) => ({
             valueAge: value,
             visibleAge: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource )
-        //this.fetchData()
+            console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource)
+            //this.fetchData()
         })
     }
 
-    FilterDate= (value) =>{
+    FilterDate = (value) => {
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[4].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[4].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({  
+        this.setState((prevState, props) => ({
             valueDate: value,
             visibleDate: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource )
-        //this.fetchData()
+            console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource)
+            //this.fetchData()
         })
     }
 
-    FilterPeople= (value) =>{
+    FilterPeople = (value) => {
         let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
-        if(value == 0){
+        if (value == 0) {
             buttonBG[5].backgroundcolor = false;
-        }else{
+        } else {
             buttonBG[5].backgroundcolor = true;
         }
-        this.setState( (prevState, props) => ({  
+        this.setState((prevState, props) => ({
             valuePeople: value,
             visiblePeople: false,
             buttonBG: buttonBG,
         }), () => {
-        console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource )
-        //this.fetchData()
+            console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource)
+            //this.fetchData()
         })
     }
 
-    FilterTag= (text) =>{
-        this.setState( (prevState, props) => ({
+    FilterTag = (text) => {
+        this.setState((prevState, props) => ({
             dataSource: text
         }), () => {
-        console.log('data is ' + this.state.dataSource )
-        this.fetchData()
+            console.log('data is ' + this.state.dataSource)
+            this.fetchData()
         })
 
     }
@@ -388,7 +390,7 @@ export default class ListViewExample extends Component {
     }
     componentWillMount() {
         this.setState({
-            loadingVisible : true
+            loadingVisible: true
         })
         this.fetchDataTrending();
         // this.props.navigation.setParams({
@@ -399,62 +401,62 @@ export default class ListViewExample extends Component {
     }
 
     Filter = item => {
-        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));        
-            if(this.state.valueType == 0){
-                buttonBG[0].backgroundcolor = false;
-            }
-            if(this.state.valueGender == 0){
-                buttonBG[1].backgroundcolor = false;
-            }
-            if(this.state.valueVolunteer == 0){
-                buttonBG[2].backgroundcolor = false;
-            }
-            if(this.state.valueAge == 0){
-                buttonBG[3].backgroundcolor = false;
-            }
-            if(this.state.valueDate == 0){
-                buttonBG[4].backgroundcolor = false;
-            }
-            if(this.state.valuePeople == 0){
-                buttonBG[5].backgroundcolor = false;
-            }
-            if (item.button_id == 1 ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visibleType: true
-                })
-            }
-            else if (item.button_id == 2  ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visibleGender: true
-                })
-            }
-            else if (item.button_id == 3  ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visibleVolunteer: true
-                })
-            }
-            else if (item.button_id == 4  ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visibleAge: true
-                })
-            }
-            else if (item.button_id == 5  ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visibleDate: true
-                })
-            }
-            else if (item.button_id == 6  ) {
-                this.setState({
-                    buttonBG: buttonBG,
-                    visiblePeople: true
-                })
-            }
-      
+        let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
+        if (this.state.valueType == 0) {
+            buttonBG[0].backgroundcolor = false;
+        }
+        if (this.state.valueGender == 0) {
+            buttonBG[1].backgroundcolor = false;
+        }
+        if (this.state.valueVolunteer == 0) {
+            buttonBG[2].backgroundcolor = false;
+        }
+        if (this.state.valueAge == 0) {
+            buttonBG[3].backgroundcolor = false;
+        }
+        if (this.state.valueDate == 0) {
+            buttonBG[4].backgroundcolor = false;
+        }
+        if (this.state.valuePeople == 0) {
+            buttonBG[5].backgroundcolor = false;
+        }
+        if (item.button_id == 1) {
+            this.setState({
+                buttonBG: buttonBG,
+                visibleType: true
+            })
+        }
+        else if (item.button_id == 2) {
+            this.setState({
+                buttonBG: buttonBG,
+                visibleGender: true
+            })
+        }
+        else if (item.button_id == 3) {
+            this.setState({
+                buttonBG: buttonBG,
+                visibleVolunteer: true
+            })
+        }
+        else if (item.button_id == 4) {
+            this.setState({
+                buttonBG: buttonBG,
+                visibleAge: true
+            })
+        }
+        else if (item.button_id == 5) {
+            this.setState({
+                buttonBG: buttonBG,
+                visibleDate: true
+            })
+        }
+        else if (item.button_id == 6) {
+            this.setState({
+                buttonBG: buttonBG,
+                visiblePeople: true
+            })
+        }
+
     };
 
     renderFilter() {
@@ -525,6 +527,7 @@ export default class ListViewExample extends Component {
 
     render() {
         return (
+            <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 0 }}
@@ -553,6 +556,7 @@ export default class ListViewExample extends Component {
 
                 </ScrollView>
             </LinearGradient>
+            </SafeAreaView>
         );
     }
 
@@ -710,9 +714,48 @@ export default class ListViewExample extends Component {
         )
 
     }
-
-
+    handleBackPress = () => {
+        if (this.state.visibleGender) {
+            this.setState({
+                visibleGender: false
+            })
+        }
+        else if (this.state.visibleType) {
+            this.setState({
+                visibleType: false
+            })
+        }
+        else if (this.state.visibleVolunteer) {
+            this.setState({
+                visibleVolunteer: false
+            })
+        }
+        else if (this.state.visibleAge) {
+            this.setState({
+                visibleAge: false
+            })
+        }
+        else if (this.state.visibleDate) {
+            this.setState({
+                visibleDate: false
+            })
+        }
+        else if (this.state.visiblePeople) {
+            this.setState({
+                visiblePeople: false
+            })
+        }
+       
+        else {
+            this.props.navigation.goBack(); // works best when the goBack is async
+        }
+        return true;
+    }
+    componentWillUnmount() {
+        this.backHandler.remove()
+    }
     componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         this.setState({
             dataSource: 1,
 
@@ -787,13 +830,16 @@ export default class ListViewExample extends Component {
             headers: new Headers({
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                status: 1,
             })
         }).then((response) => response.json())
             .then((responseJson) => {
                 // console.log('res ' + responseJson.length);
                 this.setState({
                     trending: responseJson,
-                    loadingVisible : false
+                    loadingVisible: false
                 });
             }).catch((error) => {
                 console.error(error);

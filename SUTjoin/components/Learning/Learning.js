@@ -20,7 +20,7 @@ const { width, height } = Dimensions.get('window');
 
 import ProgressCircle from 'react-native-progress-circle';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 class Learning extends Component {
     
     constructor(props) {
@@ -96,9 +96,14 @@ class Learning extends Component {
         per_gpa_8_2:0,
         per_gpa_8_3:0,
 
-        user_id:'',
-      }
+    per_gpax: 0,
+    per_gpa1: 0,
+    per_gpa2: 0,
+    per_gpa3: 0,
+    per_gpa4: 0,
 
+      }
+      
       componentWillMount() {
         AsyncStorage.multiGet(['user_id']).then((data) => {
           let user_id = data[0][1];
@@ -109,7 +114,7 @@ class Learning extends Component {
 
           this.Getgpa();
       });
-      }
+  }
 
 
 
@@ -757,6 +762,29 @@ return (
             </SafeAreaView>
         );
     }
+  
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+          >
+            {this.renderLearning()}
+          </ScrollView>
+          <View style={{ flex: 1 }}>
+          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+        </View>
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
 }
 
 
@@ -798,4 +826,4 @@ const styles = StyleSheet.create({
     },
   });
 
-  export default Learning;
+export default Learning;

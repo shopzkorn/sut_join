@@ -8,13 +8,15 @@ import userProfile from './components/Profile/ProfileUser';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
+import Calendar from './components/Activity/Calender';
 import SearchActivity from './components/Activity/SearchActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
 import MyInterest from './components/Profile/MyInterests';
-import ScanQrcode from './components/Checkin/ScanQrcode';
+import ScanQrcode from './components/Checkin/CheckOTP';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import Follow from './components/Follow/Follow';
+import FollowUser from './components/Follow/Follow_user';
 import DetailNews from './components/News/DetailNews';
 import UserDashboard from './components/Profile/Tabscene';
 import UserDashboardUserdata from './components/Profile/UserDashboardUserdata';
@@ -23,11 +25,13 @@ import manage_gpa from './components/Learning/manage_gpa';
 import manage_subject from './components/Learning/manage_subject';
 import add_subject from './components/Learning/add_subject';
 import volunteer from './components/Profile/Volunteer';
+import SplashScreen from './components/Navigation/FirstPage'
 
 //Route
 const App = createStackNavigator(
   {
     Map,
+    
     userProfile: {
       screen: userProfile,
       navigationOptions: {
@@ -37,10 +41,11 @@ const App = createStackNavigator(
     Follow,
     DetailNews,
     SearchActivity,
-    Register,
+    
     AddActivity,
     Article,
     ScanQrcode,
+    FollowUser,
     CheckinActivity,
     UserDashboard,
     SelectMap: {
@@ -55,7 +60,12 @@ const App = createStackNavigator(
         header: null,
       },
     },
-
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null,
+      },
+    },
     MyInterest: {
       screen: MyInterest,
       navigationOptions: {
@@ -123,34 +133,41 @@ const LoginScreen = createStackNavigator(
         header: null,
       },
     },
-  },
+    Register: {
+      screen: Register,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Calendar,
+  },{ initialRouteName: 'Login' }
 );
 //Not show warning
 console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
 console.disableYellowBox = true;
 
-class RouterScreen extends Component {
-  constructor(props) {
-    super(props);
-    this._loadData();
-  }
-  render(){
-    return(
-      <View>
-        <StatusBar barStyle="default"/>
-      </View>
-    )
-  }
-  _loadData = async () => {
-    const userToken = await AsyncStorage.getItem('user_id');
-    console.log(userToken)
+// class RouterScreen extends Component {
+//   constructor(props) {
+//     super(props);
+//     this._loadData();
+//   }
+//   render(){
+//     return(
+//       <View>
+//         <StatusBar barStyle="default"/>
+//       </View>
+//     )
+//   }
+//   _loadData = async () => {
+//     const userToken = await AsyncStorage.getItem('user_id');
+//     console.log(userToken)
 
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-  }
-}
+//     this.props.navigation.navigate(userToken ? 'App' : 'Auth');
+//   }
+// }
 export default createAppContainer( createSwitchNavigator(
   {
-    AuthLoading: RouterScreen,
+    AuthLoading: SplashScreen,
     App: App,
     Auth: LoginScreen
   },

@@ -56,7 +56,7 @@ export default class TabViewExample extends React.Component {
   SecondRoute = () => {
     const { navigation } = this.props;
     return (
-      <SearchActivity navigation={navigation} />
+      <SearchActivity navigation={navigation} /> //send props is navigation={navigation}
     );
   }
   static navigationOptions = ({ navigation }) => {

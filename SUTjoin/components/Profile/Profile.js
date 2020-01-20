@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
   View,
   Text,
-  Button,
   Image,
   Animated,
   StyleSheet,
@@ -12,16 +11,31 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 
 } from "react-native";
+
+import {
+  Container,
+  Title,
+  Content,
+  Card,
+  CardItem,
+  Thumbnail,
+  Left,
+  Body,
+  Right
+} from "native-base";
+
 import Spinner from 'react-native-loading-spinner-overlay';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as theme from '../../theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { NetworkInfo } from "react-native-network-info";
-import PTRView from 'react-native-pull-to-refresh';
+import moment from 'moment'
+
 const { width, height } = Dimensions.get('window');
 
 import Login from '../Profile/Login';
@@ -40,62 +54,14 @@ class Profile extends React.Component {
     id_user: '',
     loadingVisible: true,
     follower: 0,
-    following: 0
+    following: 0,
+    page: 1,
 
   }
   scrollXHost = new Animated.Value(0);
   scrollXJoin = new Animated.Value(0);
 
-  GetUser() {
-    const { navigate } = this.props.navigation;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
-      method: 'post',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({
-        user_id: this.state.id_user
-      })
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        // Showing response message coming from server after inserting records.
-        // alert(responseJson);
-
-        responseJson.map(user =>
-          this.setState({
-            user_name: user.name,
-          })
-        );
-        console.log(this.state.user_name);
-
-        responseJson.map(user =>
-          this.setState({
-            user_surname: user.surname,
-          })
-        );
-        console.log(this.state.user_surname);
-
-        responseJson.map(user =>
-          this.setState({
-            user_profile: user.profile,
-          })
-        );
-        console.log(this.state.user_profile);
-
-        responseJson.map(user =>
-          this.setState({
-            user_volunteer: user.volunteer,
-            loadingVisible: false
-          })
-        );
-        console.log(this.state.user_volunteer);
-
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+  
   setFollow = (data) => {
     console.log(data)
     this.setState({
@@ -128,7 +94,8 @@ class Profile extends React.Component {
           'Content-Type': 'application/json'
         }),
         body: JSON.stringify({
-          id_user: this.state.id_user
+          id_user: this.state.id_user,
+          page: this.state.page,
         })
       }),
       fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -166,42 +133,17 @@ class Profile extends React.Component {
       )
   }
 
-  renderDotsHost() {
-    const { destinations } = this.props;
-    const dotPosition = Animated.divide(this.scrollXHost, width);
-    return (
-      <View style={[
-        styles.flex, styles.row,
-        { justifyContent: 'center', alignItems: 'center', marginTop: 10 }
-      ]}>
-        {this.state.myhost.map((item, index) => {
-          const borderWidth1 = dotPosition.interpolate({
-            inputRange: [index - 1, index, index + 1],
-            outputRange: [0, 2.5, 0],
-            extrapolate: 'clamp'
-          });
-          return (
-            <Animated.View
-              key={`step-${item.id}`}
-              style={[styles.dots, styles.activeDot, { borderWidth: borderWidth1 }]}
-            />
-          )
-        })}
-      </View>
-    )
-  }
-
   renderHost = () => {
     if (!this.state.loadingVisible) {
       return (
-        <View style={[styles.flex, styles.column, styles.recommended]}>
+        <View style={[styles.flex, styles.column, styles.recommended],{backgroundColor: 'rgba(52, 52, 52, 0.2)'}}>
           <View
             style={[
               styles.row,
               styles.recommendedHeader
             ]}
           >
-            <Text style={{ fontSize: theme.sizes.font * 1.4, marginBottom: 10 }}>{this.state.user_name}'timeline</Text>
+            <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10 ,fontWeight:'bold'}}>{this.state.user_name}'timeline</Text>
           </View>
           <View style={[styles.column, styles.recommendedList]}>
             <FlatList
@@ -222,7 +164,7 @@ class Profile extends React.Component {
     }
   }
   refresh() {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true ,loadingVisible:true});
     return new Promise((resolve) => {
       this.fetchData().then(() => {
         this.setState({ refreshing: false })
@@ -246,62 +188,87 @@ class Profile extends React.Component {
     let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
+    const dates = moment(item.date_start).format('MMM, Do YYYY');
+    let surname = item.surname
+    if(item.surname.split('').length){
+      surname = item.surname.split('').slice(0, 7)
+    }
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
-        <ImageBackground
-          style={[styles.flex, styles.destination, styles.shadow]}
-          imageStyle={{ borderRadius: theme.sizes.radius }}
-          source={{ uri: photoAc }}
-        >
-          <View style={[styles.row, { justifyContent: 'space-between' }]}>
-            <View style={{ flex: 0 }}>
-              <Image source={{ uri: photoUser }} style={styles.avatar} />
-            </View>
-            <View style={[styles.column, { flex: 2, paddingHorizontal: theme.sizes.padding / 2 }]}>
-              <Text style={{ color: theme.colors.white, fontWeight: 'bold' }}>{item.name} {item.surname}...</Text>
-              <Text style={{ color: theme.colors.white }}>
-                <MaterialCommunityIcons
+        <View style={{ padding: 15 }}>
+          <Card >
+            <CardItem>
+              <Left>
+                <Thumbnail source={{ uri: photoUser }} />
+                <Body>
+                  <Text>{item.name} {surname}</Text>
+                  <View style={{flexDirection:'row'}}>
+                  <MaterialCommunityIcons
                   name="map-marker-outline"
-                  size={theme.sizes.font * 0.8}
-                  color={theme.colors.white}
+                  size={theme.sizes.font * 1}
+                  color={theme.colors.black}
                 />
-                <Text> {item.location_name}...</Text>
-              </Text>
-            </View>
-            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'flex-end', }}>
-              <Text>
-                <MaterialCommunityIcons
+                  <Text> {item.location_name}</Text>
+                  </View>
+                </Body>
+              </Left>
+              <Right style={{justifyContent:'flex-end'}}>
+              <View style={{flexDirection:'row'}}>
+              <MaterialCommunityIcons
                   name="account-plus"
                   size={theme.sizes.font * 1.5}
                   color={theme.colors.white}
+                  color={theme.colors.black}
                 />
-                <Text style={styles.rating}> {item.inviter}/{item.number_people}</Text>
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
-        <View style={[styles.column, styles.destinationInfo, styles.shadow]}>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
-            {item.title}
-          </Text>
-          <View style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-end', }]}>
-            <Text style={{ color: theme.colors.caption }}>
-              {item.description}...
-              </Text>
-            <FontAwesome
-              name="chevron-right"
-              size={theme.sizes.font * 0.75}
-              color={theme.colors.caption}
-            />
-          </View>
-        </View>
-        <View>
-          <Text style={{ fontSize: theme.sizes.font * 1.25, fontWeight: '500', paddingBottom: 8, }}>
+              <Text> {item.inviter}/{item.number_people}</Text>  
+              </View> 
+              <Text>{dates}</Text>
+              </Right>
+            </CardItem>
 
-          </Text>
+            <CardItem cardBody>
+              <Image
+                style={{
+                  resizeMode: "cover",
+                  width: null,
+                  height: 200,
+                  flex: 1
+                }}
+                source={{ uri: photoAc }}
+              />
+            </CardItem>
+
+            <CardItem style={{ paddingVertical: 0 }}>
+              <Left style={{justifyContent:'flex-start'}}>  
+              <View style={[styles.row]}>     
+              <MaterialIcons
+              name="title"
+              size={theme.sizes.font * 1.5}
+              color={theme.colors.black}
+            />
+              <Text style={{fontWeight:'bold'}}>| {item.title}</Text>
+              </View> 
+              </Left>
+              <Right style={{justifyContent:'flex-end'}}>
+              <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                activeOpacity={0.5}
+                onPress={() => navigation.navigate('Article', { article: item })}
+              >
+                <Text style={{
+                  color:"#fe53bb",
+                  fontWeight: 'bold'
+                }}>View</Text>
+              </TouchableOpacity>
+              </Right>
+            </CardItem>
+          </Card>
         </View>
+
       </TouchableOpacity>
     )
+
   }
 
   renderProfile = item => {
@@ -410,6 +377,12 @@ class Profile extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refresh.bind(this)}
+            />
+          }
         >
           {this.renderProfile()}
           {this.renderHost()}
@@ -438,7 +411,8 @@ const styles = StyleSheet.create({
   MainAvatar: {
     // position: 'absolute',
     top: -theme.sizes.margin,
-    // right: theme.sizes.margin,
+    borderWidth: 2.5,
+    borderColor: '#fff',
     width: theme.sizes.padding * 4,
     height: theme.sizes.padding * 4,
     borderRadius: theme.sizes.padding,

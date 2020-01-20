@@ -6,6 +6,7 @@ import {
     Button,
     TouchableOpacity,
     AsyncStorage,
+    ScrollView
 } from "react-native";
 
 import SwitchToggle from "react-native-switch-toggle";
@@ -217,6 +218,9 @@ class MyInterest extends React.Component {
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
           
+          <ScrollView
+          showsVerticalScrollIndicator={true}
+        >
           <View style={styles.container}>
             <Text style={{fontSize:30,marginBottom:20}}>My Interest</Text>
             {/* <View style={{alignItems: 'flex-start',justifyContent: 'flex-start'}}> */}
@@ -455,6 +459,8 @@ class MyInterest extends React.Component {
             </View>
             
           </View>
+          
+          </ScrollView>
           </LinearGradient>
         );
     }
@@ -522,6 +528,7 @@ class MyInterest extends React.Component {
           this.setState({ data8: 0 })
         }
       };
+      
 }
 
 export default MyInterest;
