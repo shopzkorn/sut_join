@@ -43,7 +43,12 @@ const App = createStackNavigator(
         header: null,
       },
     },
-    Follow,
+    Follow: {
+      screen: Follow,
+      navigationOptions: {
+        header: null,
+      },
+    },
     DetailNews,
     SearchActivity,
     AllHistoryActivity: {
@@ -57,7 +62,12 @@ const App = createStackNavigator(
     ArticleUser,
     ArticleSearch,
     ScanQrcode,
-    FollowUser,
+    FollowUser: {
+      screen: FollowUser,
+      navigationOptions: {
+        header: null,
+      },
+    },
     CheckinActivity,
     UserDashboard,
     Editprofile,

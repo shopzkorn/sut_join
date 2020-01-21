@@ -12,8 +12,8 @@ import {
   Platform,
   TouchableOpacity,
   AsyncStorage,
-  RefreshControl
-
+  RefreshControl,
+  ActivityIndicator
 } from "react-native";
 
 import {
@@ -57,7 +57,9 @@ class Profile extends React.Component {
     following: 0,
     page: 1,
     age_user: 0,
-    gender_user : 0
+    gender_user : 0,
+    loading: false,
+    lastItem: true,
   }
   scrollXHost = new Animated.Value(0);
   scrollXJoin = new Animated.Value(0);
@@ -73,6 +75,8 @@ class Profile extends React.Component {
   setHost = (data) => {
     this.setState({
       myhost: data,
+      loading: false,
+      lastItem: false
     })
   }
   setProfile = (data) => {
@@ -96,7 +100,7 @@ class Profile extends React.Component {
         }),
         body: JSON.stringify({
           id_user: this.state.id_user,
-          page: this.state.page,
+          page: 1,
         })
       }),
       fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -384,7 +388,50 @@ class Profile extends React.Component {
       );
     }
   }
+  fetchDataLoadmore = () =>{
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          id_user: this.state.id_user,
+          page: this.state.page,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        // console.log('res ' + responseJson.length);
+        if (responseJson.length > 0) {
+            this.setState({ 
+              myhost: this.state.myhost.concat(responseJson), 
+              loading: false,
+              lastItem: false });
+        } else {
+            this.setState({
+              lastItem: true,
+              loading: false
+            });
+          }
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+  renderFooter = () => {
+    if (!this.state.loading) return null;
 
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
   render() {
 
     return (
@@ -404,10 +451,26 @@ class Profile extends React.Component {
               onRefresh={this.refresh.bind(this)}
             />
           }
-          
+          onScroll={(e) => {
+            var windowHeight = Dimensions.get('window').height,
+              height = e.nativeEvent.contentSize.height,
+              offset = e.nativeEvent.contentOffset.y;
+            // console.log(windowHeight+' '+height+' '+offset)
+            if (windowHeight + offset >= height && this.state.lastItem == false) {
+              console.log('End Scroll')
+              this.setState((prevState, props) => ({
+                page: this.state.page + 1,
+                loading: true,
+                lastItem: true
+              }), () => {
+                this.fetchDataLoadmore()
+              })
+            }
+          }}
         >
           {this.renderProfile()}
           {this.renderHost()}
+          {this.renderFooter()}
         </ScrollView>
         <View style={{ flex: 1 }}>
           <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />

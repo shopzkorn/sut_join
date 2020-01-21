@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    Button,
+    ActivityIndicator,
     Image,
     Animated,
     StyleSheet,
@@ -31,7 +31,10 @@ class Profile extends React.Component {
         followText: 'Follow',
         follow: false,
         user_id: '',
-        buttonBG: []
+        buttonBG: [],
+        page: 1,
+        loading: false,
+        lastItem: true,
     }
 
     processFollow = (item) => {
@@ -54,7 +57,15 @@ class Profile extends React.Component {
 
             })
     }
-    fetchData = async () => {
+    fetchData = async (status) => {
+        var page = 0;
+        if (status == 1) {
+            page = 1;
+            this.setState({ page: 1 })
+        }
+        else {
+            page = this.state.page;
+        }
         // console.log(this.state.myhost);
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
             method: 'post',
@@ -66,14 +77,35 @@ class Profile extends React.Component {
                 status: this.state.status,
                 id_user: this.state.id_user,
                 user_id: this.state.user_id,
+                page: page
             })
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson);
-                this.setState({
-                    user_detail: responseJson,
-                    loadingVisible: false
-                })
+                if (responseJson.length > 0) {
+                    if (status == 2) {
+                        this.setState({
+                            user_detail: this.state.user_detail.concat(responseJson),
+                            loadingVisible: false,
+                            lastItem: false,
+                            loading: false 
+                        })
+                    }
+                    else {
+                        this.setState({
+                            user_detail: responseJson,
+                            loadingVisible: false,
+                            lastItem: false,
+                            loading: false 
+                        })
+                    }
+                } else {
+                    this.setState({
+                        lastItem: true,
+                        loading: false,
+                        loadingVisible: false,
+                      });
+                }
             })
     }
 
@@ -98,7 +130,7 @@ class Profile extends React.Component {
     refresh() {
         this.setState({ refreshing: true });
         return new Promise((resolve) => {
-            this.fetchData().then(() => {
+            this.fetchData(1).then(() => {
                 this.setState({ refreshing: false })
             });
             setTimeout(() => { resolve() }, 2000)
@@ -119,7 +151,7 @@ class Profile extends React.Component {
                 user_id: user_id
             }), () => {
                 console.log(this.state.id_user);
-                this.fetchData()
+                this.fetchData(1)
             })
         });
     }
@@ -149,8 +181,10 @@ class Profile extends React.Component {
         const { navigation } = this.props;
         if (item.user_id != this.state.user_id) {
             return (
-                <TouchableOpacity activeOpacity={0.8} onPress={() =>{ this.props.navigation.state.params.onNavigateBack(item.user_id);
-                 navigation.navigate('userProfile', { User: item.user_id })}} >
+                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                    this.props.navigation.state.params.onNavigateBack(item.user_id);
+                    navigation.navigate('userProfile', { User: item.user_id })
+                }} >
                     <View style={[styles.row]}>
                         <View style={{ flex: 0 }}>
                             <Image source={{ uri: photoUser }} style={styles.avatar} />
@@ -161,8 +195,8 @@ class Profile extends React.Component {
                     </View>
                 </TouchableOpacity>
             )
-        }else{
-            return(
+        } else {
+            return (
                 <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Profile', { User: item.user_id })} >
                     <View style={[styles.row]}>
                         <View style={{ flex: 0 }}>
@@ -200,7 +234,7 @@ class Profile extends React.Component {
         }
     }
     renderDestination = item => {
-      
+
         return (
             <View style={[styles.row, { marginTop: 10, justifyContent: 'space-between' }]}>
                 {this.renderList(item)}
@@ -211,7 +245,37 @@ class Profile extends React.Component {
             </View>
         )
     }
+    renderFooter = () => {
+        if (!this.state.loading) return null;
 
+        return (
+            <View
+                style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderColor: "#CED0CE"
+                }}
+            >
+                <ActivityIndicator animating size="large" />
+            </View>
+        );
+    };
+    renderHeader = () => {
+        if (this.state.status == '3') {
+            return (
+                <View style={{ marginVertical: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 24 }}>Followers</Text>
+                </View>
+            )
+        }
+        else {
+            return (
+                <View style={{ marginVertical: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 24 }}>Followings</Text>
+                </View>
+            )
+        }
+    }
     render() {
 
         return (
@@ -220,8 +284,26 @@ class Profile extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }} >
-                <ScrollView>
+                {this.renderHeader()}
+                <ScrollView
+                    onScroll={(e) => {
+                        var windowHeight = Dimensions.get('window').height,
+                            height = e.nativeEvent.contentSize.height,
+                            offset = e.nativeEvent.contentOffset.y;
+                        // console.log(windowHeight+' '+height+' '+offset)
+                        if (windowHeight + offset >= height && this.state.lastItem == false) {
+                            console.log('End Scroll')
+                            this.setState((prevState, props) => ({
+                                page: this.state.page + 1,
+                                loading: true,
+                                lastItem: true
+                            }), () => {
+                                this.fetchData(2)
+                            })
+                        }
+                    }}>
                     {this.renderFollow()}
+                    {this.renderFooter()}
                 </ScrollView>
                 <View style={{ flex: 1 }}>
                     <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />

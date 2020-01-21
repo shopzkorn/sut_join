@@ -521,7 +521,7 @@ export default class ListViewExample extends Component {
     }
 
     renderTrends = (item, index) => {
-        console.log(item);
+        // console.log(item);
         return (
             <View>
                 <TouchableOpacity onPress={() => this.FilterTag(item.activity_tag)}>
@@ -679,7 +679,7 @@ export default class ListViewExample extends Component {
     }
 
     renderItem = (item, index) => {
-        console.log(item);
+        // console.log(item);
         let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
         let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
         const { navigation } = this.props;
