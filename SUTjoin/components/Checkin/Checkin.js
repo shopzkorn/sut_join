@@ -14,6 +14,7 @@ class Checkin extends Component {
     render() {
         const { navigation } = this.props;
         return (
+          <SafeAreaView style={{ flex: 1 }}>
             <View style={[styles.container]}>
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('ScanQrcode')}>
               <View>
@@ -26,6 +27,7 @@ class Checkin extends Component {
               </View>
             </TouchableOpacity>
             </View>
+            </SafeAreaView>
         );
     }
 }

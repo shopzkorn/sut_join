@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   AsyncStorage,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -359,7 +360,7 @@ class History extends React.Component {
   render() {
 
     return (
-     
+      <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
@@ -399,7 +400,7 @@ class History extends React.Component {
             {this.renderFooter()}
           </ScrollView>
         </LinearGradient>
-      
+        </SafeAreaView>
     );
   }
 }

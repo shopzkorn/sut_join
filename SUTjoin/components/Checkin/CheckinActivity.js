@@ -6,7 +6,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  PermissionsAndroid
+  PermissionsAndroid,
+  SafeAreaView,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import QRCodeScanner from 'react-native-qrcode-scanner';

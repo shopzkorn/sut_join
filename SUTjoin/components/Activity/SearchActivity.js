@@ -125,23 +125,6 @@ export default class ListViewExample extends Component {
         };
 
     }
-    static navigationOptions = ({ navigation }) => {
-        return {
-            header: (
-
-                <View style={{ marginTop: 10, marginLeft: 10, marginBottom: 10 }}>
-                    <TouchableOpacity style={styles.row} onPress={() => navigation.goBack()}>
-                        <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} style={{ marginTop: 8 }} />
-                        <Text style={styles.highlight}>
-                            BACK
-                            </Text>
-                    </TouchableOpacity>
-                </View>
-            ),
-            headerTransparent: true,
-        }
-    }
-
 
     FilterType = (value) => {
         console.log(value);
@@ -555,6 +538,7 @@ export default class ListViewExample extends Component {
                     end={{ x: 1, y: 0 }}
                     style={{ flex: 1 }}
                 >
+
                     <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
                         <SearchBar
                             ref="search1"

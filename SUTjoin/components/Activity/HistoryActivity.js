@@ -12,7 +12,8 @@ import {
   Platform,
   TouchableOpacity,
   AsyncStorage,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView,
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -463,6 +464,7 @@ class Articles extends Component {
   render() {
     if(!this.state.loadingVisible){
     return (
+      <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
@@ -487,9 +489,11 @@ class Articles extends Component {
           </ScrollView>
           
         </LinearGradient>
+        </SafeAreaView>
     )
   }else{
     return(
+      <SafeAreaView style={{ flex: 1 }}>
     <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
@@ -498,6 +502,7 @@ class Articles extends Component {
         >
             <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
             </LinearGradient>
+            </SafeAreaView>
     )
   }
 }

@@ -477,6 +477,16 @@ class Editprofile extends Component {
             start={{ x: 0.0, y: 0.5 }}
             end={{ x: 1.0, y: 0.5 }}
             style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                  <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+                </TouchableOpacity>
+                <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                    <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                        Profile
+                </Text>
+                </View>
+            </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: theme.sizes.padding, flexGrow: 1, justifyContent: 'space-between', }}
