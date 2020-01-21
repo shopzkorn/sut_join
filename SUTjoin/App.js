@@ -28,6 +28,9 @@ import volunteer from './components/Profile/Volunteer';
 import SplashScreen from './components/Navigation/FirstPage';
 import Editprofile from './components/Profile/Editprofile';
 import CalendarEditPro from './components/Profile/CalendarEditPro';
+import SettingMode from './components/Profile/SettingMode';
+import HelpCenter from './components/Profile/HelpCenter';
+import AboutSutjoin from './components/Profile/AboutSutjoin';
 
 //Route
 const App = createStackNavigator(
@@ -50,7 +53,12 @@ const App = createStackNavigator(
     FollowUser,
     CheckinActivity,
     UserDashboard,
-    Editprofile,
+    Editprofile: {
+      screen: Editprofile,
+      navigationOptions: {
+        header: null,
+      },
+    },
     CalendarEditPro,
     SelectMap: {
       screen: SelectMap,
@@ -117,6 +125,24 @@ const App = createStackNavigator(
       navigationOptions: {
         // header: null,
       }
+    },
+    SettingMode:{
+      screen: SettingMode,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AboutSutjoin:{
+      screen: AboutSutjoin,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    HelpCenter:{
+      screen: HelpCenter,
+      navigationOptions: {
+        header: null,
+      },
     },
 
   },

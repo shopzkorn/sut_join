@@ -217,7 +217,7 @@ class manage_subject extends Component {
                 style={{ flex: 1 }}>
                 <View style={styles.container1}>
                   <View style={{alignItems: 'center'}}>
-                <Text style={{ fontSize: 25 ,marginTop: 20, marginBottom:20}}>Course</Text>
+                <Text style={{ fontSize: 25 ,marginTop: 20, marginBottom:20,fontWeight: 'bold'}}>Course</Text>
                   </View>
                 {this.renderFollow()}
                 </View>  

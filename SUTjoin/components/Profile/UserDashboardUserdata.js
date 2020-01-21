@@ -138,7 +138,7 @@ class UserDashboard_user__data extends React.Component {
     
         return (
           <View>
-            <Text style={{fontSize:30,marginBottom:20,marginTop:20,padding:10}}>My Activities Joined</Text>
+            <Text style={{fontSize:30,marginBottom:20,marginTop:20,padding:10,fontWeight: 'bold'}}>My Activities Joined</Text>
             <View style={{flexDirection:'row',alignItems: 'center',justifyContent: 'center',marginTop: 20}}>
               
               <View style={{marginRight: 20,alignItems: 'center'}}>

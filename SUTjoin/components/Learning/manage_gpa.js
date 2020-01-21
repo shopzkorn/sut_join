@@ -400,7 +400,7 @@ class manage_gpa extends Component {
             >
                 <View style={styles.container}>
 
-                <Text style={{ fontSize: theme.sizes.font * 1.4 ,marginBottom:25}}>Manage your GPA</Text>
+                <Text style={{ fontSize: theme.sizes.font * 1.4 ,marginBottom:25,fontWeight: 'bold'}}>Manage your GPA</Text>
 
                 <View style={[ styles.row_underline, { marginBottom:16,}]}>
                   <Text>GPAX: </Text>

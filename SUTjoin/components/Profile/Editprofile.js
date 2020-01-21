@@ -66,28 +66,7 @@ class Editprofile extends Component {
     };
   }
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }}
-          end={{ x: 1.0, y: 0.5 }}
-        >
-          <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-            <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
-              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
-            </TouchableOpacity>
-            <View style={{ alignSelf: 'center', paddingHorizontal: width / 8 }}>
-              <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' }}>
-                Edit Profile
-          </Text>
-            </View>
-          </View>
-        </LinearGradient>
-      ),
-    }
-  }
+ 
 
   FilterStatus = (value) => {
     console.log(value);

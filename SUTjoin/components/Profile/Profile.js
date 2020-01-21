@@ -12,7 +12,8 @@ import {
   Platform,
   TouchableOpacity,
   AsyncStorage,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView,
 
 } from "react-native";
 
@@ -25,7 +26,7 @@ import {
   Thumbnail,
   Left,
   Body,
-  Right
+  Right,
 } from "native-base";
 
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -365,15 +366,32 @@ class Profile extends React.Component {
   }
 
   render() {
-
+    const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
     return (
-
+    <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient
         colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0.0, y: 0.5 }}
         end={{ x: 1.0, y: 0.5 }}
         style={{ flex: 1 }} >
 
+        <View style={{ flexDirection: 'row',justifyContent:'space-between',backgroundColor: 'rgba(0,0,0,0.1)',}}>
+            <View style={{ justifyContent:'flex-start'}}>
+                <View style={{marginLeft: 50, paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                            Profile
+                        </Text>
+                </View>
+            </View>
+            <View style={{ justifyContent:'flex-end'}}>
+                <View style={{ alignSelf:'flex-end',alignItems:'flex-end',marginRight: 20, paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                <TouchableOpacity onPress={() => navigate('SettingMode')}>
+                        <MaterialIcons name="settings" size={theme.sizes.font * 2} color={theme.colors.black} style={{alignSelf:'flex-end'}}/>
+                </TouchableOpacity>
+                </View>
+            </View>
+        </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
@@ -391,7 +409,7 @@ class Profile extends React.Component {
           <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
         </View>
       </LinearGradient >
-
+    </SafeAreaView>
     )
 
   }

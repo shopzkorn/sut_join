@@ -657,7 +657,7 @@ return (
 
                 
                 
-                <Text style={{ fontSize: 25 , marginBottom:30}}>Learning</Text>
+                <Text style={{ fontSize: 25 , marginTop:30,marginBottom:30,fontWeight: 'bold'}}>Learning</Text>
 
                 {this.Circle_gpax()}
                 

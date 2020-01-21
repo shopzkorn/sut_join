@@ -27,8 +27,6 @@ class add_subject extends Component {
         user_id:'',
 
         subject_id:'',
-        grade:0,
-        term:'',
 
       }
 
@@ -85,63 +83,23 @@ class add_subject extends Component {
             >
                 <View style={styles.container}>
 
-                <Text style={{ fontSize: theme.sizes.font * 1.4 ,marginBottom:25}}>Add Course</Text>
+                <Text style={{ fontSize: theme.sizes.font * 1.4 ,marginBottom:25,fontWeight: 'bold'}}>Add Course</Text>
 
-                <Text style={{ fontSize: 16,marginTop:20,marginBottom:25,marginLeft:20}}>Enter your course</Text>
+                <Text style={{ fontSize: 16,marginTop:20,marginBottom:50,marginLeft:20}}>Enter your course</Text>
                 <View style={[ styles.row_underline, { marginBottom:16,}]}>
                     <TextInput placeholder="Course code"
                     value={this.state.subject_id}
                     onChangeText={subject_id => this.setState({ subject_id })}
                     placeholderTextColor="#fff"
                     underlineColorAndroid='transparent'
-                    style={{ color: '#ff1694', flex:0.4, fontSize:16, paddingLeft:12,textAlign:'center'}}
+                    style={{ color: '#ff1694', flex:0.7, fontSize:16, paddingLeft:12,textAlign:'center'}}
                 />
-                </View>
-                <View style={styles.row}>
-                    <View>
-                    <Text style={{ fontSize: 16,marginTop:20,marginTop:25,marginLeft:20}}>Grade</Text>
-                    <Picker
-                        style={{height: 20, width: 100}}
-                        selectedValue={this.state.grade}
-                        onValueChange={(itemValue, itemIndex) => this.setState({grade: itemValue })}
-                    >
-                        <Picker.Item label="A" value="4" />
-                        <Picker.Item label="B+" value="3.5" />
-                        <Picker.Item label="B" value="3" />
-                        <Picker.Item label="C+" value="2.5" />
-                        <Picker.Item label="C" value="2" />
-                        <Picker.Item label="D+" value="1.5" />
-                        <Picker.Item label="D" value="1" />
-                        <Picker.Item label="F" value="0" />
-                    </Picker>
-                    </View>
-                    <View style={{marginTop:5,marginLeft:20}}>
-                    <Text style={{ fontSize: 16,marginTop:20,marginLeft:20}}>Term</Text>
-                    <Picker
-                        style={{height: 20, width: 100}}
-                        selectedValue={this.state.term}
-                        onValueChange={(itemValue, itemIndex) => this.setState({term: itemValue })}>
-                        <Picker.Item label="1-1" value="1" />
-                        <Picker.Item label="1-2" value="2" />
-                        <Picker.Item label="1-3" value="3" />
-                        <Picker.Item label="2-1" value="4" />
-                        <Picker.Item label="2-2" value="5" />
-                        <Picker.Item label="2-3" value="6" />
-                        <Picker.Item label="3-1" value="7" />
-                        <Picker.Item label="3-2" value="8" />
-                        <Picker.Item label="3-3" value="9" />
-                        <Picker.Item label="4-1" value="10" />
-                        <Picker.Item label="4-2" value="11" />
-                        <Picker.Item label="4-3" value="12" />
-
-                    </Picker>
-                    </View>
                 </View>
                     {/* <TouchableOpacity onPress={this.AddSubject}
                     style={{flex:0.2 , backgroundColor: '#ff1694', borderRadius:5, padding: 25,marginTop:200}}>
                         <Text style={{ alignSelf:"center" , fontSize : 16 , color : '#fff' }}>Save</Text>
                     </TouchableOpacity> */}
-                <View style={{marginTop:200,marginBottom:20}}>
+                <View style={{marginTop:50,marginBottom:20}}>
                     <TouchableOpacity style={[
                       styles.buttonStyleFollow,
                       styles.centerEverything]}
@@ -187,7 +145,7 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-    //   justifyContent: 'center',
+      justifyContent: 'center',
       alignItems: 'center',
       padding:30
     },
