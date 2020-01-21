@@ -42,7 +42,7 @@ class UserDashboard extends React.Component {
     percent6: 0,
     percent7: 0,
     percent8: 1,
-    Allpercent : 0,
+    Allpercent: 0,
     createAll: 0,
     createpercent1: 0,
     createpercent2: 0,
@@ -52,7 +52,7 @@ class UserDashboard extends React.Component {
     createpercent6: 0,
     createpercent7: 0,
     createpercent8: 1,
-    Allcreatepercent : 0,
+    Allcreatepercent: 0,
 
   }
 
@@ -84,284 +84,321 @@ class UserDashboard extends React.Component {
     this.setState({ data: users });
   }
 
-  
+
   renderJoinDash = () => {
-    if(this.state.Allpercent != 0){
-    return (
-      <View>
-        <Text style={{ fontSize: 20, marginBottom: 10, padding: 10 }}>Joined activities</Text>
-        <View style={{ marginTop: 40, alignItems: 'center' }}>
-          <PieChart
-            chart_wh={chart_wh}
-            series={series}
-            sliceColor={sliceColor}
-            doughnut={true}
-            coverRadius={0.45}
-            coverFill={'#FFF'}
-          />
-          <Text style={{ marginTop: 10, marginBottom: 10, alignItems: 'center' }}>All Of Joined</Text>
+    if (this.state.Allpercent != 0) {
+      const chart_wh = 200;
+      const { navigate } = this.props.navigation;
+      const series = [
+        parseInt(this.state.percent1),
+        parseInt(this.state.percent2),
+        parseInt(this.state.percent3),
+        parseInt(this.state.percent4),
+        parseInt(this.state.percent5),
+        parseInt(this.state.percent6),
+        parseInt(this.state.percent7),
+        parseInt(this.state.percent8),]
+      const sliceColor = ['#F44336', '#2196F3', '#FFEB3B', '#ff71ce', '#4CAF50', '#FF9800', '#b967ff', '#7fffd4']
+
+      return (
+        <View>
+          <Text style={{ fontSize: 20, marginBottom: 10, padding: 10 }}>Joined activities</Text>
+          <View style={{ marginTop: 40, alignItems: 'center' }}>
+            <PieChart
+              chart_wh={chart_wh}
+              series={series}
+              sliceColor={sliceColor}
+              doughnut={true}
+              coverRadius={0.45}
+              coverFill={'#FFF'}
+            />
+            <Text style={{ marginTop: 10, marginBottom: 10, alignItems: 'center' }}>All Of Joined</Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent1}
+                radius={50}
+                borderWidth={8}
+                color="#F44336"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent1 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Learning</Text>
+            </View>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent2}
+                radius={50}
+                borderWidth={8}
+                color="#2196F3"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent2 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Volunteer</Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent3}
+                radius={50}
+                borderWidth={8}
+                color="#FFEB3B"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent3 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Recreation</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent4}
+                radius={50}
+                borderWidth={8}
+                color="#ff71ce"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent4 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Hangout</Text>
+            </View>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent5}
+                radius={50}
+                borderWidth={8}
+                color="#4CAF50"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent5 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Travel</Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent6}
+                radius={50}
+                borderWidth={8}
+                color="#FF9800"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent6 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Hobby</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent7}
+                radius={50}
+                borderWidth={8}
+                color="#b967ff"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent7 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Meet</Text>
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.percent8}
+                radius={50}
+                borderWidth={8}
+                color="#7fffd4"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.percent8 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Eat&Drink</Text>
+            </View>
+          </View>
         </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent1}
-              radius={50}
-              borderWidth={8}
-              color="#F44336"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent1 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Learning</Text>
+      )
+    }else{
+      return(
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 30 }}>No data</Text>
           </View>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent2}
-              radius={50}
-              borderWidth={8}
-              color="#2196F3"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent2 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Volunteer</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent3}
-              radius={50}
-              borderWidth={8}
-              color="#FFEB3B"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent3 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Recreation</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent4}
-              radius={50}
-              borderWidth={8}
-              color="#ff71ce"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent4 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Hangout</Text>
-          </View>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent5}
-              radius={50}
-              borderWidth={8}
-              color="#4CAF50"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent5 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Travel</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent6}
-              radius={50}
-              borderWidth={8}
-              color="#FF9800"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent6 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Hobby</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent7}
-              radius={50}
-              borderWidth={8}
-              color="#b967ff"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent7 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Meet</Text>
-          </View>
-
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.percent8}
-              radius={50}
-              borderWidth={8}
-              color="#7fffd4"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.percent8 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Eat&Drink</Text>
-          </View>
-        </View>
-      </View>
-    )
+      )
+    }
   }
-}
 
   renderCreateDash = () => {
-    if(this.state.Allcreatepercent != 0){
-    return(
-      <View>
-        <Text style={{ fontSize: 20, marginTop: 20, marginBottom: 10, padding: 10 }}>Created activities</Text>
-        <View style={{ marginTop: 40, alignItems: 'center' }}>
+    if (this.state.Allcreatepercent != 0) {
+      const chart_wh = 200
+      const { navigate } = this.props.navigation;
+      const seriesCreate = [
+        parseInt(this.state.createpercent1),
+        parseInt(this.state.createpercent2),
+        parseInt(this.state.createpercent3),
+        parseInt(this.state.createpercent4),
+        parseInt(this.state.createpercent5),
+        parseInt(this.state.createpercent6),
+        parseInt(this.state.createpercent7),
+        parseInt(this.state.createpercent8),]
+      const sliceColor = ['#F44336', '#2196F3', '#FFEB3B', '#ff71ce', '#4CAF50', '#FF9800', '#b967ff', '#7fffd4']
+      return (
+        <View>
+          <Text style={{ fontSize: 20, marginTop: 20, marginBottom: 10, padding: 10 }}>Created activities</Text>
+          <View style={{ marginTop: 40, alignItems: 'center' }}>
 
-          <PieChart
-            chart_wh={chart_wh}
-            series={seriesCreate}
-            sliceColor={sliceColor}
-            doughnut={true}
-            coverRadius={0.45}
-            coverFill={'#FFF'}
-          />
-          <Text style={{ marginTop: 10, alignItems: 'center' }}>All Of Created</Text>
+            <PieChart
+              chart_wh={chart_wh}
+              series={seriesCreate}
+              sliceColor={sliceColor}
+              doughnut={true}
+              coverRadius={0.45}
+              coverFill={'#FFF'}
+            />
+            <Text style={{ marginTop: 10, alignItems: 'center' }}>All Of Created</Text>
 
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent1}
+                radius={50}
+                borderWidth={8}
+                color="#F44336"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent1 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Learning</Text>
+            </View>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent2}
+                radius={50}
+                borderWidth={8}
+                color="#2196F3"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent2 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Volunteer</Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent3}
+                radius={50}
+                borderWidth={8}
+                color="#FFEB3B"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent3 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Recreation</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent4}
+                radius={50}
+                borderWidth={8}
+                color="#ff71ce"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent4 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Hangout</Text>
+            </View>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent5}
+                radius={50}
+                borderWidth={8}
+                color="#4CAF50"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent5 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Travel</Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent6}
+                radius={50}
+                borderWidth={8}
+                color="#FF9800"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent6 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Hobby</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View style={{ marginRight: 20, alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent7}
+                radius={50}
+                borderWidth={8}
+                color="#b967ff"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent7 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Meet</Text>
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
+              <ProgressCircle
+                percent={this.state.createpercent8}
+                radius={50}
+                borderWidth={8}
+                color="#7fffd4"
+                shadowColor="#999"
+                bgColor="#fff"
+              >
+                <Text style={{ fontSize: 18 }}>{this.state.createpercent8 + '%'}</Text>
+              </ProgressCircle>
+              <Text>Eat&Drink</Text>
+            </View>
+          </View>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent1}
-              radius={50}
-              borderWidth={8}
-              color="#F44336"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent1 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Learning</Text>
+      )
+    }else{
+      return(
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 30 }}>No data</Text>
           </View>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent2}
-              radius={50}
-              borderWidth={8}
-              color="#2196F3"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent2 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Volunteer</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent3}
-              radius={50}
-              borderWidth={8}
-              color="#FFEB3B"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent3 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Recreation</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent4}
-              radius={50}
-              borderWidth={8}
-              color="#ff71ce"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent4 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Hangout</Text>
-          </View>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent5}
-              radius={50}
-              borderWidth={8}
-              color="#4CAF50"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent5 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Travel</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent6}
-              radius={50}
-              borderWidth={8}
-              color="#FF9800"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent6 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Hobby</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-          <View style={{ marginRight: 20, alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent7}
-              radius={50}
-              borderWidth={8}
-              color="#b967ff"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent7 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Meet</Text>
-          </View>
-
-          <View style={{ alignItems: 'center' }}>
-            <ProgressCircle
-              percent={this.state.createpercent8}
-              radius={50}
-              borderWidth={8}
-              color="#7fffd4"
-              shadowColor="#999"
-              bgColor="#fff"
-            >
-              <Text style={{ fontSize: 18 }}>{this.state.createpercent8 + '%'}</Text>
-            </ProgressCircle>
-            <Text>Eat&Drink</Text>
-          </View>
-        </View>
-      </View>
-    )
+      )
     }
   }
   renderDashboard = item => {
 
     const { navigate } = this.props.navigation;
 
-    const chart_wh = 200
+
     const series = [
       parseInt(this.state.percent1),
       parseInt(this.state.percent2),
@@ -384,122 +421,122 @@ class UserDashboard extends React.Component {
 
 
     const sliceColor = ['#F44336', '#2196F3', '#FFEB3B', '#ff71ce', '#4CAF50', '#FF9800', '#b967ff', '#7fffd4']
-      if(this.state.getall != 0){
-    return (
-      <View>
-        <Text style={{ fontSize: 30, marginBottom: 10, marginTop: 20, padding: 10 }}>Dashboard</Text>
-        {this.renderJoinDash()}
-        {this.renderCreateDash()}
-      </View>
-    );
+    if (this.state.getall != 0) {
+      return (
+        <View>
+          <Text style={{ fontSize: 30, marginBottom: 10, marginTop: 20, padding: 10 }}>Dashboard</Text>
+          {this.renderJoinDash()}
+          {this.renderCreateDash()}
+        </View>
+      );
+    }
   }
-}
-  
 
-setAllpercent = () =>{
-  var all1 = this.percent1 + this.percent2 + this.percent3 + this.percent4 + this.percent5 + this.percent6 + this.percent7 + this.percent8;
-  var all2 = this.createpercent1 + this.createpercent2 + this.createpercent3 + this.createpercent4 + this.createpercent5 + this.createpercent6 + this.createpercent7 + this.createpercent8;
-  this.setState({
-    Allpercent : all1,
-    Allcreatepercent : all2
-  })
-}
 
-      GetUserDashboard() {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php', {
-          method: 'post',
-          headers: new Headers({
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }),
-          body: JSON.stringify({
-            user_id: this.state.user_id.split('"')[1],
-          })
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            // Showing response message coming from server after inserting records.
-            // alert(responseJson);
-            console.log(responseJson);
-                this.setState({getall: responseJson[0],})
+  setAllpercent = () => {
+    var all1 = this.percent1 + this.percent2 + this.percent3 + this.percent4 + this.percent5 + this.percent6 + this.percent7 + this.percent8;
+    var all2 = this.createpercent1 + this.createpercent2 + this.createpercent3 + this.createpercent4 + this.createpercent5 + this.createpercent6 + this.createpercent7 + this.createpercent8;
+    this.setState({
+      Allpercent: all1,
+      Allcreatepercent: all2
+    })
+  }
 
-                this.setState({percent1: responseJson[1],})
+  GetUserDashboard() {
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.user_id.split('"')[1],
+      })
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        // Showing response message coming from server after inserting records.
+        // alert(responseJson);
+        console.log(responseJson);
+        this.setState({ getall: responseJson[0], })
 
-                this.setState({percent2: responseJson[2],})
+        this.setState({ percent1: responseJson[1], })
 
-                this.setState({percent3: responseJson[3],})
+        this.setState({ percent2: responseJson[2], })
 
-                this.setState({percent4: responseJson[4],})
+        this.setState({ percent3: responseJson[3], })
 
-                this.setState({percent5: responseJson[5],})
+        this.setState({ percent4: responseJson[4], })
 
-                this.setState({percent6: responseJson[6],})
+        this.setState({ percent5: responseJson[5], })
 
-                this.setState({percent7: responseJson[7],})
+        this.setState({ percent6: responseJson[6], })
 
-                this.setState({percent8: responseJson[8],})
+        this.setState({ percent7: responseJson[7], })
 
-                this.setState({createAll: responseJson[9],})
+        this.setState({ percent8: responseJson[8], })
 
-                this.setState({createpercent1: responseJson[10],})
+        this.setState({ createAll: responseJson[9], })
 
-                this.setState({createpercent2: responseJson[11],})
+        this.setState({ createpercent1: responseJson[10], })
 
-                this.setState({createpercent3: responseJson[12],})
-                this.setState({createpercent4: responseJson[13],})
+        this.setState({ createpercent2: responseJson[11], })
 
-                this.setState({createpercent5: responseJson[14],})
+        this.setState({ createpercent3: responseJson[12], })
+        this.setState({ createpercent4: responseJson[13], })
 
-                this.setState({createpercent6: responseJson[15],})
+        this.setState({ createpercent5: responseJson[14], })
 
-                this.setState({createpercent7: responseJson[16],})
+        this.setState({ createpercent6: responseJson[15], })
 
-                this.setState({createpercent8: responseJson[17],})
-                this.setAllpercent();
-            
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
+        this.setState({ createpercent7: responseJson[16], })
 
-     
-    render() {
-          if(this.state.getall != 0){
-            return (
-                <LinearGradient
-                  colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                  start={{ x: 0.0, y: 0.5 }}
-                  end={{ x: 1.0, y: 0.5 }}
-                  style={{ flex: 1 }}
-                >
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-                    
+        this.setState({ createpercent8: responseJson[17], })
+        this.setAllpercent();
 
-                    {this.renderDashboard()}
-                    
-                    
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
-                  </ScrollView>
-                </LinearGradient>
-            )
-          }else{
-            return (
-              <LinearGradient
-                colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                start={{ x: 0.0, y: 0.5 }}
-                end={{ x: 1.0, y: 0.5 }}
-                style={{ flex: 1 }}
-              >
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:30}}>No data</Text>
-                </View>
-              </LinearGradient>
-          )
-          }
-        }
-    
+
+  render() {
+    if (this.state.getall != 0) {
+      return (
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}
+        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
+
+
+            {this.renderDashboard()}
+
+
+
+          </ScrollView>
+        </LinearGradient>
+      )
+    } else {
+      return (
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}
+        >
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 30 }}>No data</Text>
+          </View>
+        </LinearGradient>
+      )
+    }
+  }
+
 }
 export default UserDashboard;
 
