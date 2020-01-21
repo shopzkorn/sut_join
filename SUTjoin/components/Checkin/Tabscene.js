@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image ,SafeAreaView} from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -94,6 +94,7 @@ export default class TabViewExample extends React.Component {
     const { navigation } = this.props;
     // console.log(navigation);
     return (
+      <SafeAreaView style={{ flex: 1 }}>
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
@@ -104,6 +105,7 @@ export default class TabViewExample extends React.Component {
         onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
+      </SafeAreaView>
     );
   }
 }
