@@ -3,6 +3,8 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator,createD
 import { AsyncStorage,StatusBar,View,Dimensions   } from "react-native";
 import React, { Component } from "react";
 import Article from './components/Activity/DetailActivity';
+import ArticleSearch from './components/Activity/DetailActivitySearch';
+import ArticleUser from './components/Activity/DetailActivityUser';
 import Login from './components/Profile/Login';
 import userProfile from './components/Profile/ProfileUser';
 import Menu from './components/Navigation/Menu';
@@ -52,6 +54,8 @@ const App = createStackNavigator(
     },
     AddActivity,
     Article,
+    ArticleUser,
+    ArticleSearch,
     ScanQrcode,
     FollowUser,
     CheckinActivity,

@@ -11,7 +11,9 @@ import {
     Platform,
     TouchableOpacity,
     BackHandler,
-    SafeAreaView
+    SafeAreaView,
+    AsyncStorage,
+    ActivityIndicator
 } from 'react-native';
 import SearchBar from 'react-native-search-bar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -115,6 +117,11 @@ export default class ListViewExample extends Component {
             valueAge: 0,
             valueDate: 0,
             valuePeople: 0,
+            id_user: '',
+            age_user: 0,
+            gender_user: 0,
+            loading: false,
+            lastItem: true,
         };
 
     }
@@ -150,7 +157,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible)
-            //this.fetchData()
+            
         })
 
     }
@@ -168,7 +175,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource)
-            //this.fetchData()
+            
         })
     }
     FilterVolunteer = (value) => {
@@ -184,7 +191,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource)
-            //this.fetchData()
+            
         })
     }
 
@@ -201,7 +208,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource)
-            //this.fetchData()
+            
         })
     }
 
@@ -218,7 +225,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource)
-            //this.fetchData()
+            
         })
     }
 
@@ -235,7 +242,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource)
-            //this.fetchData()
+            
         })
     }
 
@@ -244,7 +251,7 @@ export default class ListViewExample extends Component {
             dataSource: text
         }), () => {
             console.log('data is ' + this.state.dataSource)
-            this.fetchData()
+            this.fetchData(1)
         })
 
     }
@@ -392,7 +399,8 @@ export default class ListViewExample extends Component {
         this.setState({
             loadingVisible: true
         })
-        this.fetchDataTrending();
+
+
         // this.props.navigation.setParams({
         //     changeText: this.onChangeText.bind(this),
         //     cancelButton: this.onCancelButtonPress.bind(this),
@@ -524,38 +532,68 @@ export default class ListViewExample extends Component {
         )
 
     }
+    renderFooter = () => {
+        if (!this.state.loading) return null;
 
+        return (
+            <View
+                style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderColor: "#CED0CE"
+                }}
+            >
+                <ActivityIndicator animating size="large" />
+            </View>
+        );
+    };
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-            <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
-                style={{ flex: 1 }}
-            >
-                <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
-                    <SearchBar
-                        ref="search1"
-                        barStyle="black"
-                        placeholder='Search by title or tag'
-                        onChangeText={this.onChangeText.bind(this)}
-                        onCancelButtonPress={this.onCancelButtonPress.bind(this)}
-                        onSearchButtonPress={this.onSearchButtonPress.bind(this)}
-                    />
-                </View>
+                <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ flex: 1 }}
+                >
+                    <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
+                        <SearchBar
+                            ref="search1"
+                            barStyle="black"
+                            placeholder='Search by title or tag'
+                            onChangeText={this.onChangeText.bind(this)}
+                            onCancelButtonPress={this.onCancelButtonPress.bind(this)}
+                            onSearchButtonPress={this.onSearchButtonPress.bind(this)}
+                        />
+                    </View>
 
-                {this.renderFilter()}
-                {this.DialogFilter()}
-                <View >
-                    <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-                </View>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-                    {this.renderListActivity()}
-
-                </ScrollView>
-            </LinearGradient>
+                    {this.renderFilter()}
+                    {this.DialogFilter()}
+                    <View >
+                        <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+                    </View>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+                        onScroll={(e) => {
+                            var windowHeight = Dimensions.get('window').height,
+                                height = e.nativeEvent.contentSize.height,
+                                offset = e.nativeEvent.contentOffset.y;
+                            // console.log(windowHeight+' '+height+' '+offset)
+                            if (windowHeight + offset >= height && this.state.lastItem == false) {
+                                console.log('End Scroll')
+                                this.setState((prevState, props) => ({
+                                    page: this.state.page + 1,
+                                    loading: true,
+                                    lastItem: true
+                                }), () => {
+                                    this.fetchData(2)
+                                })
+                            }
+                        }}>
+                        {this.renderListActivity()}
+                        {this.renderFooter()}
+                    </ScrollView>
+                </LinearGradient>
             </SafeAreaView>
         );
     }
@@ -647,7 +685,7 @@ export default class ListViewExample extends Component {
         const { navigation } = this.props;
         const dates = moment(item.date_start).format('MMM, Do YYYY HH:mm');
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('ArticleSearch', { article: item.id, age_user: this.state.age_user, gender_user: this.state.gender_user })}>
                 <ImageBackground
                     style={[styles.flex, styles.destination, styles.shadow]}
                     imageStyle={{ borderRadius: theme.sizes.radius }}
@@ -745,7 +783,7 @@ export default class ListViewExample extends Component {
                 visiblePeople: false
             })
         }
-       
+
         else {
             this.props.navigation.goBack(); // works best when the goBack is async
         }
@@ -755,11 +793,33 @@ export default class ListViewExample extends Component {
         this.backHandler.remove()
     }
     componentDidMount() {
+
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         this.setState({
             dataSource: 1,
-
         });
+        AsyncStorage.multiGet(['user_id']).then((data) => {
+            let user_id = data[0][1];
+            this.setState({
+                id_user: user_id,
+            });
+            const tag = this.props.navigation.getParam('tag');
+            console.log(tag)
+            if (tag) {
+                this.setState((prevState, props) => ({
+                    dataSource: tag,
+                }), () => {
+                    this.fetchData(1);
+                })
+
+            } else {
+                this.fetchDataTrending();
+            }
+
+            this.getage();
+            console.log(this.state.id_user);
+        });
+
     }
 
     onChangeText(e) {
@@ -781,11 +841,37 @@ export default class ListViewExample extends Component {
         this.setState({
             loadingVisible: true,
         });
-        this.fetchData();
+        this.fetchData(1);
 
     }
-
-    fetchData = async () => {
+    getage = async () => {
+        const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+            method: 'post',
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                user_id: this.state.id_user
+            })
+        });
+        const user = await response.json();
+        console.log(user)
+        this.setState({
+            age_user: user[0],
+            gender_user: user[1]
+        })
+        // console.log(this.state.new_img);
+    }
+    fetchData = async (status) => {
+        var page = 0;
+        if (status == 1) {
+          page = 1;
+          this.setState({ page: 1 })
+        }
+        else {
+          page = this.state.page;
+        }
         console.log('fecth');
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
             method: 'post',
@@ -795,7 +881,7 @@ export default class ListViewExample extends Component {
             }),
             body: JSON.stringify({
                 text: this.state.dataSource,
-                page: this.state.page,
+                page: page,
                 valueType: this.state.valueType,
                 valueGender: this.state.valueGender,
                 valueVolunteer: this.state.valueVolunteer,
@@ -805,19 +891,39 @@ export default class ListViewExample extends Component {
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                console.log('res ' + responseJson);
+                // console.log('res ' + responseJson);
                 if (responseJson.length > 0) {
+                    this.setState({ lastItem: false })
+                    if (status == 2) {
+                        this.setState({ 
+                          search: 1,
+                          data: this.state.data.concat(responseJson), 
+                          loadingVisible: false, 
+                          loading: false ,
+                          horizontal: true});
+                      } else {
                     this.setState({
                         search: 1,
                         data: responseJson,
                         loadingVisible: false,
-                        horizontal: true
+                        horizontal: true,
+                        loading: false
                     });
+                }
                 } else {
-                    this.setState({
+                    if(this.state.search == 1){
+                        this.setState({
+                          lastItem: true,
+                          loading: false
+                        });
+                      }
+                      else{
+                        this.setState({
                         search: 2,
                         loadingVisible: false,
-                    });
+                        lastItem: true,
+                        loading: false
+                      });}
                 }
             }).catch((error) => {
                 console.error(error);

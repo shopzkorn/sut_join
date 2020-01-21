@@ -202,6 +202,8 @@ class Articles extends Component {
     lastItem: true,
     user_id: '',
     new_img: [],
+    age_user:0,
+    gender_user:0
   }
   scrollX = new Animated.Value(0);
 
@@ -346,7 +348,7 @@ class Articles extends Component {
       surname = item.surname.split('').slice(0, 7)
     }
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
         <View style={{ padding: 15 }}>
           <Card >
             <CardItem>
@@ -406,7 +408,7 @@ class Articles extends Component {
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
-                onPress={() => navigation.navigate('Article', { article: item })}
+                onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}
               >
                 <Text style={{
                   color:"#fe53bb",
@@ -440,7 +442,28 @@ class Articles extends Component {
     // console.log(this.state.new_img);
   }
 
+  getage = async () => {
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.user_id
+      })
+    });
+    const user = await response.json();
+    console.log(user[0])
+    this.setState({
+      age_user: user[0],
+      gender_user : user[1]
+    })
+    // console.log(this.state.new_img);
+  }
+
   fetchData = async (status) => {
+    
     var page = 0;
     if (status == 1) {
       page = 1;
@@ -463,6 +486,7 @@ class Articles extends Component {
     const users = await response.json();
     //  console.log(users);
     this.getnews();
+    this.getage();
     users.map(user =>
       this.setState({
         user_surname: user.surname,

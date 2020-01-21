@@ -19,41 +19,47 @@ class FirstPage extends Component {
   }
   componentDidMount() {
     setTimeout(() => {
-      AsyncStorage.getItem('user_id').then((user) => { return JSON.parse(user) }).then((user_data) => {
+      AsyncStorage.getItem('user_id').then( async (user) => { return await JSON.parse(user) }).then((user_data) => {
         console.log(user_data)
         if (user_data == null) {
           this.props.navigation.navigate('Auth');
         } else {
-         AsyncStorage.getItem('Username').then((user_data) => { this.setState({Username : user_data })});
-         AsyncStorage.getItem('Password').then((user) => { return JSON.parse(user) }).then((user_data) => { this.setState({Password : user_data })});
-         console.log(this.state.Password);
-          fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
-            method: 'post',
-            headers: new Headers({
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify({
-              username: this.state.Username,
-              password: this.state.Password,
-            })
-          }).then((response) => response.json()) 
-          .then((responseJson) =>{
-            console.log(responseJson)
-            if (responseJson == false) {
-              this.props.navigation.navigate('Auth');
-            } else if (responseJson.length == 0) {
-              this.props.navigation.navigate('Auth');
-            } else {
-              this.props.navigation.navigate('App')
-            }
-          });
+          AsyncStorage.multiGet(['username','password']).then((data) => {
+         console.log(data[0][1]);
+           this.setState((prevState, props) => ({
+            Username : data[0][1],
+            Password : data[1][1]
+          }), () => {
+            fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
+              method: 'post',
+              headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              }),
+              body: JSON.stringify({
+                username: this.state.Username,
+                password: this.state.Password,
+              })
+            }).then((response) => response.json()) 
+            .then((responseJson) =>{
+              console.log(responseJson)
+              if (responseJson == false) {
+                this.props.navigation.navigate('Auth');
+              } else if (responseJson.length == 0) {
+                this.props.navigation.navigate('Auth');
+              } else {
+                this.props.navigation.navigate('App')
+              }
+            });
+          })
+          })
         }
        
       });
 
     }, 1000)
   }
+
   render() {
     return (
 

@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
+import LinearGradient from 'react-native-linear-gradient';
 
 class Login extends Component {
     
@@ -41,18 +42,20 @@ class Login extends Component {
         }).then((response) => response.json())
         .then((responseJson) => {
           // Showing response message coming from server after inserting records.
-        //   console.log(responseJson[0]);
-          if(responseJson != 0){
+          console.log(responseJson);
+          if(responseJson.length != 0){
               let user_id = '"' + responseJson[0].user_id + '"'
             navigate('Menu', {user_id: responseJson })
-            // AsyncStorage.multiSet([
-            //     ["Username", responseJson[0].Username],
-            //     ["Password", responseJson[0].Password],
-            // ])
-            AsyncStorage.setItem('user_id', user_id)
-            AsyncStorage.setItem('Username', responseJson[0].Username)
-            AsyncStorage.setItem('Password', responseJson[0].Password)
-            AsyncStorage.setItem('user_status', responseJson[0].user_status)
+            AsyncStorage.multiSet([
+                ["username", responseJson[0].Username],
+                ["password", responseJson[0].Password],
+                ["user_id", user_id],
+                ["user_status", responseJson[0].volunteer_status],
+            ])
+            // AsyncStorage.setItem('user_data', responseJson[0])
+
+            // AsyncStorage.setItem('user_id', user_id)
+            // AsyncStorage.setItem('user_status', responseJson[0].volunteer_status)
         }else{
             alert("username or password incorrect");
         }
@@ -72,7 +75,11 @@ class Login extends Component {
         const {navigate} = this.props.navigation;
         return (
             
-            <View style={styles.container}>
+          <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1,justifyContent: 'center', }} >
             <Image style={{alignSelf:'center',width:200,height:200}}
                 source={require('../../asset/image/logo.png')}
             />
@@ -117,15 +124,23 @@ class Login extends Component {
           />
             </View>
             <View style={{alignItems: 'center'}}>
-                <TouchableOpacity style={styles.button} onPress={this.login.bind(this)}>
-                    <Text style={styles.buttontext} onPress={this.login.bind(this)}> Login </Text>
+                <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]}
+                 onPress={this.login.bind(this)}>
+                    <Text style={{
+                  color:"#fe53bb",
+                  fontSize: 16,
+                  fontWeight: 'bold'
+                }}
+                 onPress={this.login.bind(this)}> Login </Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.signuptextcont}>
                 <Text style={styles.signuptext}> Don't have an account yet?</Text>
                 <Text style={styles.signuptextLink} onPress={() => navigate('Register')}>Register</Text>
             </View>
-        </View>
+            </LinearGradient >
         );
     }
 }
@@ -198,6 +213,27 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
+      },
+      centerEverything: {
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      buttonStylenoFollow: {
+        paddingHorizontal: 30,
+        backgroundColor: '#ffa8c0',
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderWidth: 2.5,
+        borderColor: '#ffa8c0',
+      },
+      buttonStyleFollow: {
+        paddingHorizontal: 30,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderWidth: 2.5,
+        borderColor: '#fe53bb',
+        paddingVertical:10
       },
     
 });

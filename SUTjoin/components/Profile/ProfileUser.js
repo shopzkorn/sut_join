@@ -56,7 +56,9 @@ class Profile extends React.Component {
         follow: false,
         follower: 0,
         following: 0,
-        page: 1
+        page: 1,
+        age_user: 0,
+        gender_user : 0
 
     }
     scrollXHost = new Animated.Value(0);
@@ -184,11 +186,30 @@ class Profile extends React.Component {
                     this.setFollow(data3),
                     this.setState({
                         loadingVisible: false
-                    })
+                    }),
+                    this.getage
             }
             )
     }
-
+    getage = async () => {
+        const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+          method: 'post',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify({
+            user_id: this.state.id_user
+          })
+        });
+        const user = await response.json();
+        console.log(user[0])
+        this.setState({
+          age_user: user[0],
+          gender_user : user[1]
+        })
+        // console.log(this.state.new_img);
+      }
     renderHost = () => {
         if (!this.state.loadingVisible) {
             return (
@@ -255,7 +276,8 @@ class Profile extends React.Component {
       surname = item.surname.split('').slice(0, 7)
     }
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                navigation.navigate('ArticleUser', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user ,onNavigateBack: this.handleOnNavigateBack})}}>
             <View style={{ padding: 15 }}>
               <Card >
                 <CardItem>
@@ -315,7 +337,7 @@ class Profile extends React.Component {
                     styles.buttonStyleFollow,
                     styles.centerEverything]}
                     activeOpacity={0.5}
-                    onPress={() => navigation.navigate('Article', { article: item })}
+                    onPress={() => navigation.navigate('ArticleUser', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user ,onNavigateBack: this.handleOnNavigateBack})}
                   >
                     <Text style={{
                       color:"#fe53bb",

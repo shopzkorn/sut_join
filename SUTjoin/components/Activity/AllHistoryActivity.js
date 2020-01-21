@@ -12,7 +12,8 @@ import {
   Platform,
   TouchableOpacity,
   AsyncStorage,
-  RefreshControl
+  RefreshControl,
+  ActivityIndicator
 } from "react-native";
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -20,6 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NetworkInfo } from "react-native-network-info";
 import Icon from 'react-native-vector-icons/Ionicons'
+import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment'
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
@@ -46,7 +48,12 @@ class History extends React.Component {
       { button_id: '6', background: require('../../asset/image/Hobby.jpg'), backgroundcolor: false, text: 'Hobby' },
       { button_id: '7', background: require('../../asset/image/Meet.jpg'), backgroundcolor: false, text: 'Meet' },
       { button_id: '8', background: require('../../asset/image/Eat.jpg'), backgroundcolor: false, text: 'Eat&Drink' },
-    ],
+    ],  
+    age_user: 0,
+    gender_user : 0,
+    loading:false,
+    loadingVisible: true,
+    lastItem: true,
 
   }
   scrollX = new Animated.Value(0);
@@ -54,7 +61,7 @@ class History extends React.Component {
   refresh() {
     this.setState({ refreshing: true });
     return new Promise((resolve) => {
-      this.fetchDataSearch().then(() => {
+      this.fetchDataSearch(1).then(() => {
         this.setState({ refreshing: false })
       });
       setTimeout(() => { resolve() }, 2000)
@@ -63,18 +70,30 @@ class History extends React.Component {
 
   componentDidMount() {
     const status = this.props.navigation.getParam('Status');
+    const age = this.props.navigation.getParam('age_user');
+    const gender = this.props.navigation.getParam('gender_user');
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
       this.setState({
         id_user: user_id,
-        status : status
+        status : status,
+        age_user: age,
+        gender_user : gender
       });
-      this.fetchDataSearch();
+      this.fetchDataSearch(1);
       console.log(this.state.id_user);
     });
   }
 
-  fetchDataSearch = async () => {
+  fetchDataSearch = async (status) => {
+    var page = 0;
+    if (status == 1) {
+      page = 1;
+      this.setState({ page: 1 })
+    }
+    else {
+      page = this.state.page;
+    }
     console.log('fecth');
     fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
       method: 'post',
@@ -85,22 +104,43 @@ class History extends React.Component {
       body: JSON.stringify({
         text: this.state.searchKey,
         id_user: this.state.id_user,
-        status: this.state.status
+        status: this.state.status,
+        page: page,
       })
     }).then((response) => response.json())
       .then((responseJson) => {
         // console.log('res ' + responseJson.length);
         if (responseJson.length > 0) {
+          this.setState({ lastItem: false })
+          if (status == 2) {
+            this.setState({ 
+              search: 1,
+              data: this.state.data.concat(responseJson), 
+              loadingVisible: false, 
+              loading: false });
+          } else {
           this.setState({
             search: 1,
             data: responseJson,
             loadingVisible: false,
+            loading: false
           });
+        }
         } else {
-          this.setState({
+          if(this.state.search == 1){
+            this.setState({
+              lastItem: true,
+              loading: false
+            });
+          }
+          else{
+            this.setState({
             search: 2,
             loadingVisible: false,
-          });
+            lastItem: true,
+            loading: false
+          });}
+          
         }
       }).catch((error) => {
         console.error(error);
@@ -159,7 +199,7 @@ class History extends React.Component {
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY HH:mm');
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', {article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
         <ImageBackground
                     style={[styles.flex, styles.destination, styles.shadow]}
                     imageStyle={{ borderRadius: theme.sizes.radius }}
@@ -261,7 +301,21 @@ class History extends React.Component {
     </ScrollView>
     )
   }
+  renderFooter = () => {
+    if (!this.state.loading) return null;
 
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
   changBG = item => {
     let buttonBG = JSON.parse(JSON.stringify(this.state.buttonBG));
 
@@ -283,10 +337,25 @@ class History extends React.Component {
     this.setState((prevState, props) => ({
       searchKey: item.button_id
     }), () => {
-      this.fetchDataSearch();
+      this.fetchDataSearch(1);
     })
   }
-
+  renderHeader = () => {
+    if(this.state.status == 'soon'){
+      return(
+        <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
+            <Text style={{fontSize:24}}>Upcoming</Text>
+          </View>
+      )
+    }
+    else{
+      return(
+        <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
+            <Text style={{fontSize:24}}>Participated</Text>
+          </View>
+      )
+    }
+  }
   render() {
 
     return (
@@ -297,6 +366,7 @@ class History extends React.Component {
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}
         >
+          {this.renderHeader()}
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
@@ -306,10 +376,27 @@ class History extends React.Component {
                 onRefresh={this.refresh.bind(this)}
               />
             }
+            onScroll={(e) => {
+              var windowHeight = Dimensions.get('window').height,
+                height = e.nativeEvent.contentSize.height,
+                offset = e.nativeEvent.contentOffset.y;
+              // console.log(windowHeight+' '+height+' '+offset)
+              if (windowHeight + offset >= height && this.state.lastItem == false) {
+                console.log('End Scroll')
+                this.setState((prevState, props) => ({
+                  page: this.state.page + 1,
+                  loading: true,
+                  lastItem: true
+                }), () => {
+                  this.fetchDataSearch(2)
+                })
+              }
+            }}
             >
             {this.renderTypeFilterScoll()}
             {this.InterestBtn()}
             {this.renderListActivity()}
+            {this.renderFooter()}
           </ScrollView>
         </LinearGradient>
       
