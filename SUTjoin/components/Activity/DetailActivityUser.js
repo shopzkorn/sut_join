@@ -463,11 +463,11 @@ class Article extends Component {
         });
         }
         else {
-          alert("คุณสมบัติไม่ตรงตามเงื่อนไข");
+          alert("Your property is unqualified");
         }
       }
     } else {
-      alert("คุณสมบัติไม่ตรงตามเงื่อนไข");
+      alert("Your property is unqualified");
     }
 
   }
