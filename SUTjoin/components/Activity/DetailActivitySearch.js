@@ -1116,8 +1116,9 @@ class Article extends Component {
                 </View>
                 <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
                 </Text>
+
                 {this.renderTag(article.tag)}
-                
+
               </View>
             </View>
           </View>

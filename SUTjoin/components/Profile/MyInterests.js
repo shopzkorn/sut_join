@@ -453,8 +453,14 @@ class MyInterest extends React.Component {
             </View>
             </View>
             <View>
-                <TouchableOpacity style={styles.buttonDone} onPress={this.OnSave}>
-                      <Text style={styles.buttontextDone} onPress={this.OnSave}> Done </Text>
+                <TouchableOpacity style={[
+                styles.buttonStyleFollow,
+                styles.centerEverything]} onPress={this.OnSave}>
+                      <Text style={{
+                  color:"#fe53bb",
+                  fontSize: 24,
+                  fontWeight: 'bold'
+                }} onPress={this.OnSave}> Done </Text>
                 </TouchableOpacity>
             </View>
             
@@ -616,5 +622,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center'
   },
-
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStylenoFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: '#ffa8c0',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#ffa8c0',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    paddingVertical:10,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+    marginVertical:10
+  },
 });

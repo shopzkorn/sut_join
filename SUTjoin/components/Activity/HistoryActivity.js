@@ -11,7 +11,8 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     paddingHorizontal: theme.sizes.padding,
+    marginBottom:10
   },
   recommendedList: {
   },
@@ -148,7 +150,9 @@ class Articles extends Component {
     myUpcoming: [],
     refreshing: false,
     id_user: '',
-    loadingVisible: true
+    loadingVisible: true,
+    age_user: 0,
+    gender_user : 0,
   }
   scrollXparticipated = new Animated.Value(0);
   scrollXUpcoming = new Animated.Value(0);
@@ -205,22 +209,6 @@ class Articles extends Component {
     )
   }
 
-  renderRatings(rating) {
-    const stars = new Array(5).fill(0);
-    return (
-      stars.map((_, index) => {
-        const activeStar = Math.floor(rating) >= (index + 1);
-        return (
-          <FontAwesome
-            name="star"
-            key={`star-${index}`}
-            size={theme.sizes.font}
-            color={theme.colors[activeStar ? 'active' : 'gray']}
-          />
-        )
-      })
-    )
-  }
 
   renderparticipated = () => {
     if (this.state.myparticipated.length > 0) {
@@ -233,8 +221,12 @@ class Articles extends Component {
             ]}
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
-            <TouchableOpacity activeOpacity={0.5}>
-            <Text style={{ color: theme.colors.gray }}>More</Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => {this.props.navigation.navigate('AllHistoryActivity',{Status : 'end', age_user : this.state.age_user , gender_user : this.state.gender_user })}}>
+            <Text style={{
+          color: "#fe53bb",
+          fontSize: 16,
+          fontWeight: 'bold'
+        }}>More</Text>
           </TouchableOpacity>
           </View>
           <FlatList
@@ -245,8 +237,8 @@ class Articles extends Component {
             decelerationRate={0}
             scrollEventThrottle={16}
             snapToAlignment="center"
-            style={{ overflow: 'visible', height: 280 }}
-            data={this.state.myparticipated}
+            style={{ overflow: 'visible', height: 280  }}
+            data={this.state.myparticipated.slice(0, 5)}
             keyExtractor={(item, index) => `${item.id}`}
             onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXparticipated } } }])}
             renderItem={({ item }) => this.renderDestination(item)}
@@ -280,7 +272,7 @@ class Articles extends Component {
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
         <ImageBackground
           style={[styles.flex, styles.destination, styles.shadow]}
           imageStyle={{ borderRadius: theme.sizes.radius }}
@@ -344,8 +336,12 @@ class Articles extends Component {
             ]}
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>UPCOMING</Text>
-            <TouchableOpacity activeOpacity={0.5}>
-            <Text style={{ color: theme.colors.gray }}>More</Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => {this.props.navigation.navigate('AllHistoryActivity',{Status : 'soon', age_user : this.state.age_user , gender_user : this.state.gender_user })}}>
+            <Text style={{
+          color: "#fe53bb",
+          fontSize: 16,
+          fontWeight: 'bold'
+        }}>More</Text>
           </TouchableOpacity>
           </View>
           <FlatList
@@ -357,7 +353,7 @@ class Articles extends Component {
             scrollEventThrottle={16}
             snapToAlignment="center"
             style={{ overflow: 'visible', height: 280 }}
-            data={this.state.myUpcoming}
+            data={this.state.myUpcoming.slice(0, 5)}
             keyExtractor={(item, index) => `${item.id}`}
             onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollXUpcoming } } }])}
             renderItem={({ item }) => this.renderDestination(item)}
@@ -397,6 +393,8 @@ class Articles extends Component {
           'Content-Type': 'application/json'
         }),
         body: JSON.stringify({
+          text: 0,
+          page: 1,
           id_user: this.state.id_user,
           status: 'soon'
         })
@@ -408,6 +406,8 @@ class Articles extends Component {
           'Content-Type': 'application/json'
         }),
         body: JSON.stringify({
+          text: 0,
+          page: 1,
           id_user: this.state.id_user,
           status: 'end'
         })
@@ -418,7 +418,9 @@ class Articles extends Component {
         myUpcoming: data1,
         myparticipated: data2,
         loadingVisible: false
-      }));
+      }),
+      this.getage()
+      );
   }
   refresh() {
     this.setState({ refreshing: true });
@@ -439,28 +441,66 @@ class Articles extends Component {
       console.log(this.state.id_user);
     });
   }
+  getage = async () => {
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.id_user
+      })
+    });
+    const user = await response.json();
+    console.log(user[0])
+    this.setState({
+      age_user: user[0],
+      gender_user : user[1]
+    })
+    // console.log(this.state.new_img);
+  }
   render() {
+    if(!this.state.loadingVisible){
     return (
-      <PTRView onRefresh={this.refresh.bind(this)} >
         <LinearGradient
           colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}
         >
-          <View style={{ flex: 1 }}>
-            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
+            <Text style={{fontSize:24}}>My events</Text>
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.refresh.bind(this)}
+              />
+            }
           >
             {this.renderUpcoming()}
             {this.renderparticipated()}
           </ScrollView>
+          
         </LinearGradient>
-      </PTRView>
+    )
+  }else{
+    return(
+    <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}
+        >
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+            </LinearGradient>
     )
   }
+}
 }
 
 export default Articles;

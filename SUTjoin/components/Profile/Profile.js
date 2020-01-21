@@ -15,6 +15,7 @@ import {
   RefreshControl,
   SafeAreaView,
 
+  ActivityIndicator
 } from "react-native";
 
 import {
@@ -57,7 +58,10 @@ class Profile extends React.Component {
     follower: 0,
     following: 0,
     page: 1,
-
+    age_user: 0,
+    gender_user : 0,
+    loading: false,
+    lastItem: true,
   }
   scrollXHost = new Animated.Value(0);
   scrollXJoin = new Animated.Value(0);
@@ -73,6 +77,8 @@ class Profile extends React.Component {
   setHost = (data) => {
     this.setState({
       myhost: data,
+      loading: false,
+      lastItem: false
     })
   }
   setProfile = (data) => {
@@ -96,7 +102,7 @@ class Profile extends React.Component {
         }),
         body: JSON.stringify({
           id_user: this.state.id_user,
-          page: this.state.page,
+          page: 1,
         })
       }),
       fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -129,9 +135,29 @@ class Profile extends React.Component {
           this.setFollow(data3),
           this.setState({
             loadingVisible: false
-          })
+          }),
+          this.getage()
       }
       )
+  }
+  getage = async () => {
+    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.id_user
+      })
+    });
+    const user = await response.json();
+    console.log(user[0])
+    this.setState({
+      age_user: user[0],
+      gender_user : user[1]
+    })
+    // console.log(this.state.new_img);
   }
 
   renderHost = () => {
@@ -195,7 +221,7 @@ class Profile extends React.Component {
       surname = item.surname.split('').slice(0, 7)
     }
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
         <View style={{ padding: 15 }}>
           <Card >
             <CardItem>
@@ -255,7 +281,7 @@ class Profile extends React.Component {
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
-                onPress={() => navigation.navigate('Article', { article: item })}
+                onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}
               >
                 <Text style={{
                   color:"#fe53bb",
@@ -364,7 +390,50 @@ class Profile extends React.Component {
       );
     }
   }
+  fetchDataLoadmore = () =>{
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          id_user: this.state.id_user,
+          page: this.state.page,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        // console.log('res ' + responseJson.length);
+        if (responseJson.length > 0) {
+            this.setState({ 
+              myhost: this.state.myhost.concat(responseJson), 
+              loading: false,
+              lastItem: false });
+        } else {
+            this.setState({
+              lastItem: true,
+              loading: false
+            });
+          }
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+  renderFooter = () => {
+    if (!this.state.loading) return null;
 
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
   render() {
     const { navigate } = this.props.navigation;
     const { navigation } = this.props;
@@ -401,9 +470,26 @@ class Profile extends React.Component {
               onRefresh={this.refresh.bind(this)}
             />
           }
+          onScroll={(e) => {
+            var windowHeight = Dimensions.get('window').height,
+              height = e.nativeEvent.contentSize.height,
+              offset = e.nativeEvent.contentOffset.y;
+            // console.log(windowHeight+' '+height+' '+offset)
+            if (windowHeight + offset >= height && this.state.lastItem == false) {
+              console.log('End Scroll')
+              this.setState((prevState, props) => ({
+                page: this.state.page + 1,
+                loading: true,
+                lastItem: true
+              }), () => {
+                this.fetchDataLoadmore()
+              })
+            }
+          }}
         >
           {this.renderProfile()}
           {this.renderHost()}
+          {this.renderFooter()}
         </ScrollView>
         <View style={{ flex: 1 }}>
           <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />

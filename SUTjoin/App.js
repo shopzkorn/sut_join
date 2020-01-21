@@ -3,12 +3,15 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator,createD
 import { AsyncStorage,StatusBar,View,Dimensions   } from "react-native";
 import React, { Component } from "react";
 import Article from './components/Activity/DetailActivity';
+import ArticleSearch from './components/Activity/DetailActivitySearch';
+import ArticleUser from './components/Activity/DetailActivityUser';
 import Login from './components/Profile/Login';
 import userProfile from './components/Profile/ProfileUser';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
 import Calendar from './components/Activity/Calender';
+import AllHistoryActivity from './components/Activity/AllHistoryActivity';
 import SearchActivity from './components/Activity/SearchActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
@@ -43,14 +46,31 @@ const App = createStackNavigator(
         header: null,
       },
     },
-    Follow,
+    Follow: {
+      screen: Follow,
+      navigationOptions: {
+        header: null,
+      },
+    },
     DetailNews,
     SearchActivity,
-    
+    AllHistoryActivity: {
+      screen: AllHistoryActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
     AddActivity,
     Article,
+    ArticleUser,
+    ArticleSearch,
     ScanQrcode,
-    FollowUser,
+    FollowUser: {
+      screen: FollowUser,
+      navigationOptions: {
+        header: null,
+      },
+    },
     CheckinActivity,
     UserDashboard,
     Editprofile: {

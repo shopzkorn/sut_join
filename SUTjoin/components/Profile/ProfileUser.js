@@ -12,7 +12,8 @@ import {
     Dimensions,
     Platform,
     TouchableOpacity,
-    AsyncStorage
+    AsyncStorage,
+    ActivityIndicator
 
 } from "react-native";
 import {
@@ -25,7 +26,7 @@ import {
     Left,
     Body,
     Right
-  } from "native-base";
+} from "native-base";
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as theme from '../../theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -56,7 +57,9 @@ class Profile extends React.Component {
         follow: false,
         follower: 0,
         following: 0,
-        page: 1
+        page: 1,
+        age_user: 0,
+        gender_user: 0
 
     }
     scrollXHost = new Animated.Value(0);
@@ -76,7 +79,7 @@ class Profile extends React.Component {
                 this.fetchData()
             })
         });
-      }
+    }
     setFollow = (data) => {
         console.log(data)
         if (data[0] > 0) {
@@ -93,6 +96,8 @@ class Profile extends React.Component {
     setHost = (data) => {
         this.setState({
             myhost: data,
+            loading: false,
+            lastItem: false
         })
     }
     setProfile = (data) => {
@@ -102,7 +107,7 @@ class Profile extends React.Component {
                 user_surname: user.surname,
                 user_profile: user.profile,
             })
-        )    
+        )
     }
     processFollow = () => {
         console.log('this');
@@ -150,7 +155,7 @@ class Profile extends React.Component {
                 }),
                 body: JSON.stringify({
                     id_user: this.state.id_user,
-                    page:this.state.page
+                    page: 1
                 })
             }),
             fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -184,22 +189,41 @@ class Profile extends React.Component {
                     this.setFollow(data3),
                     this.setState({
                         loadingVisible: false
-                    })
+                    }),
+                    this.getage()
             }
             )
     }
-
+    getage = async () => {
+        const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+            method: 'post',
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                user_id: this.state.id_user
+            })
+        });
+        const user = await response.json();
+        console.log(user[0])
+        this.setState({
+            age_user: user[0],
+            gender_user: user[1]
+        })
+        // console.log(this.state.new_img);
+    }
     renderHost = () => {
         if (!this.state.loadingVisible) {
             return (
-                <View style={[styles.flex, styles.column, styles.recommended],{backgroundColor: 'rgba(52, 52, 52, 0.2)'}}>
+                <View style={[styles.flex, styles.column, styles.recommended], { backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
                     <View
                         style={[
                             styles.row,
                             styles.recommendedHeader
                         ]}
                     >
-                        <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10 ,fontWeight:'bold' }}>{this.state.user_name}'timeline</Text>
+                        <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10, fontWeight: 'bold' }}>{this.state.user_name}'timeline</Text>
                     </View>
                     <View style={[styles.column, styles.recommendedList]}>
                         <FlatList
@@ -220,7 +244,7 @@ class Profile extends React.Component {
         }
     }
     refresh() {
-        this.setState({ refreshing: true ,loadingVisible:true});
+        this.setState({ refreshing: true, loadingVisible: true });
         return new Promise((resolve) => {
             this.fetchData().then(() => {
                 this.setState({ refreshing: false })
@@ -229,7 +253,7 @@ class Profile extends React.Component {
         });
     }
 
-    
+
     componentDidMount() {
         const { navigation } = this.props;
         const User = navigation.getParam('User');
@@ -250,84 +274,86 @@ class Profile extends React.Component {
         let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
         const { navigation } = this.props;
         const dates = moment(item.date_start).format('MMM, Do YYYY');
-    let surname = item.surname
-    if(item.surname.split('').length){
-      surname = item.surname.split('').slice(0, 7)
-    }
+        let surname = item.surname
+        if (item.surname.split('').length) {
+            surname = item.surname.split('').slice(0, 7)
+        }
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item })}>
-            <View style={{ padding: 15 }}>
-              <Card >
-                <CardItem>
-                  <Left>
-                    <Thumbnail source={{ uri: photoUser }} />
-                    <Body>
-                      <Text>{item.name} {surname}</Text>
-                      <View style={{flexDirection:'row'}}>
-                      <MaterialCommunityIcons
-                      name="map-marker-outline"
-                      size={theme.sizes.font * 1}
-                      color={theme.colors.black}
-                    />
-                      <Text> {item.location_name}</Text>
-                      </View>
-                    </Body>
-                  </Left>
-                  <Right style={{justifyContent:'flex-end'}}>
-                  <View style={{flexDirection:'row'}}>
-                  <MaterialCommunityIcons
-                      name="account-plus"
-                      size={theme.sizes.font * 1.5}
-                      color={theme.colors.white}
-                      color={theme.colors.black}
-                    />
-                  <Text> {item.inviter}/{item.number_people}</Text>  
-                  </View> 
-                  <Text>{dates}</Text>
-                  </Right>
-                </CardItem>
-    
-                <CardItem cardBody>
-                  <Image
-                    style={{
-                      resizeMode: "cover",
-                      width: null,
-                      height: 200,
-                      flex: 1
-                    }}
-                    source={{ uri: photoAc }}
-                  />
-                </CardItem>
-    
-                <CardItem style={{ paddingVertical: 0 }}>
-                  <Left style={{justifyContent:'flex-start'}}>  
-                  <View style={[styles.row]}>     
-                  <MaterialIcons
-                  name="title"
-                  size={theme.sizes.font * 1.5}
-                  color={theme.colors.black}
-                />
-                  <Text style={{fontWeight:'bold'}}>| {item.title}</Text>
-                  </View> 
-                  </Left>
-                  <Right style={{justifyContent:'flex-end'}}>
-                  <TouchableOpacity style={[
-                    styles.buttonStyleFollow,
-                    styles.centerEverything]}
-                    activeOpacity={0.5}
-                    onPress={() => navigation.navigate('Article', { article: item })}
-                  >
-                    <Text style={{
-                      color:"#fe53bb",
-                      fontWeight: 'bold'
-                    }}>View</Text>
-                  </TouchableOpacity>
-                  </Right>
-                </CardItem>
-              </Card>
-            </View>
-    
-          </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                navigation.navigate('ArticleUser', { article: item.id, age_user: this.state.age_user, gender_user: this.state.gender_user, onNavigateBack: this.handleOnNavigateBack })
+            }}>
+                <View style={{ padding: 15 }}>
+                    <Card >
+                        <CardItem>
+                            <Left>
+                                <Thumbnail source={{ uri: photoUser }} />
+                                <Body>
+                                    <Text>{item.name} {surname}</Text>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <MaterialCommunityIcons
+                                            name="map-marker-outline"
+                                            size={theme.sizes.font * 1}
+                                            color={theme.colors.black}
+                                        />
+                                        <Text> {item.location_name}</Text>
+                                    </View>
+                                </Body>
+                            </Left>
+                            <Right style={{ justifyContent: 'flex-end' }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialCommunityIcons
+                                        name="account-plus"
+                                        size={theme.sizes.font * 1.5}
+                                        color={theme.colors.white}
+                                        color={theme.colors.black}
+                                    />
+                                    <Text> {item.inviter}/{item.number_people}</Text>
+                                </View>
+                                <Text>{dates}</Text>
+                            </Right>
+                        </CardItem>
+
+                        <CardItem cardBody>
+                            <Image
+                                style={{
+                                    resizeMode: "cover",
+                                    width: null,
+                                    height: 200,
+                                    flex: 1
+                                }}
+                                source={{ uri: photoAc }}
+                            />
+                        </CardItem>
+
+                        <CardItem style={{ paddingVertical: 0 }}>
+                            <Left style={{ justifyContent: 'flex-start' }}>
+                                <View style={[styles.row]}>
+                                    <MaterialIcons
+                                        name="title"
+                                        size={theme.sizes.font * 1.5}
+                                        color={theme.colors.black}
+                                    />
+                                    <Text style={{ fontWeight: 'bold' }}>| {item.title}</Text>
+                                </View>
+                            </Left>
+                            <Right style={{ justifyContent: 'flex-end' }}>
+                                <TouchableOpacity style={[
+                                    styles.buttonStyleFollow,
+                                    styles.centerEverything]}
+                                    activeOpacity={0.5}
+                                    onPress={() => navigation.navigate('ArticleUser', { article: item.id, age_user: this.state.age_user, gender_user: this.state.gender_user, onNavigateBack: this.handleOnNavigateBack })}
+                                >
+                                    <Text style={{
+                                        color: "#fe53bb",
+                                        fontWeight: 'bold'
+                                    }}>View</Text>
+                                </TouchableOpacity>
+                            </Right>
+                        </CardItem>
+                    </Card>
+                </View>
+
+            </TouchableOpacity>
         )
     }
 
@@ -344,12 +370,12 @@ class Profile extends React.Component {
                             <Text style={{ color: theme.colors.black, fontSize: 24, fontWeight: 'bold', marginTop: -20 }}>{this.state.user_name} {this.state.user_surname}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20 }}>
-                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('FollowUser', { Status: 4,id: this.state.id_user ,onNavigateBack: this.handleOnNavigateBack})}>
+                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('FollowUser', { Status: 4, id: this.state.id_user, onNavigateBack: this.handleOnNavigateBack })}>
                                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followings</Text>
                                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold', alignItems: 'center' }}>{this.state.following}</Text>
 
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ alignItems: 'center', }} onPress={() => navigation.navigate('FollowUser', { Status: 3,id: this.state.id_user ,onNavigateBack: this.handleOnNavigateBack })}>
+                            <TouchableOpacity style={{ alignItems: 'center', }} onPress={() => navigation.navigate('FollowUser', { Status: 3, id: this.state.id_user, onNavigateBack: this.handleOnNavigateBack })}>
                                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followers</Text>
                                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>{this.state.follower}</Text>
 
@@ -376,7 +402,50 @@ class Profile extends React.Component {
             );
         }
     }
-
+    fetchDataLoadmore = () =>{
+        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+            method: 'post',
+            headers: new Headers({
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+              id_user: this.state.id_user,
+              page: this.state.page,
+            })
+          }).then((response) => response.json())
+          .then((responseJson) => {
+            // console.log('res ' + responseJson.length);
+            if (responseJson.length > 0) {
+                this.setState({ 
+                  myhost: this.state.myhost.concat(responseJson), 
+                  loading: false,
+                  lastItem: false });
+            } else {
+                this.setState({
+                  lastItem: true,
+                  loading: false
+                });
+              }
+          }).catch((error) => {
+            console.error(error);
+          });
+      }
+      renderFooter = () => {
+        if (!this.state.loading) return null;
+    
+        return (
+          <View
+            style={{
+              paddingVertical: 20,
+              borderTopWidth: 1,
+              borderColor: "#CED0CE"
+            }}
+          >
+            <ActivityIndicator animating size="large" />
+          </View>
+        );
+      };
     render() {
 
         return (
@@ -385,19 +454,36 @@ class Profile extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }} >
-               
+
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
                     refreshControl={
                         <RefreshControl
-                          refreshing={this.state.refreshing}
-                          onRefresh={this.refresh.bind(this)}
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.refresh.bind(this)}
                         />
-                      }
+                    }
+                    onScroll={(e) => {
+                        var windowHeight = Dimensions.get('window').height,
+                            height = e.nativeEvent.contentSize.height,
+                            offset = e.nativeEvent.contentOffset.y;
+                        // console.log(windowHeight+' '+height+' '+offset)
+                        if (windowHeight + offset >= height && this.state.lastItem == false) {
+                            console.log('End Scroll')
+                            this.setState((prevState, props) => ({
+                                page: this.state.page + 1,
+                                loading: true,
+                                lastItem: true
+                            }), () => {
+                                this.fetchDataLoadmore()
+                            })
+                        }
+                    }}
                 >
                     {this.renderProfile()}
                     {this.renderHost()}
+                    {this.renderFooter()}
                 </ScrollView>
                 <View style={{ flex: 1 }}>
                     <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />

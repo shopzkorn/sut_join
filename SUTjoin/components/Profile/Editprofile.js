@@ -25,6 +25,7 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
@@ -40,15 +41,16 @@ class Editprofile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Name: '', Surname: '', Username: '', Password: '', Email: '', Phone: '', Gender: '1', Status: '1', Birthday: '',Student_ID:'',
-      user_id:'',
+      Name: '', Surname: '', Username: '', Password: '', Email: '', Phone: '', Gender: '1', Status: '1', Birthday: '', Student_ID: '',
+      user_id: '',
       sliderOneChanging: false,
       sliderOneValue: [1],
       imageSource: null,
       imageName: null,
       imagePath: null,
-      visibleStatus : false,
-      visibleGender : false,
+      loadingVisible: true,
+      visibleStatus: false,
+      visibleGender: false,
       radio_Gender: [
         { label: 'Male', value: 0 },
         { label: 'Female', value: 1 },
@@ -59,8 +61,8 @@ class Editprofile extends Component {
         { label: 'Personel', value: 2 },
         { label: 'General Public', value: 3 },
       ],
-      valueStatus:0,
-      valueGender:0,
+      valueStatus: 0,
+      valueGender: 0,
       Textstatus: 'Student',
       Textgender: 'Male',
     };
@@ -90,7 +92,7 @@ class Editprofile extends Component {
         Textstatus: 'General Public'
       })
     }
-    
+
     this.setState((prevState, props) => ({
       valueStatus: value,
       visibleStatus: false,
@@ -183,11 +185,11 @@ class Editprofile extends Component {
           <TextInput
             placeholder='Student id'
             value={this.state.Student_ID}
-            onChangeText={Student_ID => this.setState({ Student_ID : Student_ID })}
+            onChangeText={Student_ID => this.setState({ Student_ID: Student_ID })}
             style={styles.button}
             multiline={true}
             underlineColorAndroid="transparent"
-            
+
           />
         </View>
       )
@@ -246,37 +248,37 @@ class Editprofile extends Component {
   }
 
   handleBackPress = () => {
-    if(this.state.visibleGender){
+    if (this.state.visibleGender) {
       this.setState({
-        visibleGender : false
+        visibleGender: false
       })
     }
-    else if(this.state.visibleStatus){
+    else if (this.state.visibleStatus) {
       this.setState({
-        visibleStatus : false
+        visibleStatus: false
       })
     }
-    else{
+    else {
       this.props.navigation.goBack(); // works best when the goBack is async
     }
     return true;
   }
 
   editProfileSend() {
-      if(this.state.imagePath != null){
-    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
-      Authorization: "Bearer access-token",
-      otherHeader: "foo",
-      'Content-Type': 'multipart/form-data',
-    }, [
-      // custom content type
-      { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
-    ]).then((resp) => {
-      console.log(resp);
-    }).catch((err) => {
-      console.log(err);
-    })
-      }
+    if (this.state.imagePath != null) {
+      RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+        Authorization: "Bearer access-token",
+        otherHeader: "foo",
+        'Content-Type': 'multipart/form-data',
+      }, [
+        // custom content type
+        { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
+      ]).then((resp) => {
+        console.log(resp);
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
 
 
     const { navigate } = this.props.navigation;
@@ -297,20 +299,20 @@ class Editprofile extends Component {
         gender: this.state.Gender,
         status: this.state.Status,
         profile: this.state.imageName,
-        birthday : this.state.Birthday,
-        student_id : this.state.Student_ID,
+        birthday: this.state.Birthday,
+        student_id: this.state.Student_ID,
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-          console.log(responseJson)
+        console.log(responseJson)
         // Showing response message coming from server after inserting records.
         Alert.alert(
           'Sucess',
           responseJson,
           [
-            {text: 'OK', onPress: () => this.props.navigation.goBack()},
+            { text: 'OK', onPress: () => this.props.navigation.goBack() },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
       }).catch((error) => {
         console.error(error);
@@ -380,61 +382,61 @@ class Editprofile extends Component {
       this.setState({
         imageName: user.profile,
         Name: user.name,
-        Surname: user.surname, 
-        Username: user.username, 
-        Password: user.password, 
-        Email: user.email, 
-        Phone: user.phone, 
-        Gender: (user.user_gender), 
-        Status: (user.user_status), 
+        Surname: user.surname,
+        Username: user.username,
+        Password: user.password,
+        Email: user.email,
+        Phone: user.phone,
+        Gender: (user.user_gender),
+        Status: (user.user_status),
         Birthday: user.birthday,
-        Student_ID:user.student_id,
+        Student_ID: user.student_id,
       })
     )
-      {this.genderSetter()}
-      {this.statusSetter()}
+    { this.genderSetter() }
+    { this.statusSetter() }
   }
 
-    genderSetter(){
-        if(this.state.Gender == 0){
-        }else if(this.state.Gender == 1){
-            this.setState({
-                Textgender: "Male",
-                valueGender: 0,
-            })
-        }else if(this.state.Gender == 2){
-            this.setState({
-                Textgender: "Female",
-                valueGender: 1,
-            })
-        }
+  genderSetter() {
+    if (this.state.Gender == 0) {
+    } else if (this.state.Gender == 1) {
+      this.setState({
+        Textgender: "Male",
+        valueGender: 0,
+      })
+    } else if (this.state.Gender == 2) {
+      this.setState({
+        Textgender: "Female",
+        valueGender: 1,
+      })
     }
+  }
 
-    statusSetter(){
-        if(this.state.Status == 0){
-        }else if(this.state.Status == 1){
-            console.log(this.state.Textgender)
-            this.setState({
-                Textstatus: "Student",
-                valuestatus: 0,
-            })
-        }else if(this.state.Status == 2){
-            this.setState({
-                Textstatus: "Teacher",
-                valuestatus: 1,
-            })
-        }else if(this.state.Status == 3){
-            this.setState({
-                Textstatus: "Personal",
-                valuestatus: 2,
-            })
-        }else if(this.state.Status == 4){
-            this.setState({
-                Textstatus: "General Public",
-                valuestatus: 3,
-            })
-        }
+  statusSetter() {
+    if (this.state.Status == 0) {
+    } else if (this.state.Status == 1) {
+      console.log(this.state.Textgender)
+      this.setState({
+        Textstatus: "Student",
+        valuestatus: 0,
+      })
+    } else if (this.state.Status == 2) {
+      this.setState({
+        Textstatus: "Teacher",
+        valuestatus: 1,
+      })
+    } else if (this.state.Status == 3) {
+      this.setState({
+        Textstatus: "Personal",
+        valuestatus: 2,
+      })
+    } else if (this.state.Status == 4) {
+      this.setState({
+        Textstatus: "General Public",
+        valuestatus: 3,
+      })
     }
+  }
 
 
   renderProfile = item => {
@@ -445,130 +447,130 @@ class Editprofile extends Component {
     let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.imageName;
     console.log(photoUser)
     // );
-    if (!this.state.loadingVisible) {
+    if (this.state.imageSource == null) {
       return (
         <TouchableOpacity onPress={this.selectPhoto.bind(this)}>
-            <View style={{ marginTop: 40, justifyContent: 'center', alignItems: 'center', }}>
-              <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
-              <Text>Change Profile Photo</Text>
-            </View>
+          <View style={{ marginTop: 40, justifyContent: 'center', alignItems: 'center', }}>
+            <Image source={{ uri: photoUser }} style={styles.MainAvatar} />
+            <Text>Change Profile Photo</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={this.selectPhoto.bind(this)}>
+          <View style={{ marginTop: 40, justifyContent: 'center', alignItems: 'center', }}>
+            <Image source={this.state.imageSource} style={styles.MainAvatar} />
+            <Text>Change Profile Photo</Text>
+          </View>
         </TouchableOpacity>
       );
     }
   }
 
   render() {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0.0, y: 0.5 }}
-        end={{ x: 1.0, y: 0.5 }}
-        style={{ flex: 1 }}>
-          <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
-              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
-            </TouchableOpacity>
-            <View style={{ alignSelf: 'center', paddingHorizontal: width / 8 }}>
-              <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
-                Edit Profile
-                </Text>
-            </View>
-          </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding ,flexGrow: 1, justifyContent: 'space-between',}}
-          style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
-        >
-            {this.renderProfile()}
+    if (!this.state.loadingVisible) {
+      return (
+        <SafeAreaView style={{ flex: 1 }}>
+          <LinearGradient
+            colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+            start={{ x: 0.0, y: 0.5 }}
+            end={{ x: 1.0, y: 0.5 }}
+            style={{ flex: 1 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: theme.sizes.padding, flexGrow: 1, justifyContent: 'space-between', }}
+              style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
+            >
+              {this.renderProfile()}
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Name'
-              placeholderTextColor='#808080'
-              value={this.state.Name}
-              onChangeText={Name => this.setState({ Name })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Surname'
-              placeholderTextColor='#808080'
-              value={this.state.Surname}
-              onChangeText={Surname => this.setState({ Surname })}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Username'
-              placeholderTextColor='#808080'
-              value={this.state.Username}
-              onChangeText={Username => this.setState({ Username })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Password'
-              placeholderTextColor='#808080'
-              secureTextEntry={true}
-              value={this.state.Password}
-              onChangeText={Password => this.setState({ Password })}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Email'
-              placeholderTextColor='#808080'
-              value={this.state.Email}
-              onChangeText={Email => this.setState({ Email })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Phone'
-              placeholderTextColor='#808080'
-              value={this.state.Phone}
-              keyboardType={'number-pad'}
-              onChangeText={Phone => this.setState({ Phone })}
-            />
-          </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Name'
+                  placeholderTextColor='#808080'
+                  value={this.state.Name}
+                  onChangeText={Name => this.setState({ Name })}
+                />
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Surname'
+                  placeholderTextColor='#808080'
+                  value={this.state.Surname}
+                  onChangeText={Surname => this.setState({ Surname })}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Username'
+                  placeholderTextColor='#808080'
+                  value={this.state.Username}
+                  onChangeText={Username => this.setState({ Username })}
+                />
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Password'
+                  placeholderTextColor='#808080'
+                  secureTextEntry={true}
+                  value={this.state.Password}
+                  onChangeText={Password => this.setState({ Password })}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Email'
+                  placeholderTextColor='#808080'
+                  value={this.state.Email}
+                  onChangeText={Email => this.setState({ Email })}
+                />
+                <TextInput
+                  style={styles.inputbox}
+                  placeholder='Phone'
+                  placeholderTextColor='#808080'
+                  value={this.state.Phone}
+                  keyboardType={'number-pad'}
+                  onChangeText={Phone => this.setState({ Phone })}
+                />
+              </View>
 
-          <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical:20 }} />
+              <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical: 20 }} />
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
+                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                  <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                  <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
+                </View>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
+                <View style={{ marginRight: 20 }}>
+                  <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                </View>
+              </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleStatus: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Feather name="user" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Status</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textstatus} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-          {this.statusCheck()}
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.props.navigation.navigate('CalendarEditPro', { onNavigateBack: this.setDate })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <FontAwesome name="birthday-cake" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Birthday</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Birthday} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleStatus: true })}>
+                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                  <Feather name="user" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                  <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Status</Text>
+                </View>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textstatus} </Text>
+                <View style={{ marginRight: 20 }}>
+                  <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                </View>
+              </TouchableOpacity>
+              {this.statusCheck()}
+              <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.props.navigation.navigate('CalendarEditPro', { onNavigateBack: this.setDate })}>
+                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                  <FontAwesome name="birthday-cake" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                  <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Birthday</Text>
+                </View>
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Birthday} </Text>
+                <View style={{ marginRight: 20 }}>
+                  <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                </View>
+              </TouchableOpacity>
 
-          {/* <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
+              {/* <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
             <View style={{ flexDirection: 'row', marginLeft: 20 }}>
               <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
               <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add photo</Text>
@@ -577,41 +579,52 @@ class Editprofile extends Component {
               <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
             </View>
           </TouchableOpacity> */}
-          {/* {this.renderPhoto()} */}
-          <View style={{ alignItems: 'center', justifyContent:'flex-end' ,marginTop:10}}>
-            <TouchableOpacity activeOpacity={0.7} style={{
-              borderWidth: 6,
-              borderColor: '#fe53bb',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: width / 2.5,
-              height: width / 2.5,
-              backgroundColor: 'transparent',
-              borderRadius: width / 2.5 / 2,
-              marginBottom: -100,
-              
-            }} onPress={this.editProfileSend.bind(this)}>
-              <View style={{
-                borderWidth: 2,
-                borderColor: '#fe53bb',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: width / 2.8,
-                height: width / 2.8,
-                backgroundColor: 'transparent',
-                borderRadius: width / 2.8 / 2,
-              }}>
-                <Text style={{ color: '#fe53bb', fontSize: width / 15, marginBottom: 40 }}> Save </Text>
+              {/* {this.renderPhoto()} */}
+              <View style={{ alignItems: 'center', justifyContent: 'flex-end', marginTop: 10 }}>
+                <TouchableOpacity activeOpacity={0.7} style={{
+                  borderWidth: 6,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.5,
+                  height: width / 2.5,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.5 / 2,
+                  marginBottom: -100,
+
+                }} onPress={this.editProfileSend.bind(this)}>
+                  <View style={{
+                    borderWidth: 2,
+                    borderColor: '#fe53bb',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: width / 2.8,
+                    height: width / 2.8,
+                    backgroundColor: 'transparent',
+                    borderRadius: width / 2.8 / 2,
+                  }}>
+                    <Text style={{ color: '#fe53bb', fontSize: width / 15, marginBottom: 40 }}> Save </Text>
+                  </View>
+
+                </TouchableOpacity>
+                {this.DialogFilter()}
               </View>
 
-            </TouchableOpacity>
-            {this.DialogFilter()}
-          </View>
-         
-        </ScrollView>
-      </LinearGradient>
-      </SafeAreaView>
-    );
+            </ScrollView>
+          </LinearGradient>
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}>
+          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </LinearGradient>
+      )
+    }
   }
 }
 export default Editprofile;
@@ -627,7 +640,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: width / 2,
     paddingLeft: 10,
-    height:height / 15
+    height: height / 15
   },
   textTitle: {
     fontSize: 40,

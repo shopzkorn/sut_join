@@ -562,7 +562,7 @@ export default class HomeScreen extends Component {
                 placeholder='Description'
                 value={this.state.description}
                 onChangeText={description => this.setState({ description })}
-                style={styles.input}
+                style={styles.inputdes}
                 placeholderStyle={{ justifyContent: 'flex-start' }}
                 multiline={true}
                 numberOfLines={4}
@@ -742,17 +742,22 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   input: {
-
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     width: width / 1.2,
     paddingLeft: 10,
-    // marginTop: 20,
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 5 },
-    // shadowOpacity: 0.8,
-    // shadowRadius: 1,
-    // elevation: 1,
+    color:'white',
+    height: height / 15
+    
+  },
+  inputdes: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    width: width / 1.2,
+    paddingLeft: 10,
+    color:'white',
+    height: height / 7
+    
   },
   textbox: {
 
