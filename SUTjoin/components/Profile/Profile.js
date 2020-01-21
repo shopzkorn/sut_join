@@ -436,7 +436,6 @@ class Profile extends React.Component {
   };
   render() {
     const { navigate } = this.props.navigation;
-    const { navigation } = this.props;
     return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient

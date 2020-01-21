@@ -402,50 +402,51 @@ class Profile extends React.Component {
             );
         }
     }
-    fetchDataLoadmore = () =>{
+    fetchDataLoadmore = () => {
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
             method: 'post',
             headers: new Headers({
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             }),
             body: JSON.stringify({
-              id_user: this.state.id_user,
-              page: this.state.page,
+                id_user: this.state.id_user,
+                page: this.state.page,
             })
-          }).then((response) => response.json())
-          .then((responseJson) => {
-            // console.log('res ' + responseJson.length);
-            if (responseJson.length > 0) {
-                this.setState({ 
-                  myhost: this.state.myhost.concat(responseJson), 
-                  loading: false,
-                  lastItem: false });
-            } else {
-                this.setState({
-                  lastItem: true,
-                  loading: false
-                });
-              }
-          }).catch((error) => {
-            console.error(error);
-          });
-      }
-      renderFooter = () => {
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                // console.log('res ' + responseJson.length);
+                if (responseJson.length > 0) {
+                    this.setState({
+                        myhost: this.state.myhost.concat(responseJson),
+                        loading: false,
+                        lastItem: false
+                    });
+                } else {
+                    this.setState({
+                        lastItem: true,
+                        loading: false
+                    });
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+    }
+    renderFooter = () => {
         if (!this.state.loading) return null;
-    
+
         return (
-          <View
-            style={{
-              paddingVertical: 20,
-              borderTopWidth: 1,
-              borderColor: "#CED0CE"
-            }}
-          >
-            <ActivityIndicator animating size="large" />
-          </View>
+            <View
+                style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderColor: "#CED0CE"
+                }}
+            >
+                <ActivityIndicator animating size="large" />
+            </View>
         );
-      };
+    };
     render() {
 
         return (
@@ -454,7 +455,16 @@ class Profile extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }} >
-
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                    <View style={{ justifyContent: 'flex-start' }}>
+                        <View style={{ marginLeft: 20, paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                                <MaterialIcons name="arrow-back" size={theme.sizes.font * 2} color={theme.colors.black} style={{ alignSelf: 'flex-end' }} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                   
+                </View>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
