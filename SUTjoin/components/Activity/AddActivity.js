@@ -78,6 +78,15 @@ export default class HomeScreen extends Component {
         { label: 'Meet', value: 6 },
         { label: 'Eat & Drink', value: 7 },
       ],
+      radio_type2: [
+        { label: 'Learning', value: 0 },
+        { label: 'Recreation', value: 2 },
+        { label: 'Hangout', value: 3 },
+        { label: 'Travel', value: 4 },
+        { label: 'Hobby', value: 5 },
+        { label: 'Meet', value: 6 },
+        { label: 'Eat & Drink', value: 7 },
+      ],
       radio_Gender: [
         { label: 'Male', value: 0 },
         { label: 'Female', value: 1 },
@@ -90,7 +99,8 @@ export default class HomeScreen extends Component {
       dataTag: [],
       itemsCount: 5,
       visibleTag: false,
-      dataSource:  []
+      dataSource:  [],
+      user_status: 0
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -168,7 +178,67 @@ export default class HomeScreen extends Component {
     })
 
   }
+  FilterType2 = (value) => {
+    console.log(value);
+    if (value == 0) {
+      this.setState({
+        Texttype: 'Learning',
+        valueType: value,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 2) {
+      this.setState({
+        Texttype: 'Recreation',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 3) {
+      this.setState({
+        Texttype: 'Hangout',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 4) {
+      this.setState({
+        Texttype: 'Travel',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 5) {
+      this.setState({
+        Texttype: 'Hobby',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 6) {
+      this.setState({
+        Texttype: 'Meet',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+    else if (value == 7) {
+      this.setState({
+        Texttype: 'Eat & Drink',
+        valueType: value - 1,
+        visibleType: false,
+        type: value + 1,
+      })
+    }
+   
 
+  }
 
   FilterGender = (value) => {
     console.log(value);
@@ -203,6 +273,14 @@ export default class HomeScreen extends Component {
   }
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    AsyncStorage.multiGet(['user_status']).then((data) => {
+      let user_status = data[0][1];
+      this.setState((prevState, props) => ({
+        user_status: user_status
+      }), () => {
+        console.log(this.state.user_status);
+      })
+    });
     this.loadData();
   }
   handleBackPress = () => {
@@ -221,6 +299,23 @@ export default class HomeScreen extends Component {
     }
     return true;
   }
+  renderRadioType = () =>{
+    if(this.state.user_status == 0){
+     return( <RadioForm
+                buttonColor={'#ffc9de'}
+                radio_props={this.state.radio_type2}
+                initial={this.state.valueType}
+                onPress={(value) => { this.FilterType2(value) }}
+              />)
+    }else{
+      return( <RadioForm
+        buttonColor={'#ffc9de'}
+        radio_props={this.state.radio_type}
+        initial={this.state.valueType}
+        onPress={(value) => { this.FilterType(value) }}
+      />)
+    }
+  }
   DialogFilter() {
     return (
       <View>
@@ -237,12 +332,7 @@ export default class HomeScreen extends Component {
         >
           <DialogContent>
             <View>
-              <RadioForm
-                buttonColor={'#ffc9de'}
-                radio_props={this.state.radio_type}
-                initial={this.state.valueType}
-                onPress={(value) => { this.FilterType(value) }}
-              />
+              {this.renderRadioType()}
             </View>
           </DialogContent>
         </Dialog>
