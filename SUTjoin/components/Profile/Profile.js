@@ -348,7 +348,7 @@ class Profile extends React.Component {
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
-              // onPress={this.processFollow.bind(this)}
+              onPress={() => navigate('Editprofile')}
               >
                 <Text style={{
                   color:"#fe53bb",

@@ -26,7 +26,9 @@ import manage_gpa from './components/Learning/manage_gpa';
 import manage_subject from './components/Learning/manage_subject';
 import add_subject from './components/Learning/add_subject';
 import volunteer from './components/Profile/Volunteer';
-import SplashScreen from './components/Navigation/FirstPage'
+import SplashScreen from './components/Navigation/FirstPage';
+import Editprofile from './components/Profile/Editprofile';
+import CalendarEditPro from './components/Profile/CalendarEditPro';
 
 //Route
 const App = createStackNavigator(
@@ -54,6 +56,8 @@ const App = createStackNavigator(
     FollowUser,
     CheckinActivity,
     UserDashboard,
+    Editprofile,
+    CalendarEditPro,
     SelectMap: {
       screen: SelectMap,
       navigationOptions: {
