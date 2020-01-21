@@ -62,7 +62,7 @@ export default class TabViewExample extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView >
         <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>

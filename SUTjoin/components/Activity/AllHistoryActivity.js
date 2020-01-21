@@ -11,6 +11,7 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
+  AsyncStorage,
   RefreshControl
 } from "react-native";
 
@@ -33,7 +34,8 @@ class History extends React.Component {
     page: 1,
     filter: 2,
     search: 0,
-
+    status:'',
+    id_user:'',
     buttonBG: [
       { button_id: '0', background: require('../../asset/image/All.jpg'), backgroundcolor: true, text: 'All' },
       { button_id: '1', background: require('../../asset/image/Learning.jpg'), backgroundcolor: false, text: 'Learning' },
@@ -59,20 +61,22 @@ class History extends React.Component {
     });
   }
 
-  componentWillMount() {
-    this.fetchDataSearch(); //connect backend
+  componentDidMount() {
+    const status = this.props.navigation.getParam('Status');
+    AsyncStorage.multiGet(['user_id']).then((data) => {
+      let user_id = data[0][1];
+      this.setState({
+        id_user: user_id,
+        status : status
+      });
+      this.fetchDataSearch();
+      console.log(this.state.id_user);
+    });
   }
-
-  // fetchData = async () => {
-  //   console.log(this.state.searchKey);
-  //   const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php');
-  //   const users = await response.json();
-  //   this.setState({ data: users ,search:1});
-  // }
 
   fetchDataSearch = async () => {
     console.log('fecth');
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Explore.php', {
+    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -80,8 +84,8 @@ class History extends React.Component {
       }),
       body: JSON.stringify({
         text: this.state.searchKey,
-        page: this.state.page,
-        filter: this.state.filter,
+        id_user: this.state.id_user,
+        status: this.state.status
       })
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -102,9 +106,7 @@ class History extends React.Component {
         console.error(error);
       });
   }
-
-
-     
+    
 
       renderListActivity = () => {
         if (this.state.search == 1){

@@ -383,6 +383,7 @@ class Profile extends React.Component {
               onRefresh={this.refresh.bind(this)}
             />
           }
+          
         >
           {this.renderProfile()}
           {this.renderHost()}

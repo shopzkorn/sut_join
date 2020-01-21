@@ -9,6 +9,7 @@ import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
 import Calendar from './components/Activity/Calender';
+import AllHistoryActivity from './components/Activity/AllHistoryActivity';
 import SearchActivity from './components/Activity/SearchActivity';
 import SelectMap from './components/Map/SelectLocation';
 import Maps from './components/Map/Map';
@@ -41,7 +42,12 @@ const App = createStackNavigator(
     Follow,
     DetailNews,
     SearchActivity,
-    
+    AllHistoryActivity: {
+      screen: AllHistoryActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
     AddActivity,
     Article,
     ScanQrcode,
