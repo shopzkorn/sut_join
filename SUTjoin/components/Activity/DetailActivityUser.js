@@ -345,6 +345,9 @@ class Article extends Component {
           console.log("it is " + this.state.join);
 
         }
+        else{
+          this.setState({ join: false });
+        }
       }).catch((error) => {
         console.error(error);
       });
@@ -433,7 +436,14 @@ class Article extends Component {
         .then((responseJson) => {
 
           // Showing response message coming from server after inserting records.
-          alert(responseJson);
+          Alert.alert(
+            'Success',
+            'Confirm join this activity',
+            [
+              { text: 'OK', onPress: () => this.fetchData() },
+            ],
+            { cancelable: false },
+          );
 
         }).catch((error) => {
           console.error(error);
@@ -721,7 +731,7 @@ class Article extends Component {
 
   }
 
-  renderTpye = (type) => {
+  renderTpye = (type,volunteer_hour) => {
     console.log(type);
     if (type == 1) {
       return (
@@ -745,7 +755,7 @@ class Article extends Component {
               size={theme.sizes.font * 2}
               color={theme.colors.black}
             />
-            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer</Text>
+    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer  {volunteer_hour} hour</Text>
           </Text>
         </View>
       )
@@ -984,7 +994,7 @@ class Article extends Component {
               </View>
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
               </Text>
-              {this.renderTpye(article.type)}
+              {this.renderTpye(article.type,article.volunteer_hour)}
               <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
               </Text>
               <View style={[

@@ -651,9 +651,15 @@ class Learning extends Component {
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}>
-             <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{fontSize:24}}>Learning</Text>
-          </View>
+              <View style={{ flexDirection: 'row',justifyContent:'center',backgroundColor: 'rgba(0,0,0,0.1)',}}>
+            <View style={{ justifyContent:'flex-start'}}>
+                <View style={{paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                            Learning
+                        </Text>
+                </View>
+            </View>
+        </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
@@ -791,6 +797,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+},
 });
 
 export default Learning;

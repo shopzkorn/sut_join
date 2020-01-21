@@ -8,6 +8,7 @@ import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
 import ScanQr from './CheckinActivity';
 import CheckOTP from './CheckOTP';
+const { width, height } = Dimensions.get('window');
 
 export default class TabViewExample extends React.Component {
 
@@ -18,6 +19,15 @@ export default class TabViewExample extends React.Component {
       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>
+           <View style={{ flexDirection: 'row',justifyContent:'center',backgroundColor: 'rgba(0,0,0,0.1)',}}>
+            <View style={{ justifyContent:'flex-start'}}>
+                <View style={{paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                            Check in
+                        </Text>
+                </View>
+            </View>
+        </View>
         <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
             const color = Animated.color(
@@ -159,5 +169,12 @@ const styles = StyleSheet.create({
   logo:{
     width: theme.sizes.padding*4,
     height: theme.sizes.padding*1.5,
-  }
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+},
 });

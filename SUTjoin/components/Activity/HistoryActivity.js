@@ -141,7 +141,14 @@ const styles = StyleSheet.create({
     height: 12.5,
     borderRadius: 6.25,
     borderColor: theme.colors.active,
-  }
+  },
+   back: {
+        width: theme.sizes.base * 3,
+        height: theme.sizes.base * 3,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 15
+    },
 });
 
 
@@ -471,9 +478,15 @@ class Articles extends Component {
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}
         >
-          <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{fontSize:24}}>My events</Text>
-          </View>
+          <View style={{ flexDirection: 'row',justifyContent:'center',backgroundColor: 'rgba(0,0,0,0.1)',}}>
+            <View style={{ justifyContent:'flex-start'}}>
+                <View style={{paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                            My events
+                        </Text>
+                </View>
+            </View>
+        </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}

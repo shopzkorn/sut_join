@@ -23,6 +23,7 @@ import {
 
 } from "native-base";
 import LinearGradient from 'react-native-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
@@ -215,10 +216,17 @@ class manage_subject extends Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+            </TouchableOpacity>
+            <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Course
+                </Text>
+            </View>
+          </View>
                 <View style={styles.container1}>
-                  <View style={{alignItems: 'center'}}>
-                <Text style={{ fontSize: 25 ,marginTop: 20, marginBottom:20,fontWeight: 'bold'}}>Course</Text>
-                  </View>
                 {this.renderFollow()}
                 </View>  
                 <View style={styles.container}>
@@ -298,6 +306,13 @@ const styles = StyleSheet.create({
     centerEverything: {
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    back: {
+      width: theme.sizes.base * 3,
+      height: theme.sizes.base * 3,
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      marginLeft: 15
     },
   });
 

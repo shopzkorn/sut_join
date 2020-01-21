@@ -455,15 +455,15 @@ class Profile extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }} >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-                    <View style={{ justifyContent: 'flex-start' }}>
-                        <View style={{ marginLeft: 20, paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                                <MaterialIcons name="arrow-back" size={theme.sizes.font * 2} color={theme.colors.black} style={{ alignSelf: 'flex-end' }} />
-                            </TouchableOpacity>
-                        </View>
+                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                    <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                        <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                            Profile
+            </Text>
                     </View>
-                   
                 </View>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -670,5 +670,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 2.5,
         borderColor: '#fe53bb',
+    },
+    back: {
+        width: theme.sizes.base * 3,
+        height: theme.sizes.base * 3,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 15
     },
 });

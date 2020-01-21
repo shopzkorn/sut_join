@@ -343,7 +343,7 @@ class Profile extends React.Component {
                   paddingVertical:5,
                   fontSize: 16,
                   fontWeight: 'bold'
-                }}>My Interests</Text>
+                }}>My interests</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[
                 styles.buttonStyleFollow,

@@ -140,7 +140,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueType + ' data is ' + this.state.dataSource + ' filter is ' + this.state.loadingVisible)
-            
+
         })
 
     }
@@ -158,7 +158,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueGender + ' data is ' + this.state.dataSource)
-            
+
         })
     }
     FilterVolunteer = (value) => {
@@ -174,7 +174,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueVolunteer + ' data is ' + this.state.dataSource)
-            
+
         })
     }
 
@@ -191,7 +191,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueAge + ' data is ' + this.state.dataSource)
-            
+
         })
     }
 
@@ -208,7 +208,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valueDate + ' data is ' + this.state.dataSource)
-            
+
         })
     }
 
@@ -225,7 +225,7 @@ export default class ListViewExample extends Component {
             buttonBG: buttonBG,
         }), () => {
             console.log('value is ' + this.state.valuePeople + ' data is ' + this.state.dataSource)
-            
+
         })
     }
 
@@ -506,9 +506,14 @@ export default class ListViewExample extends Component {
     renderTrends = (item, index) => {
         // console.log(item);
         return (
-            <View>
-                <TouchableOpacity onPress={() => this.FilterTag(item.activity_tag)}>
-                    <Text>{item.activity_tag}</Text>
+            <View style={{ marginHorizontal: 8 }}>
+                <TouchableOpacity style={{ paddingVertical: 8, flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => this.FilterTag(item.activity_tag)}>
+                    <View style={{ marginLeft: 8 }}>
+                        <Text style={{ fontSize: theme.sizes.font * 1 }}>{item.activity_tag}</Text>
+                    </View>
+                    <View style={{ marginRight: 8 }}>
+                        <FontAwesome name="chevron-down" color='rgba(52, 52, 52, 0.8)' size={theme.sizes.font * 1} />
+                    </View>
                 </TouchableOpacity>
                 <View style={{ borderBottomColor: 'rgba(52, 52, 52, 0.8)', borderBottomWidth: 3, }} />
             </View>
@@ -538,7 +543,16 @@ export default class ListViewExample extends Component {
                     end={{ x: 1, y: 0 }}
                     style={{ flex: 1 }}
                 >
-
+                    <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                            <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                            <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                                Search
+                </Text>
+                        </View>
+                    </View>
                     <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
                         <SearchBar
                             ref="search1"
@@ -850,11 +864,11 @@ export default class ListViewExample extends Component {
     fetchData = async (status) => {
         var page = 0;
         if (status == 1) {
-          page = 1;
-          this.setState({ page: 1 })
+            page = 1;
+            this.setState({ page: 1 })
         }
         else {
-          page = this.state.page;
+            page = this.state.page;
         }
         console.log('fecth');
         fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
@@ -879,35 +893,37 @@ export default class ListViewExample extends Component {
                 if (responseJson.length > 0) {
                     this.setState({ lastItem: false })
                     if (status == 2) {
-                        this.setState({ 
-                          search: 1,
-                          data: this.state.data.concat(responseJson), 
-                          loadingVisible: false, 
-                          loading: false ,
-                          horizontal: true});
-                      } else {
-                    this.setState({
-                        search: 1,
-                        data: responseJson,
-                        loadingVisible: false,
-                        horizontal: true,
-                        loading: false
-                    });
-                }
-                } else {
-                    if(this.state.search == 1){
                         this.setState({
-                          lastItem: true,
-                          loading: false
+                            search: 1,
+                            data: this.state.data.concat(responseJson),
+                            loadingVisible: false,
+                            loading: false,
+                            horizontal: true
                         });
-                      }
-                      else{
+                    } else {
                         this.setState({
-                        search: 2,
-                        loadingVisible: false,
-                        lastItem: true,
-                        loading: false
-                      });}
+                            search: 1,
+                            data: responseJson,
+                            loadingVisible: false,
+                            horizontal: true,
+                            loading: false
+                        });
+                    }
+                } else {
+                    if (this.state.search == 1) {
+                        this.setState({
+                            lastItem: true,
+                            loading: false
+                        });
+                    }
+                    else {
+                        this.setState({
+                            search: 2,
+                            loadingVisible: false,
+                            lastItem: true,
+                            loading: false
+                        });
+                    }
                 }
             }).catch((error) => {
                 console.error(error);
@@ -926,7 +942,7 @@ export default class ListViewExample extends Component {
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                // console.log('res ' + responseJson.length);
+                // console.log('res ' + responseJson);
                 this.setState({
                     trending: responseJson,
                     loadingVisible: false
@@ -979,9 +995,10 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: theme.sizes.radius,
         borderBottomRightRadius: theme.sizes.radius,
         paddingHorizontal: theme.sizes.padding / 2,
+        marginHorizontal: theme.sizes.margin * .3,
         // paddingVertical: theme.sizes.padding / 2,
         bottom: 10,
-        left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
+        // left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
         backgroundColor: theme.colors.white,
         width: width - (theme.sizes.padding * 6),
     },
@@ -994,7 +1011,7 @@ const styles = StyleSheet.create({
     },
     recommendedList: {
         justifyContent: 'space-between',
-        flex: 0.5
+        // marginHorizontal: 8
     },
     recommendation: {
         width: (width - (theme.sizes.padding * 2)) / 4,
@@ -1092,5 +1109,32 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 1,
+    },
+    centerEverything: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonStylenoFollow: {
+        paddingHorizontal: 30,
+        backgroundColor: '#ffa8c0',
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderWidth: 2.5,
+        borderColor: '#ffa8c0',
+    },
+    buttonStyleFollow: {
+        paddingHorizontal: 30,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderWidth: 2.5,
+        borderColor: '#fe53bb',
+    },
+    back: {
+        width: theme.sizes.base * 3,
+        height: theme.sizes.base * 3,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 15
     },
 });

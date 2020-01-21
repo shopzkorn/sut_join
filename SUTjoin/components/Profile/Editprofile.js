@@ -483,7 +483,7 @@ class Editprofile extends Component {
                 </TouchableOpacity>
                 <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
                     <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
-                        Profile
+                        Edit profile
                 </Text>
                 </View>
             </View>

@@ -108,7 +108,7 @@ class History extends React.Component {
       })
     }).then((response) => response.json())
       .then((responseJson) => {
-        // console.log('res ' + responseJson.length);
+        // console.log('res ' + responseJson);
         if (responseJson.length > 0) {
           this.setState({ lastItem: false })
           if (status == 2) {
@@ -449,8 +449,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: theme.sizes.radius,
     paddingHorizontal: theme.sizes.padding / 2,
     // paddingVertical: theme.sizes.padding / 2,
+    marginHorizontal: theme.sizes.margin * .3,
     bottom: 10,
-    left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
+    // left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
     backgroundColor: theme.colors.white,
     width: width - (theme.sizes.padding * 6),
   },
@@ -462,6 +463,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.sizes.padding,
   },
   recommendedList: {
+    justifyContent: 'space-between',
+    // marginHorizontal:8
   },
   recommendation: {
     width: (width - (theme.sizes.padding * 2)) / 4,

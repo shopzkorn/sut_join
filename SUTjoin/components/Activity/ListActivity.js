@@ -38,6 +38,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import moment from 'moment'
 import * as theme from '../../theme';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {
+  responsiveFontSize
+} from "react-native-responsive-dimensions";
 const { width, height } = Dimensions.get('window');
 var FONT_BACK_LABEL = 24;
 if (PixelRatio.get() <= 3) { //responsive font
@@ -285,10 +288,10 @@ class Articles extends Component {
           source={{ uri: photoNews }}
         >
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 20 }}>
-            <Text style={{ color: theme.colors.white, fontSize: width / 27 }}>{item.text1}</Text>
+            <Text style={{ color: theme.colors.white, fontSize: width / 27 -2 }}>{item.text1}</Text>
           </View>
           <View style={{ paddingLeft: theme.sizes.padding * 3.2, marginTop: 5 }}>
-            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: FONT_BACK_LABEL }}>{item.text2}</Text>
+            <Text style={{ color: theme.colors.white, fontWeight: 'bold', fontSize: responsiveFontSize(2.5) }}>{item.text2}</Text>
           </View>
         </ImageBackground>
       )
@@ -436,6 +439,7 @@ class Articles extends Component {
       })
     });
     const news = await response.json();
+    // console.log(news)
     this.setState({
       new_img: news
     })

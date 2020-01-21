@@ -16,6 +16,7 @@ import {
     Button,
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
@@ -393,14 +394,22 @@ class manage_gpa extends Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
-
+<View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+            </TouchableOpacity>
+            <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Manage your GPA
+                </Text>
+            </View>
+          </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
             >
                 <View style={styles.container}>
 
-                <Text style={{ fontSize: theme.sizes.font * 1.4 ,marginBottom:25,fontWeight: 'bold'}}>Manage your GPA</Text>
 
                 <View style={[ styles.row_underline, { marginBottom:16,}]}>
                   <Text>GPAX: </Text>
@@ -618,6 +627,13 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
+    back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+  },
   });
 
   export default manage_gpa;

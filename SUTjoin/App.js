@@ -53,7 +53,12 @@ const App = createStackNavigator(
       },
     },
     DetailNews,
-    SearchActivity,
+    SearchActivity: {
+      screen: SearchActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
     AllHistoryActivity: {
       screen: AllHistoryActivity,
       navigationOptions: {
@@ -72,7 +77,6 @@ const App = createStackNavigator(
       },
     },
     CheckinActivity,
-    UserDashboard,
     Editprofile: {
       screen: Editprofile,
       navigationOptions: {
@@ -101,13 +105,13 @@ const App = createStackNavigator(
     MyInterest: {
       screen: MyInterest,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     UserDashboard: {
       screen: UserDashboard,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     UserDashboardUserdata: {
@@ -125,25 +129,25 @@ const App = createStackNavigator(
     manage_gpa: {
       screen: manage_gpa,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     manage_subject: {
       screen: manage_subject,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     add_subject: {
       screen: add_subject,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     volunteer: {
       screen: volunteer,
       navigationOptions: {
-        // header: null,
+        header: null,
       }
     },
     SettingMode:{

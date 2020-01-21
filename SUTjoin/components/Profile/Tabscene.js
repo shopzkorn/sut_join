@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
+const { width, height } = Dimensions.get('window');
 
 import DashboardAll from './UserDashboard';
 import DashboardUser from './UserDashboardUserdata';
@@ -19,6 +20,16 @@ export default class TabViewExample extends React.Component {
       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>
+          <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+            </TouchableOpacity>
+            <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Dashboard
+                </Text>
+            </View>
+          </View>
         <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
             const color = Animated.color(
@@ -138,5 +149,12 @@ const styles = StyleSheet.create({
   logo:{
     width: theme.sizes.padding*4,
     height: theme.sizes.padding*1.5,
-  }
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+  },
 });

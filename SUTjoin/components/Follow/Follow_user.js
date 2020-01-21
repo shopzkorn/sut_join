@@ -16,6 +16,7 @@ import {
 
 } from "react-native";
 import Spinner from 'react-native-loading-spinner-overlay';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as theme from '../../theme';
 import LinearGradient from 'react-native-linear-gradient';
 const { width, height } = Dimensions.get('window');
@@ -263,16 +264,30 @@ class Profile extends React.Component {
     renderHeader = () => {
         if (this.state.status == '3') {
             return (
-                <View style={{ marginVertical: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 24 }}>Followers</Text>
-                </View>
+                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+          <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+        </TouchableOpacity>
+        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+            <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Followers
+            </Text>
+        </View>
+      </View>
             )
         }
         else {
             return (
-                <View style={{ marginVertical: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 24 }}>Followings</Text>
-                </View>
+                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+          <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+        </TouchableOpacity>
+        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+            <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Followings
+            </Text>
+        </View>
+      </View>
             )
         }
     }
@@ -481,4 +496,11 @@ const styles = StyleSheet.create({
         borderWidth: 2.5,
         borderColor: '#fe53bb',
     },
+    back: {
+        width: theme.sizes.base * 3,
+        height: theme.sizes.base * 3,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 15
+      },
 });

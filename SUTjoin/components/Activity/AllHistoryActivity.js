@@ -344,16 +344,30 @@ class History extends React.Component {
   renderHeader = () => {
     if(this.state.status == 'soon'){
       return(
-        <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{fontSize:24}}>Upcoming</Text>
+        <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+            </TouchableOpacity>
+            <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                    Upcoming
+                </Text>
+            </View>
           </View>
       )
     }
     else{
       return(
-        <View style={{marginVertical:10,justifyContent:'center',alignItems:'center'}}>
-            <Text style={{fontSize:24}}>Participated</Text>
-          </View>
+        <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+          <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+        </TouchableOpacity>
+        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+            <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                Participated
+            </Text>
+        </View>
+      </View>
       )
     }
   }
@@ -444,9 +458,10 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: theme.sizes.radius,
         borderBottomRightRadius: theme.sizes.radius,
         paddingHorizontal: theme.sizes.padding / 2,
+        marginHorizontal: theme.sizes.margin * .3,
         // paddingVertical: theme.sizes.padding / 2,
         bottom: 10,
-        left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
+        // left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
         backgroundColor: theme.colors.white,
         width: width - (theme.sizes.padding * 6),
   },
@@ -458,6 +473,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.sizes.padding,
   },
   recommendedList: {
+    // alignItems:'center',
+    justifyContent: 'space-between',
+    // marginHorizontal:8
   },
   recommendation: {
     width: (width - (theme.sizes.padding * 2)) / 4,
@@ -556,5 +574,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: 100,
     height: 100,
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
   },
 });

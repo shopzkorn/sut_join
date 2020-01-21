@@ -6,11 +6,14 @@ import {
     Button,
     TouchableOpacity,
     AsyncStorage,
-    ScrollView
+    ScrollView,
+    Dimensions
 } from "react-native";
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SwitchToggle from "react-native-switch-toggle";
 import LinearGradient from 'react-native-linear-gradient';
+import * as theme from '../../theme';
+const { width, height } = Dimensions.get('window');
 
 class MyInterest extends React.Component {
 
@@ -217,12 +220,21 @@ class MyInterest extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
-          
+          <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+            </TouchableOpacity>
+            <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                    My interests
+                </Text>
+            </View>
+          </View>
           <ScrollView
           showsVerticalScrollIndicator={true}
         >
           <View style={styles.container}>
-            <Text style={{fontSize:30,marginBottom:20}}>My Interest</Text>
+            
             {/* <View style={{alignItems: 'flex-start',justifyContent: 'flex-start'}}> */}
             {/* <SwitchToggle switchOn={this.state.switchOn1} onPress={this.onPress1} /> */}
             <View style={{flexDirection:'row'}}>
@@ -643,5 +655,12 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderColor: '#fe53bb',
     marginVertical:10
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
   },
 });

@@ -17,13 +17,15 @@ export default class Example extends React.Component {
         return {
             header: (
 
-                <View style={{ marginTop: 10, marginLeft: 10, marginBottom: 10 }}>
-                    <TouchableOpacity style={{flexDirection:'row'}} onPress={() => navigation.goBack()}>
-                        <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} style={{ marginTop: 8 }} />
-                        <Text style={styles.highlight}>
-                            BACK
-                            </Text>
+                <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                    <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                        <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
                     </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                            Calendar
+            </Text>
+                    </View>
                 </View>
             ),
             headerTransparent: true,
@@ -200,4 +202,11 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginLeft: 10
     },
+     back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+  },
   });

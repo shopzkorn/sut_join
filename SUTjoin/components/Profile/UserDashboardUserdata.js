@@ -15,7 +15,7 @@ import {
 } from "react-native";
 
 import ProgressCircle from 'react-native-progress-circle';
-import PieChart from 'react-native-pie-chart';
+// import PieChart from 'react-native-pie-chart';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -260,7 +260,7 @@ class UserDashboard_user__data extends React.Component {
         );
       }
     render() {
-        
+      if(this.state.getall != 0){
             return (
                 <LinearGradient
                   colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
@@ -281,6 +281,21 @@ class UserDashboard_user__data extends React.Component {
                 </LinearGradient>
             )
           }
+          else{
+            return (
+              <LinearGradient
+                colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+                start={{ x: 0.0, y: 0.5 }}
+                end={{ x: 1.0, y: 0.5 }}
+                style={{ flex: 1 }}
+              >
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                  <Text style={{fontSize:30}}>No data</Text>
+                </View>
+              </LinearGradient>
+          )
+          }
+        }
     
 }
 export default UserDashboard_user__data;
