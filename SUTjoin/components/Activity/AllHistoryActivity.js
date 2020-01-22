@@ -37,6 +37,7 @@ class History extends React.Component {
     page: 1,
     filter: 2,
     search: 0,
+    statusSreach:0,
     status:'',
     id_user:'',
     buttonBG: [
@@ -87,9 +88,6 @@ class History extends React.Component {
   }
 
   fetchDataSearch = async (status) => {
-    this.setState({
-      search: 0,
-    })
     var page = 0;
     if (status == 1) {
       page = 1;
@@ -121,20 +119,24 @@ class History extends React.Component {
               search: 1,
               data: this.state.data.concat(responseJson), 
               loadingVisible: false, 
-              loading: false });
+              loading: false ,
+              statusSreach : 1
+            });
           } else {
           this.setState({
             search: 1,
             data: responseJson,
             loadingVisible: false,
-            loading: false
+            loading: false,
+            statusSreach : 1
           });
         }
         } else {
-          if(this.state.search == 1){
+          if(this.state.search == 1 && this.state.statusSreach == 1 ){
             this.setState({
               lastItem: true,
-              loading: false
+              loading: false,
+              statusSreach: 0,
             });
           }
           else{
@@ -142,7 +144,8 @@ class History extends React.Component {
             search: 2,
             loadingVisible: false,
             lastItem: true,
-            loading: false
+            loading: false,
+            statusSreach: 0,
           });}
           
         }
@@ -335,6 +338,7 @@ class History extends React.Component {
 
         this.setState({
           buttonBG: buttonBG,
+          statusSreach : 0
         });
       }
     }

@@ -120,9 +120,7 @@ class Learning extends Component {
   refresh() {
     this.setState({ refreshing: true });
     return new Promise((resolve) => {
-      this.Getgpa().then(() => {
-        this.setState({ refreshing: false })
-      });
+      this.Getgpa();
       setTimeout(() => { resolve() }, 2000)
     });
   }
@@ -141,7 +139,7 @@ class Learning extends Component {
       .then((responseJson) => {
         // Showing response message coming from server after inserting records.
         // alert(responseJson);
-        console.log(responseJson);
+      
         this.setState({ gpa_1_1: responseJson[0], });
         this.setState({ gpa_1_2: responseJson[1], });
         this.setState({ gpa_1_3: responseJson[2], });
@@ -209,7 +207,8 @@ class Learning extends Component {
         this.setState({ per_gpa_8_1: (responseJson[21] * 100) / 4, });
         this.setState({ per_gpa_8_2: (responseJson[22] * 100) / 4, });
         this.setState({ per_gpa_8_3: (responseJson[23] * 100) / 4, });
-        this.setState({loadingVisible : false,})
+        console.log(responseJson);
+        this.setState({loadingVisible : false,refreshing:false})
       })
       .catch((error) => {
         console.error(error);
