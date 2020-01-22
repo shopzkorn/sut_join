@@ -43,7 +43,7 @@ class add_subject extends Component {
 
       AddSubject = () => {
         const { navigate } = this.props.navigation;
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/addSubject.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/addSubject.php', {
           
           method: 'post',
           headers: new Headers({

@@ -41,7 +41,7 @@ class Profile extends React.Component {
 
     processFollow = (item) => {
         console.log('this');
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
@@ -69,7 +69,7 @@ class Profile extends React.Component {
             page = this.state.page;
         }
         // console.log(this.state.myhost);
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
@@ -179,7 +179,7 @@ class Profile extends React.Component {
 
     }
     renderList = (item) => {
-        let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+        let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
         const { navigation } = this.props;
         if (item.user_id != this.state.user_id) {
             return (

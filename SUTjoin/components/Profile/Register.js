@@ -265,7 +265,7 @@ class Register extends Component {
   }
   register() {
 
-    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+    RNFetchBlob.fetch('POST', 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
       Authorization: "Bearer access-token",
       otherHeader: "foo",
       'Content-Type': 'multipart/form-data',
@@ -279,8 +279,8 @@ class Register extends Component {
     })
 
     const { navigate } = this.props.navigation;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Register.php', {
-      // fetch('http://localhost:8080/Web_SUTJoin/include/Register.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Register.php', {
+      // fetch('https://localhost:8080/Web_SUTJoin/include/Register.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',

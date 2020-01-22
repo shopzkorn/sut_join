@@ -13,6 +13,7 @@ import {
   AsyncStorage,
   TouchableOpacity,
   ScrollView,
+  RefreshControl
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import * as theme from '../../theme';
@@ -116,10 +117,18 @@ class Learning extends Component {
     });
   }
 
-
+  refresh() {
+    this.setState({ refreshing: true });
+    return new Promise((resolve) => {
+      this.Getgpa().then(() => {
+        this.setState({ refreshing: false })
+      });
+      setTimeout(() => { resolve() }, 2000)
+    });
+  }
 
   Getgpa() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Getgpa.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Getgpa.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -663,6 +672,12 @@ class Learning extends Component {
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.refresh.bind(this)}
+              />
+            }cd
           >
             <View style={[styles.container]}>
               {this.Circle_gpax()}

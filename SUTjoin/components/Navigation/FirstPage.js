@@ -30,7 +30,7 @@ class FirstPage extends Component {
             Username : data[0][1],
             Password : data[1][1]
           }), () => {
-            fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
+            fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
               method: 'post',
               headers: new Headers({
                 'Accept': 'application/json',

@@ -54,7 +54,7 @@ class manage_subject extends Component {
       }
       
       GetSubject() {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetCourse.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetCourse.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',
@@ -86,7 +86,7 @@ class manage_subject extends Component {
 
       DeleteSubject() {
         const { navigate } = this.props.navigation;
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/deleteSubject.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/deleteSubject.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',

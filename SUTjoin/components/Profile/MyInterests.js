@@ -12,6 +12,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SwitchToggle from "react-native-switch-toggle";
 import LinearGradient from 'react-native-linear-gradient';
+import Spinner from 'react-native-loading-spinner-overlay';
 import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
@@ -39,6 +40,8 @@ class MyInterest extends React.Component {
       data8: 0,
 
       user_id:'',
+      loadingVisible: true,
+
     };
   }
     
@@ -54,7 +57,7 @@ class MyInterest extends React.Component {
   }
 
   GetMyinterest() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyinterest.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyinterest.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -171,7 +174,9 @@ class MyInterest extends React.Component {
           })
         }
         console.log(this.state.switchOn8);
-
+        this.setState({
+          loadingVisible: false
+        })
       })
       .catch((error) => {
         console.error(error);
@@ -180,8 +185,8 @@ class MyInterest extends React.Component {
 
   OnSave = () => {
     const { navigate } = this.props.navigation;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Myinterest_pro.php', {
-      // fetch('http://localhost:8080/Web_SUTJoin/include/Register.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Myinterest_pro.php', {
+      // fetch('https://localhost:8080/Web_SUTJoin/include/Register.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -477,7 +482,9 @@ class MyInterest extends React.Component {
             </View>
             
           </View>
-          
+          <View >
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
           </ScrollView>
           </LinearGradient>
         );

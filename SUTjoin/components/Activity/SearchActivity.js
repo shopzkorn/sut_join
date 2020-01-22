@@ -678,8 +678,8 @@ export default class ListViewExample extends Component {
 
     renderItem = (item, index) => {
         // console.log(item);
-        let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
-        let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+        let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+        let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
         const { navigation } = this.props;
         const dates = moment(item.date_start).format('MMM, Do YYYY HH:mm');
         return (
@@ -843,7 +843,7 @@ export default class ListViewExample extends Component {
 
     }
     getage = async () => {
-        const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+        const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
@@ -871,7 +871,7 @@ export default class ListViewExample extends Component {
             page = this.state.page;
         }
         console.log('fecth');
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/SearchActivity.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',
@@ -931,7 +931,7 @@ export default class ListViewExample extends Component {
     }
     fetchDataTrending = async () => {
         console.log('fecth');
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',

@@ -159,7 +159,7 @@ class Article extends Component {
   render() {
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.url;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.url;
     // console.log(article);
 
     return (

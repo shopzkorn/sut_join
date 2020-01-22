@@ -401,7 +401,7 @@ class Article extends Component {
     })
     const { navigation } = this.props;
     const article = navigation.getParam('article');
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/CheckJoinActivity.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/CheckJoinActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -424,7 +424,7 @@ class Article extends Component {
       }).catch((error) => {
         console.error(error);
       });
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -437,7 +437,7 @@ class Article extends Component {
     const users = await response.json();
     this.setState({ joiner: users });
 
-    const activity_detail = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetDetailActivity.php', {
+    const activity_detail = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetDetailActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -460,7 +460,7 @@ class Article extends Component {
     console.log(0);
     const { navigation } = this.props;
     const article = this.state.activity;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -502,7 +502,7 @@ class Article extends Component {
     console.log('gender is ' + gender)
     if (age >= article.min_age && age <= article.max_age) {
       if (article.gender == 3) {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',
@@ -532,7 +532,7 @@ class Article extends Component {
           });
       } else {
         if (article.gender == gender) {
-          fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+          fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
             method: 'post',
             headers: new Headers({
               'Accept': 'application/json',
@@ -576,7 +576,7 @@ class Article extends Component {
     this.setState({ visibleDialog: false })
     const { navigation } = this.props;
     const article = this.state.activity;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -799,7 +799,7 @@ class Article extends Component {
   renderJoinerinActivity = (item, index) => {
     const { navigation } = this.props;
     console.log(item)
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     console.log("p " + photoUser);
     const isLastItem = index === item.length - 1;
 
@@ -972,8 +972,8 @@ class Article extends Component {
     const article = this.state.activity;
     console.log(article);
 
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
     // console.log(article);
 
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');

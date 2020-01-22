@@ -429,7 +429,7 @@ export default class HomeScreen extends Component {
 
   }
   loadData() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Trends.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -495,7 +495,7 @@ export default class HomeScreen extends Component {
     return this.refs['OPTIONLIST'];
   }
   create = () => {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -536,7 +536,7 @@ export default class HomeScreen extends Component {
   }
   register = (event) => {
     console.log(this.state.type);
-    RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+    RNFetchBlob.fetch('POST', 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
       Authorization: "Bearer access-token",
       otherHeader: "foo",
       'Content-Type': 'multipart/form-data',

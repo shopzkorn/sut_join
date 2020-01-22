@@ -94,7 +94,7 @@ class Profile extends React.Component {
   fetchData = async () => {
     // console.log(this.state.myhost);
     Promise.all([
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -105,7 +105,7 @@ class Profile extends React.Component {
           page: 1,
         })
       }),
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -115,7 +115,7 @@ class Profile extends React.Component {
           user_id: this.state.id_user,
         })
       }),
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/follow.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -141,7 +141,7 @@ class Profile extends React.Component {
       )
   }
   getage = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -212,8 +212,8 @@ class Profile extends React.Component {
   }
 
   renderDestination = item => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY');
     let surname = item.surname
@@ -303,7 +303,7 @@ class Profile extends React.Component {
     const { navigation } = this.props;
     const user_idreg = navigation.getParam('user_id');
     // this.state.user_detail.map( (user,index) =>
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.user_profile;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.user_profile;
     console.log(photoUser)
     // );
     if (!this.state.loadingVisible) {
@@ -391,7 +391,7 @@ class Profile extends React.Component {
     }
   }
   fetchDataLoadmore = () =>{
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',

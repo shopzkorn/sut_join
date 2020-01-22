@@ -266,7 +266,7 @@ class Editprofile extends Component {
 
   editProfileSend() {
     if (this.state.imagePath != null) {
-      RNFetchBlob.fetch('POST', 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
+      RNFetchBlob.fetch('POST', 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
         Authorization: "Bearer access-token",
         otherHeader: "foo",
         'Content-Type': 'multipart/form-data',
@@ -282,7 +282,7 @@ class Editprofile extends Component {
 
 
     const { navigate } = this.props.navigation;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/EditProfile.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/EditProfile.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -355,7 +355,7 @@ class Editprofile extends Component {
   fetchData = async () => {
     // console.log(this.state.myhost);
     Promise.all([
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -444,7 +444,7 @@ class Editprofile extends Component {
     const { navigation } = this.props;
     const user_idreg = navigation.getParam('user_id');
     // this.state.user_detail.map( (user,index) =>
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.imageName;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + this.state.imageName;
     console.log(photoUser)
     // );
     if (this.state.imageSource == null) {

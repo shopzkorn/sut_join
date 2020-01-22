@@ -57,7 +57,7 @@ class volunteer extends Component {
 
   GetUser() {
     const { navigate } = this.props.navigation;
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -87,7 +87,7 @@ class volunteer extends Component {
   }
 
   GetVolunteer() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetVolunteer.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetVolunteer.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',

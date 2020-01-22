@@ -89,7 +89,7 @@ export default class ScanScreen extends Component {
   }
 
   checked() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',

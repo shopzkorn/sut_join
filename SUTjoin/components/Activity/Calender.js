@@ -18,7 +18,7 @@ export default class Example extends React.Component {
             header: (
 
                 <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-                    <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
                         <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
@@ -110,7 +110,7 @@ export default class Example extends React.Component {
                         }}
                         // Handler which gets executed on day long press. Default = undefined
                         onDayLongPress={(day) => { console.log('selected longday', day) }}
-                        // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+                        // Month format in calendar title. Formatting values: https://arshaw.com/xdate/#Formatting
                         monthFormat={'MMM yyyy'}
                         // Handler which gets executed when visible month changes in calendar. Default = undefined
                         onMonthChange={(month) => { console.log('month changed', month) }}

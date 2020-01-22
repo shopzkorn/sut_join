@@ -274,7 +274,7 @@ class Articles extends Component {
   }
 
   renderNewsItem = (item, index) => {
-    let photoNews = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.url;
+    let photoNews = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.url;
     const { navigation } = this.props;
     if (item.news_status == 2) {
       return (
@@ -342,8 +342,8 @@ class Articles extends Component {
   }
   
   renderItem = (item, index) => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY');
     let surname = item.surname
@@ -428,7 +428,7 @@ class Articles extends Component {
 
   }
   getnews = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetNews.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetNews.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -447,7 +447,7 @@ class Articles extends Component {
   }
 
   getage = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -461,7 +461,8 @@ class Articles extends Component {
     console.log(user[0])
     this.setState({
       age_user: user[0],
-      gender_user : user[1]
+      gender_user : user[1],
+      loadingVisible: false
     })
     // console.log(this.state.new_img);
   }
@@ -476,7 +477,7 @@ class Articles extends Component {
     else {
       page = this.state.page;
     }
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -502,10 +503,10 @@ class Articles extends Component {
       this.setState({ lastItem: true })
     }
     if (status == 2) {
-      this.setState({ data: this.state.data.concat(users), loadingVisible: false, loading: false });
+      this.setState({ data: this.state.data.concat(users), loading: false });
     }
     else {
-      this.setState({ data: users, loadingVisible: false });
+      this.setState({ data: users,  });
     }
   }
   refresh() {

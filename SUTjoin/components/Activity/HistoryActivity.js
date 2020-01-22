@@ -276,8 +276,8 @@ class Articles extends Component {
   }
 
   renderDestination = (item) => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
@@ -394,7 +394,7 @@ class Articles extends Component {
   fetchData = async () => {
 
     Promise.all([
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -407,7 +407,7 @@ class Articles extends Component {
           status: 'soon'
         })
       }),
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
         method: 'post',
         headers: new Headers({
           'Accept': 'application/json',
@@ -450,7 +450,7 @@ class Articles extends Component {
     });
   }
   getage = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAgeUser.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',

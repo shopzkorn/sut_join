@@ -77,13 +77,13 @@ class manage_gpa extends Component {
       }
 
     //   fetchData = async () => {
-    //     const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php');
+    //     const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php');
     //     const users = await response.json();
     //     this.setState({ data: users });
     //   }
 
     Getgpa() {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Getgpa.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Getgpa.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',
@@ -138,8 +138,8 @@ class manage_gpa extends Component {
 
       OnSaveGpa = () => {
         const { navigate } = this.props.navigation;
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/manage_gpa_pro.php', {
-          // fetch('http://localhost:8080/Web_SUTJoin/include/Register.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/manage_gpa_pro.php', {
+          // fetch('https://localhost:8080/Web_SUTJoin/include/Register.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',

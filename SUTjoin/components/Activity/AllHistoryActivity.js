@@ -87,6 +87,9 @@ class History extends React.Component {
   }
 
   fetchDataSearch = async (status) => {
+    this.setState({
+      search: 0,
+    })
     var page = 0;
     if (status == 1) {
       page = 1;
@@ -96,7 +99,7 @@ class History extends React.Component {
       page = this.state.page;
     }
     console.log('fecth');
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyJoin.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -195,8 +198,8 @@ class History extends React.Component {
   }
 
   renderItem = (item, index) => {
-    let photoAc = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
-    let photoUser = 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY HH:mm');
     return (

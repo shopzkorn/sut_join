@@ -95,7 +95,7 @@ class ScanScreen extends Component {
 
   checked = (num) => {
     if(num == 2){
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -118,7 +118,7 @@ class ScanScreen extends Component {
         console.error(error);
       });
     }else{
-      fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
             method: 'post',
             headers: new Headers({
                 'Accept': 'application/json',

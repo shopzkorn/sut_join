@@ -221,7 +221,7 @@ class selectLocation extends Component {
                         </TouchableOpacity>
                         <Triangle style={styles.triangleDown} />
                         <Image
-                            source={{ uri: 'http://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/mapIcon.png' }}
+                            source={{ uri: 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/mapIcon.png' }}
                             style={{
 
                                 width: 40,

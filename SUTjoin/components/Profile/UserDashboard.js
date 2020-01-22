@@ -79,7 +79,7 @@ class UserDashboard extends React.Component {
   }
 
   fetchData = async () => {
-    const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php');
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php');
     const users = await response.json();
     this.setState({ data: users });
   }
@@ -443,7 +443,7 @@ class UserDashboard extends React.Component {
   }
 
   GetUserDashboard() {
-    fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',

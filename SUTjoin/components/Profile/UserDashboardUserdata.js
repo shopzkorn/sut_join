@@ -66,13 +66,13 @@ class UserDashboard_user__data extends React.Component {
       }
 
       fetchData = async () => {
-        const response = await fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserDashboard.php');
+        const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserDashboard.php');
         const users = await response.json();
         this.setState({ data: users });
       }
 
       GetUserDashboard() {
-        fetch('http://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserDashboard.php', {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserDashboard.php', {
           method: 'post',
           headers: new Headers({
             'Accept': 'application/json',
