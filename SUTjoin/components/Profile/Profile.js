@@ -21,7 +21,7 @@ import {
 import {
   Container,
   Title,
-  Content,
+  Badge,
   Card,
   CardItem,
   Thumbnail,
@@ -33,7 +33,7 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as theme from '../../theme';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment'
@@ -59,14 +59,15 @@ class Profile extends React.Component {
     following: 0,
     page: 1,
     age_user: 0,
-    gender_user : 0,
+    gender_user: 0,
     loading: false,
     lastItem: true,
+    notification: false
   }
   scrollXHost = new Animated.Value(0);
   scrollXJoin = new Animated.Value(0);
 
-  
+
   setFollow = (data) => {
     console.log(data)
     this.setState({
@@ -90,6 +91,25 @@ class Profile extends React.Component {
         user_volunteer: user.volunteer
       })
     )
+  }
+  getNotification = () => {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetNotification.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        user_id: this.state.id_user,
+        status: 2
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+        console.log('notification ' + responseJson);
+        if(responseJson!=0){
+        this.setState({ notification: true })
+        }
+      })
   }
   fetchData = async () => {
     // console.log(this.state.myhost);
@@ -136,7 +156,8 @@ class Profile extends React.Component {
           this.setState({
             loadingVisible: false
           }),
-          this.getage()
+          this.getage(),
+          this.getNotification()
       }
       )
   }
@@ -155,7 +176,7 @@ class Profile extends React.Component {
     console.log(user[0])
     this.setState({
       age_user: user[0],
-      gender_user : user[1]
+      gender_user: user[1]
     })
     // console.log(this.state.new_img);
   }
@@ -163,51 +184,51 @@ class Profile extends React.Component {
   renderHost = () => {
     if (!this.state.loadingVisible) {
       if (this.state.myhost.length > 0) {
-      return (
-        <View style={[styles.flex, styles.column, styles.recommended],{backgroundColor: 'rgba(52, 52, 52, 0.2)'}}>
-          <View
-            style={[
-              styles.row,
-              styles.recommendedHeader
-            ]}
-          >
-            <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10 ,fontWeight:'bold'}}>{this.state.user_name}'timeline</Text>
+        return (
+          <View style={[styles.flex, styles.column, styles.recommended], { backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
+            <View
+              style={[
+                styles.row,
+                styles.recommendedHeader
+              ]}
+            >
+              <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10, fontWeight: 'bold' }}>{this.state.user_name}'timeline</Text>
+            </View>
+            <View style={[styles.column, styles.recommendedList]}>
+              <FlatList
+                Vertical
+                pagingEnabled
+                scrollEnabled
+                showsHorizontalScrollIndicator={false}
+                scrollEventThrottle={16}
+                snapToAlignment="center"
+                style={[styles.shadow, { overflow: 'visible' }]}
+                data={this.state.myhost}
+                keyExtractor={(item, index) => `${item.id}`}
+                renderItem={({ item, index }) => this.renderDestination(item, index)}
+              />
+            </View>
           </View>
-          <View style={[styles.column, styles.recommendedList]}>
-            <FlatList
-              Vertical
-              pagingEnabled
-              scrollEnabled
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              snapToAlignment="center"
-              style={[styles.shadow, { overflow: 'visible' }]}
-              data={this.state.myhost}
-              keyExtractor={(item, index) => `${item.id}`}
-              renderItem={({ item, index }) => this.renderDestination(item, index)}
-            />
-          </View>
-        </View>
-      );
-          }
-          else {
-            return (
-                <View style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(52, 52, 52, 0.2)'
-                }}>
-                    <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 , marginTop: 20}} />
-                    <Text style={{ marginTop: 10 }}>Let join someone, or host something</Text>
-                    <Text style={{ marginTop: 10,marginBottom:20 }}>to start your timeline.</Text>
+        );
+      }
+      else {
+        return (
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(52, 52, 52, 0.2)'
+          }}>
+            <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4, marginTop: 20 }} />
+            <Text style={{ marginTop: 10 }}>Let join someone, or host something</Text>
+            <Text style={{ marginTop: 10, marginBottom: 20 }}>to start your timeline.</Text>
 
-                </View>
-            )
-        }
+          </View>
+        )
+      }
     }
   }
   refresh() {
-    this.setState({ refreshing: true ,loadingVisible:true});
+    this.setState({ refreshing: true, loadingVisible: true });
     return new Promise((resolve) => {
       this.fetchData().then(() => {
         this.setState({ refreshing: false })
@@ -233,11 +254,11 @@ class Profile extends React.Component {
     const { navigation } = this.props;
     const dates = moment(item.date_start).format('MMM, Do YYYY');
     let surname = item.surname
-    if(item.surname.split('').length){
+    if (item.surname.split('').length) {
       surname = item.surname.split('').slice(0, 7)
     }
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Article', { article: item.id, age_user: this.state.age_user, gender_user: this.state.gender_user })}>
         <View style={{ padding: 15 }}>
           <Card >
             <CardItem>
@@ -245,27 +266,27 @@ class Profile extends React.Component {
                 <Thumbnail source={{ uri: photoUser }} />
                 <Body>
                   <Text>{item.name} {surname}</Text>
-                  <View style={{flexDirection:'row'}}>
-                  <MaterialCommunityIcons
-                  name="map-marker-outline"
-                  size={theme.sizes.font * 1}
-                  color={theme.colors.black}
-                />
-                  <Text> {item.location_name}</Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <MaterialCommunityIcons
+                      name="map-marker-outline"
+                      size={theme.sizes.font * 1}
+                      color={theme.colors.black}
+                    />
+                    <Text> {item.location_name}</Text>
                   </View>
                 </Body>
               </Left>
-              <Right style={{justifyContent:'flex-end'}}>
-              <View style={{flexDirection:'row'}}>
-              <MaterialCommunityIcons
-                  name="account-plus"
-                  size={theme.sizes.font * 1.5}
-                  color={theme.colors.white}
-                  color={theme.colors.black}
-                />
-              <Text> {item.inviter}/{item.number_people}</Text>  
-              </View> 
-              <Text>{dates}</Text>
+              <Right style={{ justifyContent: 'flex-end' }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <MaterialCommunityIcons
+                    name="account-plus"
+                    size={theme.sizes.font * 1.5}
+                    color={theme.colors.white}
+                    color={theme.colors.black}
+                  />
+                  <Text> {item.inviter}/{item.number_people}</Text>
+                </View>
+                <Text>{dates}</Text>
               </Right>
             </CardItem>
 
@@ -282,28 +303,28 @@ class Profile extends React.Component {
             </CardItem>
 
             <CardItem style={{ paddingVertical: 0 }}>
-              <Left style={{justifyContent:'flex-start'}}>  
-              <View style={[styles.row]}>     
-              <MaterialIcons
-              name="title"
-              size={theme.sizes.font * 1.5}
-              color={theme.colors.black}
-            />
-              <Text style={{fontWeight:'bold'}}>| {item.title}</Text>
-              </View> 
+              <Left style={{ justifyContent: 'flex-start' }}>
+                <View style={[styles.row]}>
+                  <MaterialIcons
+                    name="title"
+                    size={theme.sizes.font * 1.5}
+                    color={theme.colors.black}
+                  />
+                  <Text style={{ fontWeight: 'bold' }}>| {item.title}</Text>
+                </View>
               </Left>
-              <Right style={{justifyContent:'flex-end'}}>
-              <TouchableOpacity style={[
-                styles.buttonStyleFollow,
-                styles.centerEverything]}
-                activeOpacity={0.5}
-                onPress={() => navigation.navigate('Article', { article: item.id , age_user : this.state.age_user , gender_user : this.state.gender_user })}
-              >
-                <Text style={{
-                  color:"#fe53bb",
-                  fontWeight: 'bold'
-                }}>View</Text>
-              </TouchableOpacity>
+              <Right style={{ justifyContent: 'flex-end' }}>
+                <TouchableOpacity style={[
+                  styles.buttonStyleFollow,
+                  styles.centerEverything]}
+                  activeOpacity={0.5}
+                  onPress={() => navigation.navigate('Article', { article: item.id, age_user: this.state.age_user, gender_user: this.state.gender_user })}
+                >
+                  <Text style={{
+                    color: "#fe53bb",
+                    fontWeight: 'bold'
+                  }}>View</Text>
+                </TouchableOpacity>
               </Right>
             </CardItem>
           </Card>
@@ -332,22 +353,22 @@ class Profile extends React.Component {
               <Text style={{ color: theme.colors.black, fontSize: 24, fontWeight: 'bold', marginTop: -20 }}>{this.state.user_name} {this.state.user_surname}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TouchableOpacity style={[
+              <TouchableOpacity style={[
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
                 onPress={() => navigate('volunteer')}
               >
                 <Text style={{
-                  color:"#fe53bb",
+                  color: "#fe53bb",
                   fontSize: 16,
-                  paddingVertical:5,
+                  paddingVertical: 5,
                   fontWeight: 'bold'
                 }}>Volunteer Point: {this.state.user_volunteer}</Text>
               </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 ,marginBottom:10}}>
-             
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10, marginBottom: 10 }}>
+
               <TouchableOpacity style={[
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
@@ -355,8 +376,8 @@ class Profile extends React.Component {
                 onPress={() => navigate('MyInterest')}
               >
                 <Text style={{
-                  color:"#fe53bb",
-                  paddingVertical:5,
+                  color: "#fe53bb",
+                  paddingVertical: 5,
                   fontSize: 16,
                   fontWeight: 'bold'
                 }}>My interests</Text>
@@ -368,16 +389,16 @@ class Profile extends React.Component {
                 onPress={() => navigate('UserDashboard')}
               >
                 <Text style={{
-                  color:"#fe53bb",
+                  color: "#fe53bb",
                   fontSize: 16,
-                  paddingVertical:5,
+                  paddingVertical: 5,
                   fontWeight: 'bold'
                 }}> Dashboard</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
-            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('Follow', { Status: 4, id: this.state.id_user })}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => navigation.navigate('Follow', { Status: 4, id: this.state.id_user })}>
                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold' }}>Followings</Text>
                 <Text style={{ color: "#fe53bb", fontSize: 16, fontWeight: 'bold', alignItems: 'center' }}>{this.state.following}</Text>
 
@@ -391,46 +412,47 @@ class Profile extends React.Component {
                 styles.buttonStyleFollow,
                 styles.centerEverything]}
                 activeOpacity={0.5}
-              onPress={() => navigate('Editprofile')}
+                onPress={() => navigate('Editprofile')}
               >
                 <Text style={{
-                  color:"#fe53bb",
+                  color: "#fe53bb",
                   fontSize: 16,
                   fontWeight: 'bold'
                 }}>Edit profile</Text>
               </TouchableOpacity>
             </View>
-            
+
           </View>
         </View>
       );
     }
   }
-  fetchDataLoadmore = () =>{
+  fetchDataLoadmore = () => {
     fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyHost.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-          id_user: this.state.id_user,
-          page: this.state.page,
-        })
-      }).then((response) => response.json())
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        id_user: this.state.id_user,
+        page: this.state.page,
+      })
+    }).then((response) => response.json())
       .then((responseJson) => {
         // console.log('res ' + responseJson.length);
         if (responseJson.length > 0) {
-            this.setState({ 
-              myhost: this.state.myhost.concat(responseJson), 
-              loading: false,
-              lastItem: false });
+          this.setState({
+            myhost: this.state.myhost.concat(responseJson),
+            loading: false,
+            lastItem: false
+          });
         } else {
-            this.setState({
-              lastItem: true,
-              loading: false
-            });
-          }
+          this.setState({
+            lastItem: true,
+            loading: false
+          });
+        }
       }).catch((error) => {
         console.error(error);
       });
@@ -453,63 +475,70 @@ class Profile extends React.Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0.0, y: 0.5 }}
-        end={{ x: 1.0, y: 0.5 }}
-        style={{ flex: 1 }} >
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }} >
 
-        <View style={{ flexDirection: 'row',justifyContent:'space-between',backgroundColor: 'rgba(0,0,0,0.1)',}}>
-            <View style={{ justifyContent:'flex-start'}}>
-                <View style={{marginLeft: 50, paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
-                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
-                            Profile
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <View style={{ justifyContent: 'flex-start' }}>
+              <View style={{ marginLeft: 50, paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                  Profile
                         </Text>
-                </View>
+              </View>
             </View>
-            <View style={{ justifyContent:'flex-end'}}>
-                <View style={{ alignSelf:'flex-end',alignItems:'flex-end',marginRight: 20, paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
-                <TouchableOpacity onPress={() => navigate('SettingMode')}>
-                        <MaterialIcons name="settings" size={theme.sizes.font * 2} color={theme.colors.black} style={{alignSelf:'flex-end'}}/>
+            <View style={{ justifyContent: 'flex-end' }}>
+              <View style={{ alignSelf: 'flex-end', alignItems: 'flex-end', marginRight: 20, paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <TouchableOpacity onPress={() => navigate('Notification')}>
+                  <Ionicons name="md-notifications" size={theme.sizes.font * 2} color={theme.colors.black} style={{ alignSelf: 'flex-end', marginRight: 10 }} />
+                  {this.state.notification ?
+                  <Badge  style={{ position: 'absolute',marginBottom: 10,height:theme.sizes.font,alignItems:'center',justifyContent:'center' ,width:theme.sizes.font}}>
+                  </Badge>
+                  :null}
                 </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => navigate('SettingMode')}>
+                  <MaterialIcons name="settings" size={theme.sizes.font * 2} color={theme.colors.black} style={{ alignSelf: 'flex-end' }} />
+                </TouchableOpacity>
+              </View>
             </View>
-        </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.refresh.bind(this)}
-            />
-          }
-          onScroll={(e) => {
-            var windowHeight = Dimensions.get('window').height,
-              height = e.nativeEvent.contentSize.height,
-              offset = e.nativeEvent.contentOffset.y;
-            // console.log(windowHeight+' '+height+' '+offset)
-            if (windowHeight + offset >= height && this.state.lastItem == false) {
-              console.log('End Scroll')
-              this.setState((prevState, props) => ({
-                page: this.state.page + 1,
-                loading: true,
-                lastItem: true
-              }), () => {
-                this.fetchDataLoadmore()
-              })
+          </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.refresh.bind(this)}
+              />
             }
-          }}
-        >
-          {this.renderProfile()}
-          {this.renderHost()}
-          {this.renderFooter()}
-        </ScrollView>
-        <View style={{ flex: 1 }}>
-          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-        </View>
-      </LinearGradient >
-    </SafeAreaView>
+            onScroll={(e) => {
+              var windowHeight = Dimensions.get('window').height,
+                height = e.nativeEvent.contentSize.height,
+                offset = e.nativeEvent.contentOffset.y;
+              // console.log(windowHeight+' '+height+' '+offset)
+              if (windowHeight + offset >= height && this.state.lastItem == false) {
+                console.log('End Scroll')
+                this.setState((prevState, props) => ({
+                  page: this.state.page + 1,
+                  loading: true,
+                  lastItem: true
+                }), () => {
+                  this.fetchDataLoadmore()
+                })
+              }
+            }}
+          >
+            {this.renderProfile()}
+            {this.renderHost()}
+            {this.renderFooter()}
+          </ScrollView>
+          <View style={{ flex: 1 }}>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </View>
+        </LinearGradient >
+      </SafeAreaView>
     )
 
   }

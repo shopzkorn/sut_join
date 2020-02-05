@@ -13,6 +13,7 @@ import AddActivity from './components/Activity/AddActivity';
 import Calendar from './components/Activity/Calender';
 import AllHistoryActivity from './components/Activity/AllHistoryActivity';
 import SearchActivity from './components/Activity/TabsceneSearch';
+import SeemoreTag from './components/Activity/SeemoreTag';
 import ScanSearchPeople from './components/Activity/ScanQrcodeSearchPeople';
 import SelectMap from './components/Map/SelectLocation';
 import CheckTime from './components/Learning/TimeSignin';
@@ -30,6 +31,7 @@ import manage_gpa from './components/Learning/manage_gpa';
 import manage_subject from './components/Learning/manage_subject';
 import add_subject from './components/Learning/add_subject';
 import volunteer from './components/Profile/Volunteer';
+import Notification from './components/Profile/Notification';
 import SplashScreen from './components/Navigation/FirstPage';
 import Editprofile from './components/Profile/Editprofile';
 import CalendarEditPro from './components/Profile/CalendarEditPro';
@@ -57,6 +59,18 @@ const App = createStackNavigator(
     DetailNews,
     SearchActivity: {
       screen: SearchActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SeemoreTag: {
+      screen: SeemoreTag,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Notification: {
+      screen: Notification,
       navigationOptions: {
         header: null,
       },

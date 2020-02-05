@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
-  ScrollView
+  ScrollView,
+  RefreshControl
 } from "react-native";
 import {
   Content,
@@ -22,6 +23,7 @@ import {
   Button,
 } from "native-base";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import LinearGradient from 'react-native-linear-gradient';
 import * as theme from '../../theme';
@@ -36,12 +38,20 @@ class volunteer extends Component {
   state = {
     user_id: '',
     id_user: '',
-
+    refreshing: false,
     user_detail: [],
-
+    loadingVisible:true,
     id_subject_del: '',
     user_volunteer: '',
 
+  }
+  refresh() {
+    this.setState({loadingVisible:true, refreshing: true });
+    return new Promise((resolve) => {
+      this.GetUser();
+      this.GetVolunteer()
+      setTimeout(() => { resolve() }, 2000)
+    });
   }
   handleBackPress = () => {
     this.props.navigation.goBack(); // works best when the goBack is async
@@ -63,7 +73,10 @@ class volunteer extends Component {
       this.GetVolunteer();
     });
   }
-
+  fetchData() {
+    this.GetUser();
+    this.GetVolunteer();
+  }
   GetUser() {
     const { navigate } = this.props.navigation;
     fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/getProfile.php', {
@@ -84,7 +97,8 @@ class volunteer extends Component {
         responseJson.map(user =>
           this.setState({
             user_volunteer: user.volunteer,
-            loadingVisible: false
+            loadingVisible: false,
+            refreshing: false
           })
         );
         console.log(this.state.user_volunteer);
@@ -185,10 +199,17 @@ class volunteer extends Component {
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
+              contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.refresh.bind(this)}
+                />
+              }>
               {this.renderFollow()}
             </ScrollView>
           </View>
+          <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
 
         </LinearGradient>
       </SafeAreaView>

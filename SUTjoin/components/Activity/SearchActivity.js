@@ -510,10 +510,10 @@ export default class ListViewExample extends Component {
             <View style={{ marginHorizontal: 8 }}>
                 <TouchableOpacity style={{ paddingVertical: 8, flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => this.FilterTag(item.activity_tag)}>
                     <View style={{ marginLeft: 8 }}>
-                        <Text style={{ fontSize: theme.sizes.font * 1 }}>{item.activity_tag}</Text>
+                        <Text style={{ fontSize: theme.sizes.font * 1, color: 'white', fontWeight: 'bold' }}>{item.activity_tag}</Text>
                     </View>
                     <View style={{ marginRight: 8 }}>
-                        <FontAwesome name="chevron-down" color='rgba(52, 52, 52, 0.8)' size={theme.sizes.font * 1} />
+                        <FontAwesome name="chevron-right" color='rgba(255, 255, 255, 0.8)' size={theme.sizes.font * 1} />
                     </View>
                 </TouchableOpacity>
                 <View style={{ borderBottomColor: 'rgba(52, 52, 52, 0.8)', borderBottomWidth: 3, }} />
@@ -661,11 +661,18 @@ export default class ListViewExample extends Component {
                             numColumns={1}
                             key={(this.state.horizontal ? 'h' : 'v')}
                             snapToAlignment="center"
-                            style={[styles.shadow, { overflow: 'visible', marginTop: 20 }]}
+                            style={[styles.shadow, { overflow: 'visible', marginTop: 10 }]}
                             data={this.state.trending}
                             keyExtractor={(item, index) => `${item.id}`}
                             renderItem={({ item, index }) => this.renderTrends(item, index)}
                         />
+                    </View>
+                    <View style={{ marginHorizontal: 8 }}>
+                        <TouchableOpacity style={{ paddingVertical: 8, flexDirection: 'row', justifyContent: 'space-between' }} onPress={()=>{this.props.navigation.navigate('SeemoreTag',{FilterTag : this.FilterTag})}}>
+                            <View style={{ marginLeft: 8 }}>
+                                <Text style={{ fontSize: theme.sizes.font * 1, color: '#fe53bb', fontWeight: 'bold' }}>See more</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
             )
@@ -886,7 +893,7 @@ export default class ListViewExample extends Component {
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                 console.log('res ' + responseJson);
+                console.log('res ' + responseJson);
                 if (responseJson.length > 0) {
                     this.setState({ lastItem: false })
                     if (status == 2) {
