@@ -36,6 +36,7 @@ class Profile extends React.Component {
         page: 1,
         loading: false,
         lastItem: true,
+        datalen:0
     }
 
     processFollow = (item) => {
@@ -89,7 +90,8 @@ class Profile extends React.Component {
                             user_detail: this.state.user_detail.concat(responseJson),
                             loadingVisible: false,
                             lastItem: false,
-                            loading: false 
+                            loading: false,
+                            datalen:responseJson.length
                         })
                     }
                     else {
@@ -97,7 +99,8 @@ class Profile extends React.Component {
                             user_detail: responseJson,
                             loadingVisible: false,
                             lastItem: false,
-                            loading: false 
+                            loading: false,
+                            datalen:responseJson.length
                         })
                     }
                 } else {
@@ -105,6 +108,7 @@ class Profile extends React.Component {
                         lastItem: true,
                         loading: false,
                         loadingVisible: false,
+                        datalen:0
                       });
                 }
             })
@@ -112,6 +116,7 @@ class Profile extends React.Component {
 
     renderFollow = () => {
         if (!this.state.loadingVisible) {
+            if(this.state.datalen != 0){
             return (
                 <FlatList
                     Vertical
@@ -125,6 +130,15 @@ class Profile extends React.Component {
                     renderItem={({ item, index }) => this.renderDestination(item, index)}
                 />
             );
+        }
+        else{
+            return (
+                <View style={{ marginTop:10, justifyContent: 'center',alignItems:'center' }}>
+                   <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 }} />
+                   <Text style={{marginTop:10}}>Empty list</Text>
+                </View>
+            )  
+        }
         }
     }
 
@@ -235,7 +249,7 @@ class Profile extends React.Component {
         }
     }
     renderDestination = item => {
-
+        
         return (
             <View style={[styles.row, { marginTop: 10, justifyContent: 'space-between' }]}>
                 {this.renderList(item)}
@@ -245,6 +259,7 @@ class Profile extends React.Component {
 
             </View>
         )
+        
     }
     renderFooter = () => {
         if (!this.state.loading) return null;

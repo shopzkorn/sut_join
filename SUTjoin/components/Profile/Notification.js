@@ -108,7 +108,7 @@ export default class ListViewExample extends Component {
                     alignItems: 'center',
                 }}>
                     <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 }} />
-                    <Text style={{ marginTop: 10 }}>No reult</Text>
+                    <Text style={{ marginTop: 10 }}>No result</Text>
 
                 </View>
             )

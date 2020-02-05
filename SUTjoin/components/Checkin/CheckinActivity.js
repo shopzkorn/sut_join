@@ -36,6 +36,7 @@ class ScanScreen extends Component {
     check : 0
   }
   onSuccessButton = () => {
+    if(this.state.keyword !=''){
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear(); //Current Year
@@ -49,6 +50,9 @@ class ScanScreen extends Component {
       console.log(this.state.id_activity + this.state.date),
         this.checked(2)
     })
+  }else{
+    alert('กรุณาใส่code check in');
+  }
   }
   onSuccessScan = (e) => {
     if(this.state.check == 0){

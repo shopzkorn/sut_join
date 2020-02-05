@@ -35,6 +35,7 @@ export default class ListViewExample extends Component {
             trending: [],
             data: [],
             page: 1,
+            statusSreach: 0,
             dataSource: '',
             search: 0,
             visible: false,
@@ -232,7 +233,8 @@ export default class ListViewExample extends Component {
 
     FilterTag = (text) => {
         this.setState((prevState, props) => ({
-            dataSource: text
+            dataSource: text,
+            statusSreach: 0,
         }), () => {
             console.log('data is ' + this.state.dataSource)
             this.fetchData(1)
@@ -841,6 +843,7 @@ export default class ListViewExample extends Component {
         console.log(this.state.dataSource);
         this.setState({
             loadingVisible: true,
+            statusSreach: 0,
         });
         this.fetchData(1);
 
@@ -899,6 +902,7 @@ export default class ListViewExample extends Component {
                     if (status == 2) {
                         this.setState({
                             search: 1,
+                            statusSreach: 1,
                             data: this.state.data.concat(responseJson),
                             loadingVisible: false,
                             loading: false,
@@ -907,6 +911,7 @@ export default class ListViewExample extends Component {
                     } else {
                         this.setState({
                             search: 1,
+                            statusSreach: 1,
                             data: responseJson,
                             loadingVisible: false,
                             horizontal: true,
@@ -914,10 +919,12 @@ export default class ListViewExample extends Component {
                         });
                     }
                 } else {
-                    if (this.state.search == 1) {
+                    if (this.state.search == 1 && this.state.statusSreach == 1) {
                         this.setState({
                             lastItem: true,
-                            loading: false
+                            loading: false,
+                            loadingVisible: false,
+                            statusSreach: 0,
                         });
                     }
                     else {
@@ -925,7 +932,8 @@ export default class ListViewExample extends Component {
                             search: 2,
                             loadingVisible: false,
                             lastItem: true,
-                            loading: false
+                            loading: false,
+                            statusSreach: 0,
                         });
                     }
                 }

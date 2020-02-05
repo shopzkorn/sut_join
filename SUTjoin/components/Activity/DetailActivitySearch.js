@@ -289,7 +289,7 @@ class Article extends Component {
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold'
-              }}>OR OTP</Text>
+              }}>or code check in</Text>
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold'
@@ -599,7 +599,11 @@ class Article extends Component {
       });
   }
 
-  renderJoinButton = (id_host, number_people, inviter, id) => {
+  renderJoinButton = (id_host, number_people, inviter, id,date) => {
+    var curdate = new Date(); //Current Date
+    let current = moment(curdate).format('YYYY/MM/DD');
+    if(current <= date){
+      console.log(current+date)
     console.log("user is " + this.state.id_user.split('"')[1]);
 
     console.log("id host is " + id_host);
@@ -709,6 +713,7 @@ class Article extends Component {
         </TouchableOpacity>
       }
     }
+    }
   }
   renderSeeallJoiner = () => {
     if (this.state.joiner.length > this.state.lastCount) {
@@ -750,6 +755,7 @@ class Article extends Component {
           )
         }
       }
+      
     }
   }
   renderJoiner = () => {
@@ -977,6 +983,7 @@ class Article extends Component {
     // console.log(article);
 
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
+    const dates2 = moment(article.date_start).format('YYYY/MM/DD');
     if (!this.state.loading) {
       return (
 
@@ -1133,7 +1140,7 @@ class Article extends Component {
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-              {this.renderJoinButton(article.id_host, article.number_people, article.inviter, article.id)}
+              {this.renderJoinButton(article.id_host, article.number_people, article.inviter, article.id,dates2)}
 
             </View>
 
