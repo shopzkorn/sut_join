@@ -168,9 +168,11 @@ class Article extends Component {
     id_user: '',
     qrcode: '',
     visibleDialog: false,
+    visibleDialogjoin: false,
+    visibleDialogCancelJoin: false,
     lastCount: 6,
-    activity:[],
-    loading:true
+    activity: [],
+    loading: true
   }
 
   scrollX = new Animated.Value(0);
@@ -193,25 +195,7 @@ class Article extends Component {
   componentWillUnmount() {
     this.backHandler.remove()
   }
-  handleOnNavigateBack = () => {
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    const { navigation } = this.props;
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    console.log(date + '/' + month + '/' + year);
-    const article = navigation.getParam('article');
-    AsyncStorage.multiGet(['user_id']).then((data) => {
-      let user_id = data[0][1];
-      this.setState({
-        id_user: user_id,
-        qrcode: "IdActivity_" + article + '_' + date + '/' + month + '/' + year,
-      });
-      this.setState({ joiner: [] })
-      this.fetchData();
-      console.log(this.state.qrcode);
-    });
-  }
+
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     const { navigation } = this.props;
@@ -236,6 +220,14 @@ class Article extends Component {
     if (this.state.visibleDialog) {
       this.setState({
         visibleDialog: false
+      })
+    } else if (this.state.visibleDialogJoin) {
+      this.setState({
+        visibleDialogJoin: false
+      })
+    } else if (this.state.visibleDialogCancelJoin) {
+      this.setState({
+        visibleDialogCancelJoin: false
       })
     }
     else {
@@ -301,19 +293,101 @@ class Article extends Component {
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold'
-              }}>{item.id}-{item.random_code}</Text>
+              }}>{item.id}-{item.ramdom_code}</Text>
             </View>
           </DialogContent>
           <DialogFooter>
-        <DialogButton
-          text="CANCEL"
-          onPress={() => { this.setState({ visibleDialog: false })}}
-        />
-        <DialogButton
-          text="CHECK"
-          onPress={() => { this.updateStatusJoin()}}
-        />
-      </DialogFooter>
+            <DialogButton
+              text="CANCEL"
+              onPress={() => { this.setState({ visibleDialog: false }) }}
+            />
+            <DialogButton
+              text="CHECK"
+              onPress={() => { this.updateStatusJoin() }}
+            />
+          </DialogFooter>
+        </Dialog>
+        <Dialog
+          visible={this.state.visibleDialogJoin}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{ justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialogJoin: false });
+          }}
+          dialogTitle={<DialogTitle title="Send your request" />}
+          width='100%'
+        >
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
+                borderColor: '#fe53bb',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: width / 2,
+                height: width / 2,
+                backgroundColor: 'transparent',
+                borderRadius: width / 2 / 2,
+                marginBottom: -90,
+              }} onPress={this.join.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.3,
+                  height: width / 2.3,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.3 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 12, }}> Confirm </Text>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Join </Text>
+                </View>
+
+              </TouchableOpacity>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          visible={this.state.visibleDialogCancelJoin}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{ justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialogCancelJoin: false });
+          }}
+          dialogTitle={<DialogTitle title="Send your request" />}
+          width='100%'
+        >
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
+                borderColor: '#fe53bb',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: width / 2,
+                height: width / 2,
+                backgroundColor: 'transparent',
+                borderRadius: width / 2 / 2,
+                marginBottom: -90,
+              }} onPress={this.canceljoin.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.3,
+                  height: width / 2.3,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.3 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 12 }}> Cancel </Text>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Join </Text>
+                </View>
+
+              </TouchableOpacity>
+            </View>
+          </DialogContent>
         </Dialog>
       </View>
 
@@ -323,7 +397,7 @@ class Article extends Component {
 
   fetchData = async () => {
     this.setState({
-      loading:true
+      loading: true
     })
     const { navigation } = this.props;
     const article = navigation.getParam('article');
@@ -343,7 +417,6 @@ class Article extends Component {
           console.log("res is" + responseJson);
           this.setState({ join: true });
           console.log("it is " + this.state.join);
-
         }
         else{
           this.setState({ join: false });
@@ -375,7 +448,7 @@ class Article extends Component {
       })
     });
     const activity = await activity_detail.json();
-    this.setState({ activity: activity[0] ,loading: false});
+    this.setState({ activity: activity[0], loading: false });
     console.log(this.state.activity);
 
 
@@ -383,6 +456,7 @@ class Article extends Component {
 
 
   canceljoin() {
+    this.setState({ visibleDialogCancelJoin: false })
     console.log(0);
     const { navigation } = this.props;
     const article = this.state.activity;
@@ -400,9 +474,16 @@ class Article extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-        
+
         // Showing response message coming from server after inserting records.
-        alert(responseJson);
+        Alert.alert(
+          'Success',
+          'Cancel join this activity',
+          [
+            { text: 'OK', onPress: () => this.fetchData() },
+          ],
+          { cancelable: false },
+        );
 
       }).catch((error) => {
         console.error(error);
@@ -411,73 +492,81 @@ class Article extends Component {
 
   join() {
 
+    this.setState({ visibleDialogJoin: false })
     console.log(this.state.id_user);
     const { navigation } = this.props;
     const article = this.state.activity;
     const age = navigation.getParam('age_user');
     const gender = navigation.getParam('gender_user');
-    console.log('age is '+age)
-    console.log('gender is '+gender)
+    console.log('age is ' + age)
+    console.log('gender is ' + gender)
     if (age >= article.min_age && age <= article.max_age) {
-      if(article.gender == 3){
-      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-          status: "add",
-          id: article.id,
-          inviter: article.inviter,
-          id_user: this.state.id_user
-        })
-      }).then((response) => response.text())
-        .then((responseJson) => {
+      if (article.gender == 3) {
+        fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+          method: 'post',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify({
+            status: "add",
+            id: article.id,
+            inviter: article.inviter,
+            id_user: this.state.id_user
+          })
+        }).then((response) => response.text())
+          .then((responseJson) => {
 
-          // Showing response message coming from server after inserting records.
-          Alert.alert(
-            'Success',
-            'Confirm join this activity',
-            [
-              { text: 'OK', onPress: () => this.fetchData() },
-            ],
-            { cancelable: false },
-          );
+            // Showing response message coming from server after inserting records.
+            Alert.alert(
+              'Success',
+              'Confirm join this activity',
+              [
+                { text: 'OK', onPress: () => this.fetchData() },
+              ],
+              { cancelable: false },
+            );
 
-        }).catch((error) => {
-          console.error(error);
-        });
-      }else{
-        if(article.gender == gender){
+          }).catch((error) => {
+            console.error(error);
+          });
+      } else {
+        if (article.gender == gender) {
           fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
-        method: 'post',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-          status: "add",
-          id: article.id,
-          inviter: article.inviter,
-          id_user: this.state.id_user
-        })
-      }).then((response) => response.text())
-        .then((responseJson) => {
+            method: 'post',
+            headers: new Headers({
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+              status: "add",
+              id: article.id,
+              inviter: article.inviter,
+              id_user: this.state.id_user
+            })
+          }).then((response) => response.text())
+            .then((responseJson) => {
 
-          // Showing response message coming from server after inserting records.
-          alert(responseJson);
+              // Showing response message coming from server after inserting records.
+              Alert.alert(
+                'Success',
+                'Confirm join this activity',
+                [
+                  { text: 'OK', onPress: () => this.fetchData() },
+                ],
+                { cancelable: false },
+              );
 
-        }).catch((error) => {
-          console.error(error);
-        });
+            }).catch((error) => {
+              console.error(error);
+            });
         }
         else {
-          alert("Your property is unqualified");
+          alert("คุณสมบัติไม่ตรงตามที่กำหนดไว้");
         }
       }
     } else {
-      alert("Your property is unqualified");
+      alert("คุณสมบัติไม่ตรงตามที่กำหนดไว้");
     }
 
   }
@@ -501,7 +590,7 @@ class Article extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-        
+
         // Showing response message coming from server after inserting records.
         alert(responseJson);
 
@@ -553,7 +642,11 @@ class Article extends Component {
           backgroundColor: 'red',
           borderRadius: 100,
         }}
-        onPress={this.canceljoin.bind(this)}
+        onPress={() => {
+          this.setState({
+            visibleDialogCancelJoin: true
+          })
+        }}
       >
         <FontAwesome5
           name="user-times"
@@ -601,7 +694,11 @@ class Article extends Component {
             backgroundColor: '#ffc9de',
             borderRadius: 100,
           }}
-          onPress={this.join.bind(this)}
+          onPress={() => {
+            this.setState({
+              visibleDialogJoin: true
+            })
+          }}
           disabled={false}
         >
           <FontAwesome5
@@ -755,7 +852,7 @@ class Article extends Component {
               size={theme.sizes.font * 2}
               color={theme.colors.black}
             />
-    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer  {volunteer_hour} hour</Text>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer  {volunteer_hour} hour</Text>
           </Text>
         </View>
       )
@@ -853,12 +950,12 @@ class Article extends Component {
   }
 
   renderTag = (tag) =>{
-    if(tag.tag){
+    if(tag){
       return(
         <TouchableOpacity 
         activeOpacity={0.5}
         onPress={() => {
-          this.props.navigation.navigate('SearchActivity', { tag:tag })
+          this.props.navigation.navigate('SearchActivity', { tag: tag })
         }}>
         <Text style={{
           color: "#fe53bb",
@@ -881,181 +978,181 @@ class Article extends Component {
     // console.log(article);
 
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
-    if(!this.state.loading){
-    return (
+    if (!this.state.loading) {
+      return (
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
-      >
-        <View style={styles.flex}>
-          <View style={[styles.flex]}>
-            <Image
-              source={{ uri: photoAc }}
-              resizeMode='cover'
-              style={{ width, height: width * 0.7 }}
-            />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+        >
+          <View style={styles.flex}>
+            <View style={[styles.flex]}>
+              <Image
+                source={{ uri: photoAc }}
+                resizeMode='cover'
+                style={{ width, height: width * 0.7 }}
+              />
 
-          </View>
-          <View style={[styles.flex, styles.content]}>
-            <View style={[styles.flex, styles.contentHeader]}>
-              <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                if (article.user_id != this.state.id_user.split('"')[1]) {
-                    this.props.navigation.state.params.onNavigateBack(item.user_id);
-                  navigation.navigate('userProfile', { User: article.id_host  })
-                } else {
-                  navigation.navigate('Profile')
-                }
-              }} style={{
-                position: 'absolute',
-                top: -theme.sizes.margin,
-                right: theme.sizes.margin,
-              }}>
-                <Image style={[styles.shadow], {
-                  width: theme.sizes.padding * 2,
-                  height: theme.sizes.padding * 2,
-                  borderRadius: theme.sizes.padding,
-                  backgroundColor: 'white'
-                }} source={{ uri: photoUser }} />
-              </TouchableOpacity>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
+            </View>
+            <View style={[styles.flex, styles.content]}>
+              <View style={[styles.flex, styles.contentHeader]}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                  if (article.user_id != this.state.id_user.split('"')[1]) {
+                    this.props.navigation.state.params.onNavigateBack(article.user_id);
+                    navigation.navigate('userProfile', { User: article.user_id })
+                  } else {
+                    navigation.navigate('Profile')
+                  }
+                }} style={{
+                  position: 'absolute',
+                  top: -theme.sizes.margin,
+                  right: theme.sizes.margin,
+                }}>
+                  <Image style={[styles.shadow], {
+                    width: theme.sizes.padding * 2,
+                    height: theme.sizes.padding * 2,
+                    borderRadius: theme.sizes.padding,
+                    backgroundColor: 'white'
+                  }} source={{ uri: photoUser }} />
+                </TouchableOpacity>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.title}>{article.title}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: article.id_host })}>
+                      <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }} >{article.name} {article.surname}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={[
+                  styles.row,
+                  { alignItems: 'center', marginVertical: theme.sizes.margin / 2 }
+                ]}>
+                  <Text >
+                    <MaterialCommunityIcons
+                      name="map-marker-outline"
+                      size={theme.sizes.font}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
+                  </Text>
+
+                </View>
+                <Text style={{ color: theme.colors.black, fontWeight: 'bold', marginBottom: 10 }}> {article.location_address}</Text>
+                <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat, article.location_long)}>
+                  <View>
+                    <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
+                  </View>
+                </TouchableOpacity>
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <FontAwesome5
+                      name="users"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
+                  </Text>
+                </View>
+                {this.renderJoiner()}
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.title}>{article.title}</Text>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
                 </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
                 <View style={{ flex: 1 }}>
-                  <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                      this.props.navigation.state.params.onNavigateBack(item.user_id);
-                      navigation.navigate('userProfile', { User: article.id_host })}}>
-                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }} >{article.name} {article.surname}</Text>
-                  </TouchableOpacity>
+                  <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
+                    {article.description}
+                  </Text>
                 </View>
-              </View>
-              <View style={[
-                styles.row,
-                { alignItems: 'center', marginVertical: theme.sizes.margin / 2 }
-              ]}>
-                <Text >
-                  <MaterialCommunityIcons
-                    name="map-marker-outline"
-                    size={theme.sizes.font}
-                    color={theme.colors.black}
-                  />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.location_name}</Text>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <Foundation
+                      name="calendar"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                {this.renderTpye(article.type)}
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <FontAwesome
+                      name="user"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <Foundation
+                      name="male-female"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    {this.renderGender(article.gender)}
+
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event tag</Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
                 </Text>
 
-              </View>
-              <Text style={{ color: theme.colors.black, fontWeight: 'bold', marginBottom: 10 }}> {article.location_address}</Text>
-              <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat, article.location_long)}>
-                <View>
-                  <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
-                </View>
-              </TouchableOpacity>
-              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={[
-                styles.row
-              ]}>
-                <Text >
-                  <FontAwesome5
-                    name="users"
-                    size={theme.sizes.font * 2}
-                    color={theme.colors.black}
-                  />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}> Joiners {article.inviter}/{article.number_people}</Text>
-                </Text>
-              </View>
-              {this.renderJoiner()}
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
-              </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
-                  {article.description}
-                </Text>
-              </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              <View style={[
-                styles.row
-              ]}>
-                <Text >
-                  <Foundation
-                    name="calendar"
-                    size={theme.sizes.font * 2}
-                    color={theme.colors.black}
-                  />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {dates}</Text>
-                </Text>
-              </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              {this.renderTpye(article.type,article.volunteer_hour)}
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              <View style={[
-                styles.row
-              ]}>
-                <Text >
-                  <FontAwesome
-                    name="user"
-                    size={theme.sizes.font * 2}
-                    color={theme.colors.black}
-                  />
-                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.min_age} - {article.max_age} years old</Text>
-                </Text>
-              </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              <View style={[
-                styles.row
-              ]}>
-                <Text >
-                  <Foundation
-                    name="male-female"
-                    size={theme.sizes.font * 2}
-                    color={theme.colors.black}
-                  />
-                  {this.renderGender(article.gender)}
+                {this.renderTag(article.tag,article.volunteer_hour)}
 
-                </Text>
               </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event tag</Text>
-              </View>
-              <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
-              </Text>
-              {this.renderTag(article)}
             </View>
           </View>
-        </View>
-        <View style={{ flex: 1 }}>
-          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            {this.renderJoinButton(article.id_host, article.number_people, article.inviter, article.id)}
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              {this.renderJoinButton(article.id_host, article.number_people, article.inviter, article.id)}
+
+            </View>
 
           </View>
+          {this.DialogGenQrCode(article)}
 
+        </ScrollView>
+
+      )
+    }
+    else {
+      return (
+        <View >
+          <Spinner visible={this.state.loading} textContent="Loading..." textStyle={{ color: '#FFF' }} />
         </View>
-        {this.DialogGenQrCode(article)}
-        
-      </ScrollView>
-
-    )
-            }
-            else{
-              return(
-                <View >
-            <Spinner visible={this.state.loading} textContent="Loading..." textStyle={{ color: '#FFF' }} />
-          </View>
-              )
-            }
+      )
+    }
   }
 }
 

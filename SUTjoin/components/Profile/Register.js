@@ -23,6 +23,7 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
@@ -39,14 +40,14 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Name: '', Surname: '', Username: '', Password: '', Email: '', Phone: '', Gender: '1', Status: '1', Birthday: '',Student_ID:'',
+      Name: '', Surname: '', Username: '', Password: '', Email: '', Phone: '', Gender: '1', Status: '1', Birthday: '', Student_ID: '',
       sliderOneChanging: false,
       sliderOneValue: [1],
       imageSource: null,
       imageName: null,
       imagePath: null,
-      visibleStatus : false,
-      visibleGender : false,
+      visibleStatus: false,
+      visibleGender: false,
       radio_Gender: [
         { label: 'Male', value: 0 },
         { label: 'Female', value: 1 },
@@ -57,10 +58,11 @@ class Register extends Component {
         { label: 'Personel', value: 2 },
         { label: 'General Public', value: 3 },
       ],
-      valueStatus:0,
-      valueGender:0,
+      valueStatus: 0,
+      valueGender: 0,
       Textstatus: 'Student',
       Textgender: 'Male',
+      loadingVisible : false
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -76,7 +78,7 @@ class Register extends Component {
               <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
             </TouchableOpacity>
             <View style={{ alignSelf: 'center', paddingHorizontal: width / 8 }}>
-              <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' }}>
+              <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff' }}>
                 Create new account
           </Text>
             </View>
@@ -107,7 +109,7 @@ class Register extends Component {
         Textstatus: 'General Public'
       })
     }
-    
+
     this.setState((prevState, props) => ({
       valueStatus: value,
       visibleStatus: false,
@@ -200,11 +202,11 @@ class Register extends Component {
           <TextInput
             placeholder='Student id'
             value={this.state.Student_ID}
-            onChangeText={Student_ID => this.setState({ Student_ID : Student_ID })}
+            onChangeText={Student_ID => this.setState({ Student_ID: Student_ID })}
             style={styles.button}
             multiline={true}
             underlineColorAndroid="transparent"
-            
+
           />
         </View>
       )
@@ -248,23 +250,24 @@ class Register extends Component {
   }
 
   handleBackPress = () => {
-    if(this.state.visibleGender){
+    if (this.state.visibleGender) {
       this.setState({
-        visibleGender : false
+        visibleGender: false
       })
     }
-    else if(this.state.visibleStatus){
+    else if (this.state.visibleStatus) {
       this.setState({
-        visibleStatus : false
+        visibleStatus: false
       })
     }
-    else{
+    else {
       this.props.navigation.goBack(); // works best when the goBack is async
     }
     return true;
   }
   register() {
-
+    if(this.state.Name != '' && this.state.Surname != '' && this.state.Username != ''&& this.state.Password != '' && this.state.Birthday != ''){
+    this.setState({ loadingVisible : true})
     RNFetchBlob.fetch('POST', 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
       Authorization: "Bearer access-token",
       otherHeader: "foo",
@@ -296,24 +299,29 @@ class Register extends Component {
         gender: this.state.Gender,
         status: this.state.Status,
         profile: this.state.imageName,
-        birthday : this.state.Birthday,
-        student_id : this.state.Student_ID
+        birthday: this.state.Birthday,
+        student_id: this.state.Student_ID
       })
     }).then((response) => response.text())
       .then((responseJson) => {
+        this.setState({ loadingVisible : false})
+
         // Showing response message coming from server after inserting records.
         Alert.alert(
           'Sucess',
           responseJson,
           [
-            {text: 'OK', onPress: () => this.props.navigation.goBack()},
+            { text: 'OK', onPress: () => this.props.navigation.navigate('Interest',{username:this.state.Username , password : this.state.Password}) },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
       }).catch((error) => {
         console.error(error);
       });
-
+    }
+    else{
+      alert('กรุณากรอกข้อมูลสำคัญให้ครบถ้วน')
+    }
   }
 
   sliderOneValuesChangeStart = () => {
@@ -351,155 +359,149 @@ class Register extends Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0.0, y: 0.5 }}
-        end={{ x: 1.0, y: 0.5 }}
-        style={{ flex: 1 }}>
+        <LinearGradient
+          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0.0, y: 0.5 }}
+          end={{ x: 1.0, y: 0.5 }}
+          style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
             <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
               <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
             </TouchableOpacity>
             <View style={{ alignSelf: 'center', paddingHorizontal: width / 8 }}>
-              <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' }}>
+              <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff' }}>
                 Create new account
           </Text>
             </View>
           </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding ,flexGrow: 1, justifyContent: 'space-between',}}
-          style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
-        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: theme.sizes.padding, flexGrow: 1, justifyContent: 'space-between', }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
+          >
+            <View style={{ paddingHorizontal: width / 12 }}>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Name'
-              placeholderTextColor='#808080'
-              value={this.state.Name}
-              onChangeText={Name => this.setState({ Name })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Surname'
-              placeholderTextColor='#808080'
-              value={this.state.Surname}
-              onChangeText={Surname => this.setState({ Surname })}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Username'
-              placeholderTextColor='#808080'
-              value={this.state.Username}
-              onChangeText={Username => this.setState({ Username })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Password'
-              placeholderTextColor='#808080'
-              secureTextEntry={true}
-              value={this.state.Password}
-              onChangeText={Password => this.setState({ Password })}
-            />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Email'
-              placeholderTextColor='#808080'
-              value={this.state.Email}
-              onChangeText={Email => this.setState({ Email })}
-            />
-            <TextInput
-              style={styles.inputbox}
-              placeholder='Phone'
-              placeholderTextColor='#808080'
-              value={this.state.Phone}
-              keyboardType={'number-pad'}
-              onChangeText={Phone => this.setState({ Phone })}
-            />
-          </View>
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Name'
+                placeholderTextColor='#808080'
+                value={this.state.Name}
+                onChangeText={Name => this.setState({ Name })}
+              />
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Surname'
+                placeholderTextColor='#808080'
+                value={this.state.Surname}
+                onChangeText={Surname => this.setState({ Surname })}
+              />
 
-          <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical:20 }} />
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Username'
+                placeholderTextColor='#808080'
+                value={this.state.Username}
+                onChangeText={Username => this.setState({ Username })}
+              />
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Password'
+                placeholderTextColor='#808080'
+                secureTextEntry={true}
+                value={this.state.Password}
+                onChangeText={Password => this.setState({ Password })}
+              />
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Email'
+                placeholderTextColor='#808080'
+                value={this.state.Email}
+                onChangeText={Email => this.setState({ Email })}
+              />
+              <TextInput
+                style={styles.inputbox}
+                placeholder='Phone'
+                placeholderTextColor='#808080'
+                value={this.state.Phone}
+                keyboardType={'number-pad'}
+                onChangeText={Phone => this.setState({ Phone })}
+              />
+            </View>
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleStatus: true })}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <Feather name="user" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Status</Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textstatus} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+            {this.statusCheck()}
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.props.navigation.navigate('Calendar', { onNavigateBack: this.setDate })}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <FontAwesome name="birthday-cake" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Birthday</Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Birthday} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleStatus: true })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <Feather name="user" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Status</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textstatus} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-          {this.statusCheck()}
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.props.navigation.navigate('Calendar', { onNavigateBack: this.setDate })}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <FontAwesome name="birthday-cake" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Birthday</Text>
-            </View>
-            <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Birthday} </Text>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
-            <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-              <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add photo</Text>
-            </View>
-            <View style={{ marginRight: 20 }}>
-              <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-            </View>
-          </TouchableOpacity>
-          {this.renderPhoto()}
-          <View style={{ alignItems: 'center', justifyContent:'flex-end' ,marginTop:10}}>
-            <TouchableOpacity activeOpacity={0.7} style={{
-              borderWidth: 6,
-              borderColor: '#fe53bb',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: width / 2.5,
-              height: width / 2.5,
-              backgroundColor: 'transparent',
-              borderRadius: width / 2.5 / 2,
-              marginBottom: -100,
-              
-            }} onPress={this.register.bind(this)}>
-              <View style={{
-                borderWidth: 2,
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
+              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add photo</Text>
+              </View>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+            {this.renderPhoto()}
+            <View style={{ alignItems: 'center', justifyContent: 'flex-end', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
                 borderColor: '#fe53bb',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: width / 2.8,
-                height: width / 2.8,
+                width: width / 2.5,
+                height: width / 2.5,
                 backgroundColor: 'transparent',
-                borderRadius: width / 2.8 / 2,
-              }}>
-                <Text style={{ color: '#fe53bb', fontSize: width / 15, marginBottom: 40 }}> Register </Text>
-              </View>
+                borderRadius: width / 2.5 / 2,
+                marginBottom: -100,
 
-            </TouchableOpacity>
-            {this.DialogFilter()}
-          </View>
-         
-        </ScrollView>
-      </LinearGradient>
+              }} onPress={this.register.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.8,
+                  height: width / 2.8,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.8 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 15, marginBottom: 40 }}> Register </Text>
+                </View>
+
+              </TouchableOpacity>
+              {this.DialogFilter()}
+            </View>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+          </ScrollView>
+        </LinearGradient>
       </SafeAreaView>
     );
   }
@@ -513,11 +515,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   inputbox: {
-    fontFamily: 'SukhumvitSet-Text',
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
-    width: width / 2,
+    width: width / 1.2,
     paddingLeft: 10,
+    color: 'white',
+    height: height / 15,
+    marginBottom:10
   },
   textTitle: {
     fontSize: 40,

@@ -293,7 +293,7 @@ class Article extends Component {
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold'
-              }}>{item.id}-{item.random_code}</Text>
+              }}>{item.id}-{item.ramdom_code}</Text>
             </View>
           </DialogContent>
           <DialogFooter>
@@ -314,7 +314,7 @@ class Article extends Component {
           onTouchOutside={() => {
             this.setState({ visibleDialogJoin: false });
           }}
-          dialogTitle={<DialogTitle title="Send ypur request" />}
+          dialogTitle={<DialogTitle title="Send your request" />}
           width='100%'
         >
           <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
@@ -355,7 +355,7 @@ class Article extends Component {
           onTouchOutside={() => {
             this.setState({ visibleDialogCancelJoin: false });
           }}
-          dialogTitle={<DialogTitle title="Send ypur request" />}
+          dialogTitle={<DialogTitle title="Send your request" />}
           width='100%'
         >
           <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
@@ -562,11 +562,11 @@ class Article extends Component {
             });
         }
         else {
-          alert("Your property is unqualified");
+          alert("คุณสมบัติไม่ตรงตามที่กำหนดไว้");
         }
       }
     } else {
-      alert("Your property is unqualified");
+      alert("คุณสมบัติไม่ตรงตามที่กำหนดไว้");
     }
 
   }

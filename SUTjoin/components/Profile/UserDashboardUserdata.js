@@ -289,9 +289,11 @@ class UserDashboard_user__data extends React.Component {
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}
               >
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:30}}>No data</Text>
-                </View>
+                 <View style={{justifyContent:'center',alignItems:'center',marginTop: 10, }}>
+          <Image source={require('../../asset/image/no_timeline.jpg')}  style={{width : width / 2, height: width / 2 ,borderRadius: width / 4}}  />
+          <Text style={{ marginTop: 10 }}>Let join someone </Text>
+            <Text style={{ marginTop: 10 }}>to start your dashboard.</Text>
+        </View>
               </LinearGradient>
           )
           }

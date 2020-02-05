@@ -267,8 +267,10 @@ class Articles extends Component {
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>PARTICIPATED</Text>
             
           </View>
-          <View style={[styles.flex]}>
-            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO PARTICIPATED</Text>
+          <View style={{justifyContent:'center',alignItems:'center',marginTop:10}}>
+          <Image source={require('../../asset/image/no_timeline.jpg')}  style={{width : width / 2.5, height: width / 2.5 ,borderRadius: width / 5}}  />
+          <Text style={{ marginTop:10 }}>Let's join someone</Text>
+          <Text style={{ marginTop:10 }}>to start your participated events.</Text>
           </View>
         </View>
       )
@@ -381,8 +383,10 @@ class Articles extends Component {
           >
             <Text style={{ fontSize: theme.sizes.font * 1.4 }}>UPCOMING</Text>
           </View>
-          <View style={[styles.flex]}>
-            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 120, marginBottom: 120, fontSize: 20 }}>NO UPCOMING</Text>
+          <View style={{justifyContent:'center',alignItems:'center',marginTop:10}}>
+          <Image source={require('../../asset/image/no_timeline.jpg')}  style={{width : width / 2.5, height: width / 2.5 ,borderRadius: width / 5}}  />
+          <Text style={{ marginTop:10 }}>Let's join someone</Text>
+          <Text style={{ marginTop:10 }}>to start your upcoming events.</Text>
           </View>
         </View>
       )
@@ -468,6 +472,24 @@ class Articles extends Component {
     })
     // console.log(this.state.new_img);
   }
+  renderMyevents = ()=>{
+    if(this.state.myUpcoming.length >0 || this.state.myparticipated.length>0){
+      return(
+        <View style={{marginTop:10}}>
+        {this.renderUpcoming()}
+        {this.renderparticipated()}
+        </View>
+      )
+    }else{
+      return(
+        <View style={{justifyContent:'center',alignItems:'center',marginTop:10}}>
+        <Image source={require('../../asset/image/no_timeline.jpg')}  style={{width : width / 2.5, height: width / 2.5 ,borderRadius: width / 5}}  />
+        <Text style={{ marginTop:10 }}>Let's join someone</Text>
+        <Text style={{ marginTop:10 }}>to start your events.</Text>
+        </View>
+      )
+    }
+  }
   render() {
     if(!this.state.loadingVisible){
     return (
@@ -497,8 +519,7 @@ class Articles extends Component {
               />
             }
           >
-            {this.renderUpcoming()}
-            {this.renderparticipated()}
+           {this.renderMyevents()}
           </ScrollView>
           
         </LinearGradient>

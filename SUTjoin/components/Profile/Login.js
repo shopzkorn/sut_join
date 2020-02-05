@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
 import LinearGradient from 'react-native-linear-gradient';
-
+import { StackActions, NavigationActions } from 'react-navigation';
 class Login extends Component {
     
     constructor(props) {
@@ -44,14 +44,21 @@ class Login extends Component {
           // Showing response message coming from server after inserting records.
           console.log(responseJson);
           if(responseJson.length != 0){
-              let user_id = '"' + responseJson[0].user_id + '"'
-            navigate('Menu', {user_id: responseJson })
-            AsyncStorage.multiSet([
+              let user_id = '"' + responseJson[0].user_id + '"';
+               AsyncStorage.multiSet([
                 ["username", responseJson[0].Username],
                 ["password", responseJson[0].Password],
                 ["user_id", user_id],
                 ["user_status", responseJson[0].volunteer_status],
             ])
+            let { navigation } = this.props;
+            let resetAction = StackActions.reset({
+                key: undefined,
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Menu' })],
+            });
+            navigation.dispatch(resetAction);
+           
             // AsyncStorage.setItem('user_data', responseJson[0])
 
             // AsyncStorage.setItem('user_id', user_id)

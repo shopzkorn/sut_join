@@ -8,10 +8,18 @@ import {
   View,
   PermissionsAndroid,
   SafeAreaView,
+  TextInput,
+  Dimensions,
+  BackHandler
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import { RNCamera as Camera } from 'react-native-camera';
 import { withNavigationFocus } from "react-navigation";
+import LinearGradient from 'react-native-linear-gradient';
+import BarcodeMask from 'react-native-barcode-mask';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+const { width, height } = Dimensions.get('window');
+
 class ScanScreen extends Component {
   state = {
     lat: '',
@@ -20,9 +28,30 @@ class ScanScreen extends Component {
     user_id: '',
     id_activity: '',
     subject: '',
-    date: ''
+    date: '',
+    isCameraVisible: false,
+    keyword: '',
+    room_lat: '',
+    room_lng: '',
+    check : 0
   }
-  onSuccess = (e) => {
+  onSuccessButton = () => {
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    if (month < 10) {
+      month = '0' + month;
+    }
+    this.setState((prevState, props) => ({
+      id_activity: this.state.keyword.split('-')[0],
+      date: date + '/' + month + '/' + year
+    }), () => {
+      console.log(this.state.id_activity + this.state.date),
+        this.checked(2)
+    })
+  }
+  onSuccessScan = (e) => {
+    if(this.state.check == 0){
     console.log(e.data.split('_').length)
     if (e.data.split('_').length == 3) {
       this.setState((prevState, props) => ({
@@ -31,18 +60,23 @@ class ScanScreen extends Component {
       }), () => {
         console.log(this.state.id_activity),
           this.checked(2)
+          this.setState({check : 1})
       })
-    } else if (e.data.split('_').length == 2) {
+    } else if (e.data.split('_').length == 4) {
       this.setState((prevState, props) => ({
         subject: e.data.split('_')[0],
         date: e.data.split('_')[1],
+        room_lat: e.data.split('_')[2],
+        room_lng: e.data.split('_')[3],
       }), () => {
         console.log(this.state.subject + this.state.date),
           this.checked(1)
+          this.setState({check : 1})
       })
-    }else{
+    } else {
       alert("Can't scan this qrcode");
     }
+  }
   }
 
   permisions = async () => {
@@ -94,52 +128,59 @@ class ScanScreen extends Component {
   }
 
   checked = (num) => {
-    if(num == 2){
-    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
-      method: 'post',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({
-        lat: this.state.lat,
-        lng: this.state.lng,
-        macAddress: this.state.macAddress,
-        user_id: this.state.user_id,
-        id_activity: this.state.id_activity,
-        date: this.state.date,
-        status: 2
-      })
-    }).then((response) => response.text())
-      .then((responseJson) => {
-        // console.log('res ' + responseJson.length);
-        alert(responseJson);
-      }).catch((error) => {
-        console.error(error);
-      });
-    }else{
+    if (num == 2) {
       fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
-            method: 'post',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify({
-              lat: this.state.lat,
-              lng: this.state.lng,
-              macAddress: this.state.macAddress,
-              user_id: this.state.user_id,
-              subject: this.state.subject,
-              date: this.state.date,
-              status: 1
-            })
-        }).then((response) => response.text())
-            .then((responseJson) => {
-                // console.log('res ' + responseJson.length);
-               alert(responseJson);
-            }).catch((error) => {
-                console.error(error);
-            });
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          lat: this.state.lat,
+          lng: this.state.lng,
+          macAddress: this.state.macAddress,
+          user_id: this.state.user_id,
+          id_activity: this.state.id_activity,
+          date: this.state.date,
+          status: 2
+        })
+      }).then((response) => response.text())
+        .then((responseJson) => {
+          // console.log('res ' + responseJson.length);
+          alert(responseJson);
+        }).catch((error) => {
+          console.error(error);
+        });
+    } else {
+      var Hours = new Date().getHours(); //Current Date
+      var Minutes = new Date().getMinutes(); //Current Date
+      var Time = Hours+":"+Minutes
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          lat: this.state.lat,
+          lng: this.state.lng,
+          room_lat: this.state.room_lat,
+          room_lng: this.state.room_lng,
+          macAddress: this.state.macAddress,
+          user_id: this.state.user_id,
+          subject: this.state.subject,
+          date: this.state.date,
+          time:Time,
+          status: 1
+        })
+      }).then((response) => response.text())
+        .then((responseJson) => {
+          // console.log('res ' + responseJson.length);
+          this.setState({ isCameraVisible: false })
+          alert(responseJson);
+        }).catch((error) => {
+          console.error(error);
+        });
     }
   }
   renderCamera() {
@@ -148,24 +189,24 @@ class ScanScreen extends Component {
     if (!isFocused) {
       return null;
     } else if (isFocused) {
-      return (
-        <QRCodeScanner
-          onRead={this.onSuccess}
-
-          // topContent={
-          //   <Text style={styles.centerText}>
-          //     Scan for check in join
-          //   </Text>
-          // }
-        // bottomContent={
-        //   <TouchableOpacity style={styles.buttonTouchable}>
-        //     <Text style={styles.buttonText}>OK. Got it!</Text>
-        //   </TouchableOpacity>
-        // }
-        />
-      )
+      if (this.state.isCameraVisible) {
+        return (
+          <Camera
+            style={styles.preview}
+            // torchMode={this.state.torchOn ? Camera.Constants.TorchMode.on : Camera.Constants.TorchMode.off}
+            onBarCodeRead={this.onSuccessScan}
+            ref={cam => this.camera = cam}
+            // aspect={Camera.Constants.Aspect.fill}
+            captureAudio={false}
+          >
+            <BarcodeMask edgeColor={'#62B1F6'} showAnimatedLine={true} />
+          </Camera>
+        )
+      }
     }
   }
+  
+  
   componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
@@ -179,10 +220,48 @@ class ScanScreen extends Component {
 
   render() {
     return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={{ flex: 1 }}
+          >
 
-      <View style={{ flex: 1 }}>
-        {this.renderCamera()}
-      </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+            <View style={{ justifyContent: 'flex-start' }}>
+              <View style={{ paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                  Check in
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={[{ height: 48, backgroundColor: 'rgba(255,255,255,0.5)', flexDirection: 'row', }]}>
+              <TextInput style={[styles.text_font, { flex: 1, paddingLeft: 18, }]}
+                placeholder="Insert check in code"
+                placeholderTextColor="#000000"
+                underlineColorAndroid="transparent"
+                onChangeText={(keyword) => { this.setState({ keyword }) }}
+                value={this.state.keyword}
+              />
+              <TouchableOpacity style={{ width: 50, height: 60, }} onPress={() => {
+                if (!this.state.isCameraVisible) {
+                  this.setState({ isCameraVisible: true , check:0 })
+                } else {
+                  this.setState({ isCameraVisible: false })
+                }
+              }}>
+                <Icon name="qrcode" size={28} style={{ color: '#000000', marginTop: 10, }} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{ width: 50, height: 60, }} onPress={() => { this.onSuccessButton() }}>
+                <Icon name="check" size={28} style={{ color: '#000000', marginTop: 10, }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {this.renderCamera()}
+        </LinearGradient>
+      </SafeAreaView>
     );
   }
 }
@@ -204,6 +283,19 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
+  },
+  preview: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
   },
 });
 

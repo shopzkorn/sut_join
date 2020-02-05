@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import DateTimePicker from "react-native-modal-datetime-picker";
+import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment'
 import LinearGradient from 'react-native-linear-gradient';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
@@ -100,7 +101,8 @@ export default class HomeScreen extends Component {
       itemsCount: 5,
       visibleTag: false,
       dataSource:  [],
-      user_status: 0
+      user_status: 0,
+      loadingVisible : false
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -495,6 +497,7 @@ export default class HomeScreen extends Component {
     return this.refs['OPTIONLIST'];
   }
   create = () => {
+    this.setState({ loadingVisible : true})
     fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
       method: 'post',
       headers: new Headers({
@@ -521,6 +524,7 @@ export default class HomeScreen extends Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
+        this.setState({loadingVisible : false})
         // Showing response message coming from server after inserting records.
         Alert.alert(
           'Sucess',
@@ -634,6 +638,7 @@ export default class HomeScreen extends Component {
           <ScrollView 
           style={{ backgroundColor: 'rgba(0,0,0,0.1)', }}
           keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding, flexGrow: 1, justifyContent: 'space-between', }}
                 >
             <View style={{ paddingHorizontal: width / 12 }}>
               <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event title</Text>
@@ -795,7 +800,7 @@ export default class HomeScreen extends Component {
                 height: width / 2.5,
                 backgroundColor: 'transparent',
                 borderRadius: width / 2.5 / 2,
-                marginBottom: -60,
+                marginBottom: -100,
               }} onPress={this.register.bind(this)}>
                 <View style={{
                   borderWidth: 2,
@@ -812,6 +817,7 @@ export default class HomeScreen extends Component {
 
               </TouchableOpacity>
             </View>
+            <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
           </ScrollView>
         </LinearGradient>
       </SafeAreaView>

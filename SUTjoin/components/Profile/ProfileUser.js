@@ -7,7 +7,7 @@ import {
     StyleSheet,
     ScrollView,
     FlatList,
-    ImageBackground,
+    BackHandler,
     RefreshControl,
     Dimensions,
     Platform,
@@ -59,7 +59,8 @@ class Profile extends React.Component {
         following: 0,
         page: 1,
         age_user: 0,
-        gender_user: 0
+        gender_user: 0,
+        user_id: 0
 
     }
     scrollXHost = new Animated.Value(0);
@@ -202,7 +203,7 @@ class Profile extends React.Component {
                 'Content-Type': 'application/json'
             }),
             body: JSON.stringify({
-                user_id: this.state.id_user
+                user_id: this.state.user_id
             })
         });
         const user = await response.json();
@@ -215,32 +216,48 @@ class Profile extends React.Component {
     }
     renderHost = () => {
         if (!this.state.loadingVisible) {
-            return (
-                <View style={[styles.flex, styles.column, styles.recommended], { backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
-                    <View
-                        style={[
-                            styles.row,
-                            styles.recommendedHeader
-                        ]}
-                    >
-                        <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10, fontWeight: 'bold' }}>{this.state.user_name}'timeline</Text>
+            if (this.state.myhost.length > 0) {
+                return (
+                    <View style={[styles.flex, styles.column, styles.recommended], { backgroundColor: 'rgba(52, 52, 52, 0.2)' }}>
+                        <View
+                            style={[
+                                styles.row,
+                                styles.recommendedHeader
+                            ]}
+                        >
+                            <Text style={{ fontSize: theme.sizes.font * 1.4, marginVertical: 10, fontWeight: 'bold' }}>{this.state.user_name}'timeline</Text>
+                        </View>
+                        <View style={[styles.column, styles.recommendedList]}>
+                            <FlatList
+                                Vertical
+                                pagingEnabled
+                                scrollEnabled
+                                showsHorizontalScrollIndicator={false}
+                                scrollEventThrottle={16}
+                                snapToAlignment="center"
+                                style={[styles.shadow, { overflow: 'visible' }]}
+                                data={this.state.myhost}
+                                keyExtractor={(item, index) => `${item.id}`}
+                                renderItem={({ item, index }) => this.renderDestination(item, index)}
+                            />
+                        </View>
                     </View>
-                    <View style={[styles.column, styles.recommendedList]}>
-                        <FlatList
-                            Vertical
-                            pagingEnabled
-                            scrollEnabled
-                            showsHorizontalScrollIndicator={false}
-                            scrollEventThrottle={16}
-                            snapToAlignment="center"
-                            style={[styles.shadow, { overflow: 'visible' }]}
-                            data={this.state.myhost}
-                            keyExtractor={(item, index) => `${item.id}`}
-                            renderItem={({ item, index }) => this.renderDestination(item, index)}
-                        />
+                );
+            }
+            else {
+                return (
+                    <View style={{
+                       
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(52, 52, 52, 0.2)'
+                    }}>
+                        <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 , marginTop: 20,}} />
+                        <Text style={{ marginTop: 10 ,marginBottom:20}}>They have no event to show in timeline yet</Text>
+
                     </View>
-                </View>
-            );
+                )
+            }
         }
     }
     refresh() {
@@ -253,8 +270,16 @@ class Profile extends React.Component {
         });
     }
 
-
+    handleBackPress = () => {
+        this.props.navigation.goBack(); // works best when the goBack is async
+        return true;
+      }
+      componentWillUnmount() {
+        this.backHandler.remove()
+      }
+      
     componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         const { navigation } = this.props;
         const User = navigation.getParam('User');
         AsyncStorage.multiGet(['user_id']).then((data) => {
@@ -467,7 +492,6 @@ class Profile extends React.Component {
                 </View>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}

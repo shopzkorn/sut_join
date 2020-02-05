@@ -51,14 +51,24 @@ class Editprofile extends Component {
       await AsyncStorage.removeItem('username');
       await AsyncStorage.removeItem('user_status');
       this.props.navigation.navigate('Login')
+     
     }
     catch(exception) {
       return false;
     }
   }
 
- 
 
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  }
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
   render() {
     const { navigate } = this.props.navigation;
     const { navigation } = this.props;

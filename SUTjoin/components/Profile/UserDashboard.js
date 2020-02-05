@@ -16,14 +16,10 @@ import {
 } from "react-native";
 
 import ProgressCircle from 'react-native-progress-circle';
+import Spinner from 'react-native-loading-spinner-overlay';
 import PieChart from 'react-native-pie-chart';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon from 'react-native-vector-icons/Ionicons'
 import * as theme from '../../theme';
-import PTRView from 'react-native-pull-to-refresh';
 const { width, height } = Dimensions.get('window');
 
 
@@ -53,12 +49,12 @@ class UserDashboard extends React.Component {
     createpercent7: 0,
     createpercent8: 1,
     Allcreatepercent: 0,
-
+    loadingVisible: true
   }
 
 
   refresh() {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true, loadingVisible: true });
     return new Promise((resolve) => {
       this.fetchData().then(() => {
         this.setState({ refreshing: false })
@@ -81,7 +77,7 @@ class UserDashboard extends React.Component {
   fetchData = async () => {
     const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetAllDashboard.php');
     const users = await response.json();
-    this.setState({ data: users });
+    this.setState({ data: users, loadingVisible: false });
   }
 
 
@@ -230,12 +226,6 @@ class UserDashboard extends React.Component {
             </View>
           </View>
         </View>
-      )
-    }else{
-      return(
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 30 }}>No data</Text>
-          </View>
       )
     }
   }
@@ -386,12 +376,6 @@ class UserDashboard extends React.Component {
           </View>
         </View>
       )
-    }else{
-      return(
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 30 }}>No data</Text>
-          </View>
-      )
     }
   }
   renderDashboard = item => {
@@ -421,21 +405,31 @@ class UserDashboard extends React.Component {
 
 
     const sliceColor = ['#F44336', '#2196F3', '#FFEB3B', '#ff71ce', '#4CAF50', '#FF9800', '#b967ff', '#7fffd4']
-    if (this.state.getall != 0) {
-      return (
-        <View>
-          <Text style={{ fontSize: 30, marginBottom: 10, marginTop: 20, padding: 10 }}>Dashboard</Text>
-          {this.renderJoinDash()}
-          {this.renderCreateDash()}
-        </View>
-      );
+    if (!this.state.loadingVisible) {
+      if (this.state.Allcreatepercent != 0 && this.state.Allpercent != 0) {
+        return (
+          <View>
+            <Text style={{ fontSize: 30, marginBottom: 10, marginTop: 20, padding: 10 }}>Dashboard</Text>
+            {this.renderJoinDash()}
+            {this.renderCreateDash()}
+          </View>
+        );
+      } else {
+        return (
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, }}>
+            <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 }} />
+            <Text style={{ marginTop: 10 }}>Let join someone, or host something</Text>
+            <Text style={{ marginTop: 10 }}>to start your dashboard.</Text>
+          </View>
+        );
+      }
     }
   }
 
 
   setAllpercent = () => {
-    var all1 = this.percent1 + this.percent2 + this.percent3 + this.percent4 + this.percent5 + this.percent6 + this.percent7 + this.percent8;
-    var all2 = this.createpercent1 + this.createpercent2 + this.createpercent3 + this.createpercent4 + this.createpercent5 + this.createpercent6 + this.createpercent7 + this.createpercent8;
+    var all1 = this.state.percent1 + this.state.percent2 + this.state.percent3 + this.state.percent4 + this.state.percent5 + this.state.percent6 + this.state.percent7 + this.state.percent8;
+    var all2 = this.state.createpercent1 + this.state.createpercent2 + this.state.createpercent3 + this.state.createpercent4 + this.state.createpercent5 + this.state.createpercent6 + this.state.createpercent7 + this.state.createpercent8;
     this.setState({
       Allpercent: all1,
       Allcreatepercent: all2
@@ -490,7 +484,7 @@ class UserDashboard extends React.Component {
 
         this.setState({ createpercent7: responseJson[16], })
 
-        this.setState({ createpercent8: responseJson[17], })
+        this.setState({ createpercent8: responseJson[17], loadingVisible: false })
         this.setAllpercent();
 
       })
@@ -501,40 +495,21 @@ class UserDashboard extends React.Component {
 
 
   render() {
-    if (this.state.getall != 0) {
-      return (
-        <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }}
-          end={{ x: 1.0, y: 0.5 }}
-          style={{ flex: 1 }}
-        >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
-
-
-            {this.renderDashboard()}
-
-
-
-          </ScrollView>
-        </LinearGradient>
-      )
-    } else {
-      return (
-        <LinearGradient
-          colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-          start={{ x: 0.0, y: 0.5 }}
-          end={{ x: 1.0, y: 0.5 }}
-          style={{ flex: 1 }}
-        >
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 30 }}>No data</Text>
-          </View>
-        </LinearGradient>
-      )
-    }
+    return (
+      <LinearGradient
+        colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0.0, y: 0.5 }}
+        end={{ x: 1.0, y: 0.5 }}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}>
+          {this.renderDashboard()}
+        </ScrollView>
+        <Spinner visible={this.state.loadingVisible} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+      </LinearGradient>
+    )
   }
 
 }

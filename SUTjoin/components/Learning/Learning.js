@@ -659,15 +659,6 @@ class Learning extends Component {
           start={{ x: 0.0, y: 0.5 }}
           end={{ x: 1.0, y: 0.5 }}
           style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'row',justifyContent:'center',backgroundColor: 'rgba(0,0,0,0.1)',}}>
-            <View style={{ justifyContent:'flex-start'}}>
-                <View style={{paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
-                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
-                            Learning
-                        </Text>
-                </View>
-            </View>
-        </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
@@ -722,7 +713,7 @@ class Learning extends Component {
                 {this.Circle_gpa_8_3()}
               </View>
 
-              <View style={{ marginTop: 10 }}>
+              <View style={{ marginTop: 10 ,flexDirection:'row'}}>
                 <TouchableOpacity style={[
                   styles.buttonStyleFollow,
                   styles.centerEverything]}
@@ -735,21 +726,6 @@ class Learning extends Component {
                     paddingVertical: 5,
                     fontWeight: 'bold'
                   }}> GPAX Manage</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <TouchableOpacity style={[
-                  styles.buttonStyleFollow,
-                  styles.centerEverything]}
-                  activeOpacity={0.5}
-                  onPress={() => navigate('manage_subject')}
-                >
-                  <Text style={{
-                    color: "#fe53bb",
-                    fontSize: 16,
-                    paddingVertical: 5,
-                    fontWeight: 'bold'
-                  }}>Subject Manage</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -800,7 +776,8 @@ const styles = StyleSheet.create({
     marginHorizontal:10
   },
   buttonStyleFollow: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
+    marginHorizontal: 10,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     borderRadius: 10,

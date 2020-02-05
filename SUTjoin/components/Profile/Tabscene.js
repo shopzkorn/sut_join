@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image,SafeAreaView } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity,BackHandler,SafeAreaView } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -30,26 +30,16 @@ export default class TabViewExample extends React.Component {
                 </Text>
             </View>
           </View>
-        <View style={styles.tabBar}>
+          <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
-            const color = Animated.color(
-              Animated.round(
-                Animated.interpolate(props.position, {
-                  inputRange,
-                  outputRange: inputRange.map(inputIndex =>
-                    inputIndex === i ? 255 : 0
-                  ),
-                })
-              ),
-              0,
-              0
-            );
-
             return (
               <TouchableOpacity
-                style={styles.tabItem}
+             
+                style={
+                  this.state.index == i ? styles.tabItem : styles.tabItem1
+                }
                 onPress={() => this.setState({ index: i })}>
-                <Animated.Text style={{ color }}>{route.title}</Animated.Text>
+                <Animated.Text style={{ color:'white',fontWeight:'bold' }}>{route.title}</Animated.Text>
               </TouchableOpacity>
             );
           })}
@@ -79,7 +69,16 @@ export default class TabViewExample extends React.Component {
       { key: 'second', title: 'My Data' },
     ],
   };
-
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  }
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
   render() {
     const { navigation } = this.props;
     // console.log(navigation);
@@ -126,12 +125,24 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
+    borderColor:'rgba(52, 52, 52, 0.3)',
+    borderRadius:25,
+    borderWidth:4,
+    backgroundColor: 'rgba(52, 52, 52, 0.3)'
     // paddingTop: Constants.statusBarHeight,
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
-    padding: 16,
+    padding: 10,
+    backgroundColor: '#c0c0ff',
+     borderRadius:25,
+
+  },
+  tabItem1: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
   },
   circleButtun: {
     alignItems: 'center',

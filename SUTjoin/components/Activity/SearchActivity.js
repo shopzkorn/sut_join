@@ -13,7 +13,8 @@ import {
     BackHandler,
     SafeAreaView,
     AsyncStorage,
-    ActivityIndicator
+    ActivityIndicator,
+    TextInput
 } from 'react-native';
 import SearchBar from 'react-native-search-bar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -543,26 +544,19 @@ export default class ListViewExample extends Component {
                     end={{ x: 1, y: 0 }}
                     style={{ flex: 1 }}
                 >
-                    <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-                        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
-                            <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
-                        </TouchableOpacity>
-                        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
-                            <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
-                                Search
-                </Text>
-                        </View>
-                    </View>
-                    <View style={{ backgroundColor: '#FFFFFF50', opacity: 0.5 }} >
-                        <SearchBar
-                            ref="search1"
-                            barStyle="black"
-                            placeholder='Search by title or tag'
-                            onChangeText={this.onChangeText.bind(this)}
-                            onCancelButtonPress={this.onCancelButtonPress.bind(this)}
-                            onSearchButtonPress={this.onSearchButtonPress.bind(this)}
+                    <View style={[{ height: 48, backgroundColor: 'rgba(255,255,255,0.5)', flexDirection: 'row', borderBottomRightRadius: 25, borderBottomLeftRadius: 25 }]}>
+                        <TextInput style={[styles.text_font, { flex: 1, paddingLeft: 18, }]}
+                            placeholder="Search by title or tag"
+                            placeholderTextColor="#000000"
+                            underlineColorAndroid="transparent"
+                            onChangeText={(keyword) => { this.setState({ dataSource: keyword }) }}
+                            value={this.state.keyword}
                         />
+                        <TouchableOpacity style={{ width: 50, height: 60, }} onPress={() => { this.onSearchButtonPress() }}>
+                            <MaterialCommunityIcons name="magnify" size={28} style={{ color: '#000000', marginTop: 10, }} />
+                        </TouchableOpacity>
                     </View>
+
 
                     {this.renderFilter()}
                     {this.DialogFilter()}
@@ -588,7 +582,9 @@ export default class ListViewExample extends Component {
                                 })
                             }
                         }}>
-                        {this.renderListActivity()}
+                        <View style={{ justifyContent: 'center' }}>
+                            {this.renderListActivity()}
+                        </View>
                         {this.renderFooter()}
                     </ScrollView>
                 </LinearGradient>
@@ -599,7 +595,6 @@ export default class ListViewExample extends Component {
     renderListActivity = () => {
         // console.log("status " + this.state.search);
         if (this.state.search == 1) {
-            console.log("status " + this.state.data);
             return (
                 <View style={[styles.flex, styles.row, styles.recommended], { marginTop: 20 }}>
                     <View
@@ -637,10 +632,11 @@ export default class ListViewExample extends Component {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-
-                    <Text style={{ fontSize: theme.sizes.font * 1.4 }}>No result</Text>
-
-
+                    <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 }} />
+                    <Text style={{ marginTop: 10 }}>No event yet</Text>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('AddActivity')}>
+                        <Text style={{ color: 'gray' }}>Let's host</Text>
+                    </TouchableOpacity>
                 </View>
             )
         }
@@ -781,7 +777,9 @@ export default class ListViewExample extends Component {
                 visiblePeople: false
             })
         }
-
+        else if (this.state.search == 1 || this.state.search == 2) {
+            this.fetchDataTrending();
+        }
         else {
             this.props.navigation.goBack(); // works best when the goBack is async
         }
@@ -793,9 +791,7 @@ export default class ListViewExample extends Component {
     componentDidMount() {
 
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-        this.setState({
-            dataSource: 1,
-        });
+
         AsyncStorage.multiGet(['user_id']).then((data) => {
             let user_id = data[0][1];
             this.setState({
@@ -862,6 +858,7 @@ export default class ListViewExample extends Component {
         // console.log(this.state.new_img);
     }
     fetchData = async (status) => {
+        console.log('data is ' + this.state.dataSource)
         var page = 0;
         if (status == 1) {
             page = 1;
@@ -889,7 +886,7 @@ export default class ListViewExample extends Component {
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                // console.log('res ' + responseJson);
+                 console.log('res ' + responseJson);
                 if (responseJson.length > 0) {
                     this.setState({ lastItem: false })
                     if (status == 2) {
@@ -945,7 +942,9 @@ export default class ListViewExample extends Component {
                 // console.log('res ' + responseJson);
                 this.setState({
                     trending: responseJson,
-                    loadingVisible: false
+                    loadingVisible: false,
+                    search: 0,
+                    horizontal: false
                 });
             }).catch((error) => {
                 console.error(error);

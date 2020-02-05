@@ -6,23 +6,33 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
-import ListActivity from './ListActivity';
-import SearchActivity from './Explore';
+import Subject from './manage_subject';
+import Learning from './Learning';
+import CheckSignin from './CheckSignin';
+const { width, height } = Dimensions.get('window');
 
 export default class TabViewExample extends React.Component {
 
   _renderTabBar = props => {
     const inputRange = props.navigationState.routes.map((x, i) => i);
-    console.log(inputRange)
+
     return (
       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>
+           <View style={{ flexDirection: 'row',justifyContent:'center',backgroundColor: 'rgba(0,0,0,0.1)',}}>
+            <View style={{ justifyContent:'flex-start'}}>
+                <View style={{paddingVertical: height /200 ,flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
+                        Learning
+                        </Text>
+                </View>
+            </View>
+        </View>
         <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
             return (
               <TouchableOpacity
-             
                 style={
                   this.state.index == i ? styles.tabItem : styles.tabItem1
                 }
@@ -36,49 +46,33 @@ export default class TabViewExample extends React.Component {
     );
   };
 
+  
+
   FirstRoute = () => {
     const { navigation } = this.props;
     return (
-      <ListActivity navigation={navigation} />
+      <Learning navigation={navigation} />
     );
   }
-
   SecondRoute = () => {
     const { navigation } = this.props;
     return (
-      <SearchActivity navigation={navigation} /> //send props is navigation={navigation}
+      <Subject navigation={navigation} />
     );
   }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <SafeAreaView >
-        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}>
-        <View style={[styles.flex, styles.row, styles.header,]}>
-          <View style={{ alignItems: 'flex-start' }}>
-          <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
-          </View>
-          <View style={[styles.flex, styles.row]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
-              <FontAwesome name="search" size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-              <Icon name="ios-add-circle" size={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </LinearGradient>
-      </SafeAreaView>
-      ),
-    }
+  ThirdRoute = () => {
+    const { navigation } = this.props;
+    return (
+      <CheckSignin navigation={navigation} />
+    );
   }
+  
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'Explore' },
+      { key: 'first', title: 'Dashboard' },
+      { key: 'second', title: 'Subject' },
+      { key: 'third', title: 'Check signs' },
     ],
   };
 
@@ -86,16 +80,19 @@ export default class TabViewExample extends React.Component {
     const { navigation } = this.props;
     // console.log(navigation);
     return (
+      <SafeAreaView style={{ flex: 1 }}>
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
           first: this.FirstRoute,
           second: this.SecondRoute,
+          third: this.ThirdRoute,
         })}
         renderTabBar={this._renderTabBar}
-        onIndexChange={index => {this.setState({ index }),console.log(this.state.index)}}
+        onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
+      </SafeAreaView>
     );
   }
 }
@@ -161,5 +158,12 @@ const styles = StyleSheet.create({
   logo:{
     width: theme.sizes.padding*4,
     height: theme.sizes.padding*1.5,
-  }
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 15
+},
 });

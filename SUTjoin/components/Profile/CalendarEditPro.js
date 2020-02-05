@@ -1,5 +1,5 @@
 import { Calendar, Arrow } from 'react-native-calendars';
-import { View, Text ,StyleSheet,TouchableOpacity,Dimensions} from 'react-native';
+import { View, Text ,StyleSheet,TouchableOpacity,Dimensions,BackHandler} from 'react-native';
 import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -69,7 +69,17 @@ export default class Example extends React.Component {
         
 
     }
+    handleBackPress = () => {
+        this.props.navigation.goBack(); // works best when the goBack is async
+        return true;
+      }
+      componentWillUnmount() {
+        this.backHandler.remove()
+      }
+      
     componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
         let date = Date();
         this.setState({
             date : date

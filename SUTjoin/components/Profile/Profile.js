@@ -162,6 +162,7 @@ class Profile extends React.Component {
 
   renderHost = () => {
     if (!this.state.loadingVisible) {
+      if (this.state.myhost.length > 0) {
       return (
         <View style={[styles.flex, styles.column, styles.recommended],{backgroundColor: 'rgba(52, 52, 52, 0.2)'}}>
           <View
@@ -188,6 +189,21 @@ class Profile extends React.Component {
           </View>
         </View>
       );
+          }
+          else {
+            return (
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(52, 52, 52, 0.2)'
+                }}>
+                    <Image source={require('../../asset/image/no_timeline.jpg')} style={{ width: width / 2, height: width / 2, borderRadius: width / 4 , marginTop: 20}} />
+                    <Text style={{ marginTop: 10 }}>Let join someone, or host something</Text>
+                    <Text style={{ marginTop: 10,marginBottom:20 }}>to start your timeline.</Text>
+
+                </View>
+            )
+        }
     }
   }
   refresh() {
@@ -462,7 +478,6 @@ class Profile extends React.Component {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}

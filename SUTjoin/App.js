@@ -12,10 +12,12 @@ import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
 import Calendar from './components/Activity/Calender';
 import AllHistoryActivity from './components/Activity/AllHistoryActivity';
-import SearchActivity from './components/Activity/SearchActivity';
+import SearchActivity from './components/Activity/TabsceneSearch';
+import ScanSearchPeople from './components/Activity/ScanQrcodeSearchPeople';
 import SelectMap from './components/Map/SelectLocation';
-import Maps from './components/Map/Map';
+import CheckTime from './components/Learning/TimeSignin';
 import MyInterest from './components/Profile/MyInterests';
+import Interest from './components/Profile/Interest';
 import ScanQrcode from './components/Checkin/CheckOTP';
 import CheckinActivity from './components/Checkin/CheckinActivity';
 import Follow from './components/Follow/Follow';
@@ -65,6 +67,12 @@ const App = createStackNavigator(
         header: null,
       },
     },
+    CheckTime: {
+      screen: CheckTime,
+      navigationOptions: {
+        header: null,
+      },
+    },
     AddActivity,
     Article,
     ArticleUser,
@@ -72,6 +80,12 @@ const App = createStackNavigator(
     ScanQrcode,
     FollowUser: {
       screen: FollowUser,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    ScanSearchPeople: {
+      screen: ScanSearchPeople,
       navigationOptions: {
         header: null,
       },
@@ -194,6 +208,18 @@ const LoginScreen = createStackNavigator(
       },
     },
     Calendar,
+    Menu: {
+      screen: Menu,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Interest: {
+      screen: Interest,
+      navigationOptions: {
+        header: null,
+      },
+    },
   },{ initialRouteName: 'Login' }
 );
 //Not show warning

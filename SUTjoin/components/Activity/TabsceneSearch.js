@@ -6,8 +6,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
-import ListActivity from './ListActivity';
-import SearchActivity from './Explore';
+import SearchActivity from './SearchActivity';
+import SearchUser from './SearchUser';
+const { width, height } = Dimensions.get('window');
 
 export default class TabViewExample extends React.Component {
 
@@ -18,7 +19,7 @@ export default class TabViewExample extends React.Component {
       <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}>
-        <View style={styles.tabBar}>
+         <View style={styles.tabBar}>
           {props.navigationState.routes.map((route, i) => {
             return (
               <TouchableOpacity
@@ -39,46 +40,21 @@ export default class TabViewExample extends React.Component {
   FirstRoute = () => {
     const { navigation } = this.props;
     return (
-      <ListActivity navigation={navigation} />
+      <SearchActivity navigation={navigation} />
     );
   }
 
   SecondRoute = () => {
     const { navigation } = this.props;
     return (
-      <SearchActivity navigation={navigation} /> //send props is navigation={navigation}
+      <SearchUser navigation={navigation} /> //send props is navigation={navigation}
     );
-  }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <SafeAreaView >
-        <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}>
-        <View style={[styles.flex, styles.row, styles.header,]}>
-          <View style={{ alignItems: 'flex-start' }}>
-          <Image source={require('../../asset/image/logo1.png')}  style={[styles.logo]}  />
-          </View>
-          <View style={[styles.flex, styles.row]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SearchActivity')} style={[styles.circleButtun,styles.marginRight]}>
-              <FontAwesome name="search" size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AddActivity')} style={[styles.circleButtun]}>
-              <Icon name="ios-add-circle" size={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </LinearGradient>
-      </SafeAreaView>
-      ),
-    }
   }
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'Feed' },
-      { key: 'second', title: 'Explore' },
+      { key: 'first', title: 'Activity' },
+      { key: 'second', title: 'People' },
     ],
   };
 
@@ -86,6 +62,21 @@ export default class TabViewExample extends React.Component {
     const { navigation } = this.props;
     // console.log(navigation);
     return (
+        <SafeAreaView style={{flex:1}}>
+            <LinearGradient colors={['#ffd8ff', '#f0c0ff', '#c0c0ff']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}>
+       <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+                        <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
+                            <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
+                            <Text style={{ fontSize: width / 20, fontWeight: 'bold', color: '#ffffff', alignSelf: 'center' }}>
+                                Search
+                            </Text>
+                        </View>
+                    </View>
+      </LinearGradient>
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
@@ -96,6 +87,7 @@ export default class TabViewExample extends React.Component {
         onIndexChange={index => {this.setState({ index }),console.log(this.state.index)}}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
+      </SafeAreaView>
     );
   }
 }
@@ -161,5 +153,12 @@ const styles = StyleSheet.create({
   logo:{
     width: theme.sizes.padding*4,
     height: theme.sizes.padding*1.5,
-  }
+  },
+  back: {
+        width: theme.sizes.base * 3,
+        height: theme.sizes.base * 3,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 15
+    },
 });

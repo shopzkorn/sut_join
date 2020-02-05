@@ -7,11 +7,11 @@ import {
     TouchableOpacity,
     AsyncStorage,
     ScrollView,
-    Dimensions,
-    BackHandler
+    Dimensions
 } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SwitchToggle from "react-native-switch-toggle";
+import { StackActions, NavigationActions } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as theme from '../../theme';
@@ -41,160 +41,68 @@ class MyInterest extends React.Component {
       data8: 0,
 
       user_id:'',
-      loadingVisible: true,
+      loadingVisible: false,
 
     };
   }
-  handleBackPress = () => {
-    this.props.navigation.goBack(); // works best when the goBack is async
-    return true;
-  }
-  componentWillUnmount() {
-    this.backHandler.remove()
-  }
+    
   componentDidMount() {
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+   this.login()
   }
-  componentWillMount() {
-    AsyncStorage.multiGet(['user_id']).then((data) => {
-      let user_id = data[0][1];
+  login=()=> {
+    const { navigation } = this.props;
+    const username = navigation.getParam('username');
+    const password = navigation.getParam('password');
+    console.log("login");
+  fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
+  method: 'post',
+  headers: new Headers({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }),
+  body: JSON.stringify({
+    username : username,
+    password : password,
+  })
+  }).then((response) => response.json())
+  .then((responseJson) => {
+    // Showing response message coming from server after inserting records.
+    console.log(responseJson);
+    if(responseJson.length != 0){
+        let user_id = '"' + responseJson[0].user_id + '"';
+         AsyncStorage.multiSet([
+          ["username", responseJson[0].Username],
+          ["password", responseJson[0].Password],
+          ["user_id", user_id],
+          ["user_status", responseJson[0].volunteer_status],
+      ])
       this.setState({
         user_id: user_id,
       });
-      console.log("ID :"+user_id);
-      this.GetMyinterest();
+    console.log(this.state.user_id);
+     
+      // AsyncStorage.setItem('user_data', responseJson[0])
+
+      // AsyncStorage.setItem('user_id', user_id)
+      // AsyncStorage.setItem('user_status', responseJson[0].volunteer_status)
+  }else{
+      alert("username or password incorrect");
+  }
+  })
+  .catch((error) => {
+    console.error(error);
   });
-  }
-
-  GetMyinterest() {
-    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetMyinterest.php', {
-      method: 'post',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({
-        user_id: this.state.user_id.split('"')[1],
-      })
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        // Showing response message coming from server after inserting records.
-        // alert(responseJson);
-
-        //Learning Switch ++++++++++
-          responseJson.map(data => 
-            this.setState({
-              data1: data.learning,
-            }),
-          );
-          if(this.state.data1!=0){
-            this.setState({
-              switchOn1: 'true',
-            })
-          }
-          console.log(this.state.switchOn1);
-
-        //Volunteer Switch ++++++++++
-          responseJson.map(data => 
-            this.setState({
-              data2: data.volunteer,
-            })
-          );
-          if(this.state.data2!=0){
-            this.setState({
-              switchOn2: 'true',
-            })
-          }
-          console.log(this.state.switchOn2);
-
-        //Recreation Switch ++++++++++
-          responseJson.map(data => 
-            this.setState({
-              data3: data.recreation,
-            })
-          );
-          if(this.state.data3!=0){
-            this.setState({
-              switchOn3: 'true',
-            })
-          }
-          console.log(this.state.switchOn3);
-
-        //Hangout Switch ++++++++++
-        responseJson.map(data => 
-          this.setState({
-            data4: data.hangout,
-          })
-        );
-        if(this.state.data4!=0){
-          this.setState({
-            switchOn4: 'true',
-          })
-        }
-        console.log(this.state.switchOn4);
-
-        //Travel Switch ++++++++++
-        responseJson.map(data => 
-          this.setState({
-            data5: data.travel,
-          })
-        );
-        if(this.state.data5!=0){
-          this.setState({
-            switchOn5: 'true',
-          })
-        }
-        console.log(this.state.switchOn5);
-
-        //Hobby Switch ++++++++++
-        responseJson.map(data => 
-          this.setState({
-            data6: data.hobby,
-          })
-        );
-        if(this.state.data6!=0){
-          this.setState({
-            switchOn6: 'true',
-          })
-        }
-        console.log(this.state.switchOn6);
-
-        //Meet Switch ++++++++++
-        responseJson.map(data => 
-          this.setState({
-            data7: data.meet,
-          })
-        );
-        if(this.state.data7!=0){
-          this.setState({
-            switchOn7: 'true',
-          })
-        }
-        console.log(this.state.switchOn7);
-
-        //Eatanddrink Switch ++++++++++
-        responseJson.map(data => 
-          this.setState({
-            data8: data.eatanddrink,
-          })
-        );
-        if(this.state.data8!=0){
-          this.setState({
-            switchOn8: 'true',
-          })
-        }
-        console.log(this.state.switchOn8);
-        this.setState({
-          loadingVisible: false
-        })
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+  // AsyncStorage.multiGet(['user_id']).then((data) => {
+  //     let user_id = data;
+  //     console.log("Session id is"+user_id);
+    
+  // });
+}
+  
 
   OnSave = () => {
-    const { navigate } = this.props.navigation;
+    this.setState({ loadingVisible : true})
+
     fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Myinterest_pro.php', {
       // fetch('https://localhost:8080/Web_SUTJoin/include/Register.php', {
       method: 'post',
@@ -216,9 +124,16 @@ class MyInterest extends React.Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
+        this.setState({ loadingVisible : false})
+
         // Showing response message coming from server after inserting records.
-        alert(responseJson);
-        navigate('MyInterest')
+        let { navigation } = this.props;
+        let resetAction = StackActions.reset({
+            key: undefined,
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Menu' })],
+        });
+        navigation.dispatch(resetAction);
       }).catch((error) => {
         console.error(error);
       });
@@ -236,9 +151,6 @@ class MyInterest extends React.Component {
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
-            <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
-              <FontAwesome name="chevron-left" color={theme.colors.black} size={theme.sizes.font * 1} />
-            </TouchableOpacity>
             <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
                 <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
                     My interests

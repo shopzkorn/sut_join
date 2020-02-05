@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity,BackHandler ,SafeAreaView} from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Animated } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Triangle } from 'react-native-shapes'
@@ -72,7 +72,16 @@ class selectLocation extends Component {
             address:''
         };
     }
-
+    handleBackPress = () => {
+        this.props.navigation.goBack(); // works best when the goBack is async
+        return true;
+      }
+      componentWillUnmount() {
+        this.backHandler.remove()
+      }
+      componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+      }
     CancelSearch(){
         this.googlePlacesAutocomplete._handleChangeText('')
     }
@@ -114,7 +123,7 @@ class selectLocation extends Component {
     render() {
         const { navigation } = this.props;
         return (
-
+            <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
                 
                 <MapView
@@ -231,6 +240,7 @@ class selectLocation extends Component {
                     </View>
                 </GooglePlacesAutocomplete>
             </View>
+            </SafeAreaView>
         )
     }
 }

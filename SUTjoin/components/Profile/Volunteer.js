@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TextInput,
   Platform,
-  StatusBar,
+  BackHandler,
   Dimensions,
   Image,
   AsyncStorage,
@@ -43,7 +43,16 @@ class volunteer extends Component {
     user_volunteer: '',
 
   }
-
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  }
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
   componentWillMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];

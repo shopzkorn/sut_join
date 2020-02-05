@@ -33,7 +33,7 @@ class History extends React.Component {
     refreshing: false,
     searchKey: '0',
     page: 1,
-    statusSreach : 0,
+    statusSreach: 0,
     filter: 2,
     search: 0,
     user_id: '',
@@ -87,7 +87,7 @@ class History extends React.Component {
   // }
 
   fetchDataSearch = async (status) => {
-    
+
     var page = 0;
     if (status == 1) {
       page = 1;
@@ -114,39 +114,41 @@ class History extends React.Component {
         if (responseJson.length > 0) {
           this.setState({ lastItem: false })
           if (status == 2) {
-            this.setState({ 
+            this.setState({
               search: 1,
               statusSreach: 1,
-              data: this.state.data.concat(responseJson), 
-              loadingVisible: false, 
-              loading: false });
+              data: this.state.data.concat(responseJson),
+              loadingVisible: false,
+              loading: false
+            });
           } else {
-          this.setState({
-            search: 1,
-            statusSreach: 1,
-            data: responseJson,
-            loadingVisible: false,
-            loading: false
-          });
-        }
+            this.setState({
+              search: 1,
+              statusSreach: 1,
+              data: responseJson,
+              loadingVisible: false,
+              loading: false
+            });
+          }
         } else {
-          if(this.state.search == 1 && this.state.statusSreach == 1){
+          if (this.state.search == 1 && this.state.statusSreach == 1) {
             this.setState({
               lastItem: true,
               loading: false,
               statusSreach: 0,
             });
           }
-          else{
+          else {
             this.setState({
-            search: 2,
-            loadingVisible: false,
-            lastItem: true,
-            loading: false,
-            statusSreach: 0,
+              search: 2,
+              loadingVisible: false,
+              lastItem: true,
+              loading: false,
+              statusSreach: 0,
 
-          });}
-          
+            });
+          }
+
         }
       }).catch((error) => {
         console.error(error);
@@ -211,10 +213,12 @@ class History extends React.Component {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-
-          <Text style={{ fontSize: theme.sizes.font * 1.4 }}>No result</Text>
-
-
+          
+          <Image source={require('../../asset/image/no_timeline.jpg')}  style={{width : width / 2, height: width / 2 ,borderRadius: width / 4}}  />
+          <Text style={{ marginTop:10 }}>No event yet</Text>
+          <TouchableOpacity onPress={()=> this.props.navigation.navigate('AddActivity')}>
+          <Text style={{color:'gray'}}>Let's host</Text>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -349,7 +353,7 @@ class History extends React.Component {
     }
     this.setState((prevState, props) => ({
       searchKey: item.button_id,
-      statusSreach : 0
+      statusSreach: 0
     }), () => {
       this.fetchDataSearch(1);
     })
@@ -407,10 +411,12 @@ class History extends React.Component {
         >
           {this.renderTypeFilterScoll()}
           {this.InterestBtn()}
-          {this.renderListActivity()}
+          <View style={{ justifyContent: 'center' }}>
+            {this.renderListActivity()}
+          </View>
           {this.renderFooter()}
         </ScrollView>
-        
+
       </LinearGradient>
 
     );
@@ -472,6 +478,7 @@ const styles = StyleSheet.create({
   },
   recommendedList: {
     justifyContent: 'space-between',
+    // alignItems:'center',
     // marginHorizontal:8
   },
   recommendation: {
