@@ -150,7 +150,7 @@ class MyInterest extends React.Component {
                 start={{ x: 0.0, y: 0.5 }}
                 end={{ x: 1.0, y: 0.5 }}
                 style={{ flex: 1 }}>
-          <View style={{ flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
+          <View style={{ height: theme.sizes.base * 3,flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.1)', }}>
             <View style={{ alignSelf: 'center', paddingHorizontal: width / 50 }}>
                 <Text style={{ fontSize: width / 20, fontWeight: 'bold',color: '#ffffff' ,alignSelf:'center'}}>
                     My interests
