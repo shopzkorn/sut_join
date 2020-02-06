@@ -707,7 +707,7 @@ export default class ListViewExample extends Component {
                     </Text>
                 </View>
 
-                <View >
+                <View style={{ width: width/2.5,}}>
                     <Text style={{
                         fontSize: theme.sizes.font * 1.1,
                         fontWeight: '500',
@@ -997,9 +997,9 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
     },
     destination: {
-        width: width - (theme.sizes.padding * 6),
+        width: width/2.5,
         height: width * 0.4,
-        marginHorizontal: theme.sizes.margin * .3,
+         marginHorizontal:width/20,
         paddingHorizontal: theme.sizes.padding / 2,
         paddingVertical: theme.sizes.padding * 0.66,
         borderRadius: theme.sizes.radius,
@@ -1009,12 +1009,12 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: theme.sizes.radius,
         borderBottomRightRadius: theme.sizes.radius,
         paddingHorizontal: theme.sizes.padding / 2,
-        marginHorizontal: theme.sizes.margin * .3,
+         marginHorizontal:width/20,
         // paddingVertical: theme.sizes.padding / 2,
         bottom: 10,
         // left: (width - (theme.sizes.padding * 10)) / (Platform.OS === 'ios' ? 3.2 : 3),
         backgroundColor: theme.colors.white,
-        width: width - (theme.sizes.padding * 6),
+        width: width/2.5,
     },
     recommended: {
     },

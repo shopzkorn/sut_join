@@ -108,6 +108,8 @@ class Profile extends React.Component {
         console.log('notification ' + responseJson);
         if(responseJson!=0){
         this.setState({ notification: true })
+        }else{
+        this.setState({ notification: false })
         }
       })
   }
@@ -492,7 +494,7 @@ class Profile extends React.Component {
             </View>
             <View style={{ justifyContent: 'flex-end' }}>
               <View style={{ alignSelf: 'flex-end', alignItems: 'flex-end', marginRight: 20, paddingVertical: height / 200, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <TouchableOpacity onPress={() => navigate('Notification')}>
+                <TouchableOpacity onPress={() =>{ navigate('Notification'); this.setState({notification:false})}}>
                   <Ionicons name="md-notifications" size={theme.sizes.font * 2} color={theme.colors.black} style={{ alignSelf: 'flex-end', marginRight: 10 }} />
                   {this.state.notification ?
                   <Badge  style={{ position: 'absolute',marginBottom: 10,height:theme.sizes.font,alignItems:'center',justifyContent:'center' ,width:theme.sizes.font}}>
