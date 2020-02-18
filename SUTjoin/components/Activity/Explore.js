@@ -248,12 +248,12 @@ class History extends React.Component {
             {item.name}  {item.surname.split('').slice(0, 5)}...
                     </Text>
         </View>
-
+      <View style={{marginHorizontal:width/15,}}>
         <View style={{ width: width/2.5,}}>
           <Text style={{
             fontSize: theme.sizes.font * 1.1,
             // fontWeight: width - (theme.sizes.padding * 7),
-            left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+           
             color: '#ea5e76',
             fontWeight: 'bold'
           }}>
@@ -262,7 +262,7 @@ class History extends React.Component {
         </View>
         <View style={{
           justifyContent: 'center',
-          left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+         
         }}>
           <Text style={{
             fontSize: theme.sizes.font,
@@ -273,7 +273,7 @@ class History extends React.Component {
         </View>
         <View style={{
           justifyContent: 'center',
-          left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+         
         }}>
           <Text>
             <MaterialCommunityIcons
@@ -288,6 +288,7 @@ class History extends React.Component {
             }}>
               {item.inviter}/{item.number_people}</Text>
           </Text>
+        </View>
         </View>
         <View>
           <Text style={{ fontSize: theme.sizes.font * .5, fontWeight: '500', paddingBottom: 8, }} />

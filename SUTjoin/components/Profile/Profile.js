@@ -105,7 +105,7 @@ class Profile extends React.Component {
       })
     }).then((response) => response.text())
       .then((responseJson) => {
-        console.log('notification ' + responseJson);
+        // console.log('notification ' + responseJson);
         if(responseJson!=0){
         this.setState({ notification: true })
         }else{

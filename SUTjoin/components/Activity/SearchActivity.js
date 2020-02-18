@@ -706,12 +706,12 @@ export default class ListViewExample extends Component {
                         {item.name}  {item.surname}...
                     </Text>
                 </View>
-
+                <View style={{marginHorizontal:width/15,}}>
                 <View style={{ width: width/2.5,}}>
                     <Text style={{
                         fontSize: theme.sizes.font * 1.1,
                         fontWeight: '500',
-                        left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+                       
                         color: '#ea5e76',
                         fontWeight: 'bold'
                     }}>
@@ -720,7 +720,7 @@ export default class ListViewExample extends Component {
                 </View>
                 <View style={{
                     justifyContent: 'center',
-                    left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+                   
                 }}>
                     <Text style={{
                         fontSize: theme.sizes.font,
@@ -731,7 +731,7 @@ export default class ListViewExample extends Component {
                 </View>
                 <View style={{
                     justifyContent: 'center',
-                    left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+                   
                 }}>
                     <Text>
                         <MaterialCommunityIcons
@@ -746,6 +746,7 @@ export default class ListViewExample extends Component {
                         }}>
                             {item.inviter}/{item.number_people}</Text>
                     </Text>
+                </View>
                 </View>
                 <View>
                     <Text style={{ fontSize: theme.sizes.font * .5, fontWeight: '500', paddingBottom: 8, }} />

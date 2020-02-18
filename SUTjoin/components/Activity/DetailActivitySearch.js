@@ -601,7 +601,7 @@ class Article extends Component {
 
   renderJoinButton = (id_host, number_people, inviter, id,date) => {
     var curdate = new Date(); //Current Date
-    let current = moment(curdate).format('YYYY/MM/DD');
+    let current = moment(curdate).format('YYYY/MM/DD HH:mm');
     if(current <= date){
       console.log(current+date)
     console.log("user is " + this.state.id_user.split('"')[1]);
@@ -983,7 +983,7 @@ class Article extends Component {
     // console.log(article);
 
     const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
-    const dates2 = moment(article.date_start).format('YYYY/MM/DD');
+    const dates2 = moment(article.date_start).format('YYYY/MM/DD HH:mm');
     if (!this.state.loading) {
       return (
 

@@ -234,12 +234,12 @@ componentWillUnmount() {
             {item.name}  {item.surname.split('').slice(0, 5)}...
                     </Text>
         </View>
-
+        <View style={{marginHorizontal:width/15,}}>
         <View style={{ width: width/2.5,}}>
           <Text style={{
             fontSize: theme.sizes.font * 1.1,
             fontWeight: '500',
-            left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+           
             color: '#ea5e76',
             fontWeight: 'bold'
           }}>
@@ -248,7 +248,7 @@ componentWillUnmount() {
         </View>
         <View style={{
           justifyContent: 'center',
-          left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+         
         }}>
           <Text style={{
             fontSize: theme.sizes.font,
@@ -259,7 +259,7 @@ componentWillUnmount() {
         </View>
         <View style={{
           justifyContent: 'center',
-          left: (width - (theme.sizes.padding * 9)) / (Platform.OS === 'ios' ? 3.2 : 3),
+         
         }}>
           <Text>
             <MaterialCommunityIcons
@@ -274,6 +274,7 @@ componentWillUnmount() {
             }}>
               {item.inviter}/{item.number_people}</Text>
           </Text>
+        </View>
         </View>
         <View>
           <Text style={{ fontSize: theme.sizes.font * .5, fontWeight: '500', paddingBottom: 8, }} />
