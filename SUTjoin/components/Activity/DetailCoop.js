@@ -1,0 +1,1096 @@
+import React, { Component } from 'react'
+import { Text, StyleSheet, View, Animated, Image, BackHandler, Dimensions, ScrollView, TouchableOpacity, AsyncStorage, FlatList, Platform, Linking, Alert } from 'react-native'
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Foundation from 'react-native-vector-icons/Foundation';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
+import moment from 'moment'
+import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import QRCode from 'react-native-qrcode-svg';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {  Button, Icon, Fab } from 'native-base';
+import * as theme from '../../theme';
+
+const { width, height } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 0,
+  },
+  column: {
+    flexDirection: 'column'
+  },
+  row: {
+    flexDirection: 'row'
+  },
+  header: {
+    // backgroundColor: 'transparent',
+    paddingHorizontal: theme.sizes.padding,
+    paddingTop: theme.sizes.padding,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  back: {
+    width: theme.sizes.base * 3,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  content: {
+    // backgroundColor: theme.colors.active,
+    // borderTopLeftRadius: theme.sizes.border,
+    // borderTopRightRadius: theme.sizes.border,
+  },
+  contentHeader: {
+    backgroundColor: 'transparent',
+    padding: theme.sizes.padding,
+    backgroundColor: theme.colors.white,
+    borderTopLeftRadius: theme.sizes.radius,
+    borderTopRightRadius: theme.sizes.radius,
+    marginTop: -theme.sizes.padding / 2,
+  },
+  avatar: {
+    position: 'absolute',
+    top: -theme.sizes.margin,
+    right: theme.sizes.margin,
+    width: theme.sizes.padding * 2,
+    height: theme.sizes.padding * 2,
+    borderRadius: theme.sizes.padding,
+  },
+  shadow: {
+    shadowColor: theme.colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 2,
+    shadowRadius: 5,
+  },
+  dotsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 36,
+    right: 0,
+    left: 0
+  },
+  dots: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 6,
+    backgroundColor: theme.colors.gray,
+  },
+  title: {
+    fontSize: theme.sizes.font * 1.5,
+    fontWeight: 'bold'
+  },
+  btnFooter: {
+    position: 'absolute',
+    left: 0,
+    bottom: 10,
+  },
+  description: {
+    fontSize: theme.sizes.font * 1.2,
+    lineHeight: theme.sizes.font * 2,
+    color: theme.colors.black
+  },
+  recommendedList: {
+  },
+  recommendation: {
+    width: (width - (theme.sizes.padding * 2)) / 4,
+    marginHorizontal: 8,
+    backgroundColor: theme.colors.white,
+    overflow: 'hidden',
+    borderRadius: theme.sizes.radius,
+    marginVertical: theme.sizes.margin * 0.5,
+  },
+  recommendationHeader: {
+    overflow: 'hidden',
+    borderTopRightRadius: theme.sizes.radius,
+    borderTopLeftRadius: theme.sizes.radius,
+  },
+  recommendationOptions: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: theme.sizes.padding / 2,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  recommendationTemp: {
+    fontSize: theme.sizes.font * 1.25,
+    color: theme.colors.white
+  },
+  recommendationImage: {
+    width: (width - (theme.sizes.padding * 2)) / 2,
+    height: (width - (theme.sizes.padding * 2)) / 2,
+  },
+  avatar2: {
+    width: theme.sizes.padding * 2,
+    height: theme.sizes.padding * 2,
+    borderRadius: theme.sizes.padding / 2,
+  },
+  centerEverything: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonStylenoFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: '#fe53bb',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
+  buttonStyleFollow: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2.5,
+    borderColor: '#fe53bb',
+  },
+});
+
+class Article extends Component {
+  state = {
+    join: false,
+    joiner: [],
+    id_user: '',
+    qrcode: '',
+    visibleDialog: false,
+    visibleDialogjoin: false,
+    visibleDialogCancelJoin: false,
+    lastCount: 6,
+    activity: [],
+    loading: true
+  }
+
+  scrollX = new Animated.Value(0);
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <View style={[styles.flex, styles.row, styles.header]}>
+          <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+            <FontAwesome name="chevron-left" color={theme.colors.white} size={theme.sizes.font * 1} />
+          </TouchableOpacity>
+          {/* <TouchableOpacity>
+            <MaterialIcons name="more-horiz" color={theme.colors.white} size={theme.sizes.font * 1.5} />
+          </TouchableOpacity> */}
+        </View>
+      ),
+      headerTransparent: true,
+    }
+  }
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    const { navigation } = this.props;
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    console.log(date + '/' + month + '/' + year);
+    const article = navigation.getParam('article');
+    AsyncStorage.multiGet(['user_id']).then((data) => {
+      let user_id = data[0][1];
+      this.setState({
+        id_user: user_id,
+        qrcode: "IdActivity_" + article + '_' + date + '/' + month + '/' + year,
+      });
+      this.setState({ joiner: [] })
+      this.fetchData();
+      console.log(this.state.qrcode);
+    });
+
+  }
+  handleBackPress = () => {
+    if (this.state.visibleDialog) {
+      this.setState({
+        visibleDialog: false
+      })
+    } else if (this.state.visibleDialogJoin) {
+      this.setState({
+        visibleDialogJoin: false
+      })
+    } else if (this.state.visibleDialogCancelJoin) {
+      this.setState({
+        visibleDialogCancelJoin: false
+      })
+    }
+    else {
+      this.props.navigation.goBack(); // works best when the goBack is async
+    }
+    return true;
+  }
+  openGps = (lat, lng) => {
+    const location = lat + ',' + lng;
+    console.log(location);
+    var scheme = Platform.OS === 'ios' ? 'maps:${location}' : 'geo:${location}?center=${location}&q=${location}&z=16'
+    const url = Platform.select({
+      ios: "maps:" + location + "?center=" + location + "&q=" + location + "&z=16",
+      android: "geo:" + location + "?center=" + location + "&q=" + location + "&z=16"
+    });
+    this.openExternalApp(url, location)
+  }
+
+  openExternalApp = (url, location) => {
+    var urlMap = "https://www.google.com/maps/dir/?api=1&destination=" + location;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Alert.alert(
+          'ERROR',
+          'Unable to open: ' + url,
+          [
+            { text: 'OK' },
+          ]
+        );
+      }
+    });
+  }
+  genQrcode() {
+    this.setState({
+      visibleDialog: true
+    });
+  }
+  DialogGenQrCode = (item) => {
+    return (
+      <View>
+        <Dialog
+          visible={this.state.visibleDialog}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{ justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialog: false });
+          }}
+          dialogTitle={<DialogTitle title="Check in" />}
+          width='100%'
+        >
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <QRCode
+              value={this.state.qrcode}
+              size={200}
+            />
+          </DialogContent>
+          <DialogFooter>
+            <DialogButton
+              text="CANCEL"
+              onPress={() => { this.setState({ visibleDialog: false }) }}
+            />
+            <DialogButton
+              text="CHECK"
+              onPress={() => { this.updateStatusJoin() }}
+            />
+          </DialogFooter>
+        </Dialog>
+        <Dialog
+          visible={this.state.visibleDialogJoin}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{ justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialogJoin: false });
+          }}
+          dialogTitle={<DialogTitle title="Send your request" />}
+          width='100%'
+        >
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
+                borderColor: '#fe53bb',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: width / 2,
+                height: width / 2,
+                backgroundColor: 'transparent',
+                borderRadius: width / 2 / 2,
+                marginBottom: -90,
+              }} onPress={this.join.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.3,
+                  height: width / 2.3,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.3 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 12, }}> Confirm </Text>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Join </Text>
+                </View>
+
+              </TouchableOpacity>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          visible={this.state.visibleDialogCancelJoin}
+          dialogStyle={{ bottom: 0 }}
+          containerStyle={{ justifyContent: 'center' }}
+          onTouchOutside={() => {
+            this.setState({ visibleDialogCancelJoin: false });
+          }}
+          dialogTitle={<DialogTitle title="Send your request" />}
+          width='100%'
+        >
+          <DialogContent style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
+              <TouchableOpacity activeOpacity={0.7} style={{
+                borderWidth: 6,
+                borderColor: '#fe53bb',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: width / 2,
+                height: width / 2,
+                backgroundColor: 'transparent',
+                borderRadius: width / 2 / 2,
+                marginBottom: -90,
+              }} onPress={this.canceljoin.bind(this)}>
+                <View style={{
+                  borderWidth: 2,
+                  borderColor: '#fe53bb',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: width / 2.3,
+                  height: width / 2.3,
+                  backgroundColor: 'transparent',
+                  borderRadius: width / 2.3 / 2,
+                }}>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 12 }}> Cancel </Text>
+                  <Text style={{ color: '#fe53bb', fontSize: width / 10, marginBottom: 40 }}> Join </Text>
+                </View>
+
+              </TouchableOpacity>
+            </View>
+          </DialogContent>
+        </Dialog>
+      </View>
+
+
+    )
+  }
+
+  fetchData = async () => {
+    this.setState({
+      loading: true
+    })
+    const { navigation } = this.props;
+    const article = navigation.getParam('article');
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/CheckJoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        id: article,
+        id_user: this.state.id_user
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+        console.log("res is" + responseJson);
+        if (responseJson > 0) {
+          console.log("res is" + responseJson);
+          this.setState({ join: true });
+          console.log("it is " + this.state.join);
+        }else{
+          this.setState({ join: false });
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    const response = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetUserJoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        id: article
+      })
+    });
+    const users = await response.json();
+    console.log(users)
+    this.setState({ joiner: users });
+
+    const activity_detail = await fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/GetDetailCoopActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        activity_id: article
+      })
+    });
+    const activity = await activity_detail.json();
+    this.setState({ activity: activity[0], loading: false });
+     console.log(this.state.activity);
+
+
+  }
+
+
+  canceljoin() {
+    this.setState({ visibleDialogCancelJoin: false })
+    console.log(0);
+    const { navigation } = this.props;
+    const article = this.state.activity;
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        status: "cancel",
+        id: article.id,
+        inviter: article.inviter,
+        id_user: this.state.id_user
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+
+        // Showing response message coming from server after inserting records.
+        Alert.alert(
+          'Success',
+          'Cancel join this activity',
+          [
+            { text: 'OK', onPress: () => this.fetchData() },
+          ],
+          { cancelable: false },
+        );
+
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+
+  join() {
+
+    this.setState({ visibleDialogJoin: false })
+    console.log(this.state.id_user);
+    const { navigation } = this.props;
+    const article = this.state.activity;
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        status: "add",
+        id: article.Id_coop_activity,
+        inviter: article.joiner,
+        id_user: this.state.id_user
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+        Alert.alert(
+          'Success',
+          'Confirm join this activity',
+          [
+            { text: 'OK', onPress: () => this.fetchData() },
+          ],
+          { cancelable: false },
+        );
+        // Showing response message coming from server after inserting records.
+        
+      }).catch((error) => {
+        console.error(error);
+      });
+
+  }
+
+  updateStatusJoin() {
+    console.log(1);
+    this.setState({ visibleDialog: false })
+    const { navigation } = this.props;
+    const article = this.state.activity;
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/JoinActivity.php', {
+      method: 'post',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({
+        status: "update",
+        id: article.id,
+        inviter: article.inviter,
+        id_user: this.state.id_user
+      })
+    }).then((response) => response.text())
+      .then((responseJson) => {
+
+        // Showing response message coming from server after inserting records.
+        alert(responseJson);
+
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+
+  renderJoinButton = (id_host, number_people, inviter, id,date) => {
+    var curdate = new Date(); //Current Date
+    let current = moment(curdate).format('YYYY/MM/DD HH:mm');
+    if(current <= date){
+    console.log("user is " + this.state.id_user.split('"')[1]);
+      console.log('date  '+date);
+    console.log("id host is " + id_host);
+    if (id_host == this.state.id_user.split('"')[1]) {
+      return <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: 'rgba(0,0,0,0.2)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 70,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          height: 70,
+          backgroundColor: 'green',
+          borderRadius: 100,
+        }}
+        onPress={this.genQrcode.bind(this)}
+      >
+        <FontAwesome5
+          name="check-circle"
+          size={theme.sizes.font * 2}
+          color={theme.colors.black}
+        />
+      </TouchableOpacity>
+    } else if (this.state.join) {
+      return <TouchableOpacity
+
+        style={{
+          borderWidth: 1,
+          borderColor: 'rgba(0,0,0,0.2)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 70,
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          height: 70,
+          backgroundColor: 'red',
+          borderRadius: 100,
+        }}
+        onPress={() => {
+          this.setState({
+            visibleDialogCancelJoin: true
+          })
+        }}
+      >
+        <FontAwesome5
+          name="user-times"
+          size={theme.sizes.font * 2}
+          color={theme.colors.black}
+        />
+      </TouchableOpacity>
+    } else {
+      if ((number_people == inviter)) {
+        return <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.2)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 70,
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            height: 70,
+            backgroundColor: 'red',
+            borderRadius: 100,
+          }}
+          disabled={true}
+        >
+          <FontAwesome5
+            name="user-plus"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+        </TouchableOpacity>
+      }
+      else {
+        return <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.2)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 70,
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            height: 70,
+            backgroundColor: '#ffc9de',
+            borderRadius: 100,
+          }}
+          onPress={() => {
+            this.setState({
+              visibleDialogJoin: true
+            })
+          }}
+          disabled={false}
+        >
+          <FontAwesome5
+            name="user-plus"
+            size={theme.sizes.font * 2}
+            color={theme.colors.black}
+          />
+        </TouchableOpacity>
+      }
+    }
+  }
+  }
+  renderSeeallJoiner = () => {
+    if (this.state.joiner.length > this.state.lastCount) {
+      console.log(this.state.lastCount)
+      return (
+        <TouchableOpacity style={[
+          styles.buttonStyleFollow,
+          styles.centerEverything]}
+          activeOpacity={0.5}
+          onPress={() => this.setState({
+            lastCount: this.state.joiner.length
+          })}>
+          <Text style={{
+            color: "#fe53bb",
+            fontSize: 16,
+            fontWeight: 'bold'
+          }}
+          >See all people</Text>
+        </TouchableOpacity>
+      )
+    } else {
+      if (this.state.joiner.length != 6) {
+        if (this.state.joiner.length == this.state.lastCount) {
+          return (
+            <TouchableOpacity style={[
+              styles.buttonStyleFollow,
+              styles.centerEverything]}
+              activeOpacity={0.5}
+              onPress={() => this.setState({
+                lastCount: 6
+              })}>
+              <Text style={{
+                color: "#fe53bb",
+                fontSize: 16,
+                fontWeight: 'bold'
+              }}
+              >Hide</Text>
+            </TouchableOpacity>
+          )
+        }
+      }
+    }
+  }
+  renderJoiner = () => {
+    if (this.state.joiner.length > 0) {
+      return (
+        <View style={[styles.flex, styles.column, styles.recommended]}>
+          <View
+            style={[
+              styles.row,
+              styles.recommendedHeader
+            ]}
+          >
+            {/* <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ color: theme.colors.caption }}>More</Text>
+          </TouchableOpacity> */}
+          </View>
+          <View style={[styles.column, styles.recommendedList]}>
+            <FlatList
+              Vertical
+              pagingEnabled
+              scrollEnabled
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              numColumns={3}
+              snapToAlignment="center"
+              style={[styles.shadow, { overflow: 'visible' }]}
+              data={this.state.joiner.slice(0, this.state.lastCount)}
+              keyExtractor={(item, index) => `${item.id}`}
+              renderItem={({ item, index }) => this.renderJoinerinActivity(item, index)}
+            />
+          </View>
+          {this.renderSeeallJoiner()}
+        </View>
+      );
+    } else {
+      return (
+        <View >
+          <View style={[styles.flex, styles.recommendationHeader]}>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: "center", marginTop: 10, marginBottom: 10, fontSize: 20 }}>No joiner</Text>
+          </View>
+
+        </View>
+      )
+    }
+  }
+
+  renderJoinerinActivity = (item, index) => {
+    const { navigation } = this.props;
+    console.log(item)
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + item.profile;
+    console.log("p " + photoUser);
+    const isLastItem = index === item.length - 1;
+
+    return (
+      <View style={[
+        styles.flex, styles.column, styles.recommendation, styles.shadow,
+        index === 0 ? { marginLeft: theme.sizes.margin / 2 } : null,
+        isLastItem ? { marginRight: theme.sizes.margin / 2 } : null,
+      ]}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => {
+          if (item.user_id != this.state.id_user.split('"')[1]) {
+            navigation.navigate('userProfile', { User: item.user_id })
+          } else {
+            navigation.navigate('Profile')
+          }
+        }}>
+          <View style={[styles.flex, styles.recommendationHeader]}>
+            <Image style={[styles.avatar2]} source={{ uri: photoUser }} />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.name} </Text>
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}>{item.surname.split('').slice(0, 5)}...</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+
+  }
+
+  renderTpye = (type,volunteer_hour) => {
+    console.log(type);
+    if (type == 1) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="book"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Learning</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 2) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="heart"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Volunteer  {volunteer_hour} hour</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 3) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Recreation</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 4) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hangout</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 5) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="rocket"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Travel</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 6) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="play"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Hobby</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 7) {
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="group"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Meet</Text>
+          </Text>
+        </View>
+      )
+    } else if (type == 8) {
+      console.log("this");
+      return (
+        <View style={[styles.row]}>
+          <Text >
+            <FontAwesome
+              name="glass"
+              size={theme.sizes.font * 2}
+              color={theme.colors.black}
+            />
+            <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Eat & Drink</Text>
+          </Text>
+        </View>
+      )
+    } else {
+      return (null);
+    }
+  }
+
+  renderGender = (gender) => {
+    if (gender == 1)
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male</Text>
+    else if (gender == 2)
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Female</Text>
+    else
+      return <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    Male & Female</Text>
+  }
+
+  renderTag = (tag) =>{
+    if(tag){
+      return(
+        <TouchableOpacity 
+        activeOpacity={0.5}
+        onPress={() => {
+          this.props.navigation.navigate('SearchActivity', { tag: tag })
+        }}>
+        <Text style={{
+          color: "#fe53bb",
+          fontSize: 16,
+          fontWeight: 'bold'
+        }}>
+          {tag}
+        </Text>
+      </TouchableOpacity>
+      )
+    }
+  }
+  render() {
+    const { navigation } = this.props;
+    const article = this.state.activity;
+    console.log(article);
+
+    let photoAc = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.photo;
+    let photoUser = 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/image/' + article.profile;
+    // console.log(article);
+
+    const dates = moment(article.date_start).format('MMMM, Do YYYY HH:mm');
+    const dates2 = moment(article.date_start).format('YYYY/MM/DD HH:mm');
+    
+    console.log('date is '+dates2)
+    if (!this.state.loading) {
+      return (
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: theme.sizes.padding }}
+        >
+          <View style={styles.flex}>
+            <View style={[styles.flex]}>
+              <Image
+                source={{ uri: photoAc }}
+                resizeMode='cover'
+                style={{ width, height: width * 0.7 }}
+              />
+
+            </View>
+            <View style={[styles.flex, styles.content]}>
+              <View style={[styles.flex, styles.contentHeader]}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                  if (article.user_id != this.state.id_user.split('"')[1]) {
+                    navigation.navigate('userProfile', { User: article.id_host })
+                  } else {
+                    navigation.navigate('Profile')
+                  }
+                }} style={{
+                  position: 'absolute',
+                  top: -theme.sizes.margin,
+                  right: theme.sizes.margin,
+                }}>
+                  <Image style={[styles.shadow], {
+                    width: theme.sizes.padding * 2,
+                    height: theme.sizes.padding * 2,
+                    borderRadius: theme.sizes.padding,
+                    backgroundColor: 'white'
+                  }} source={{ uri: photoUser }} />
+                </TouchableOpacity>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.title}>{article.topic}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('userProfile', { User: article.id_host })}>
+                      <Text style={{ color: theme.colors.black, fontWeight: 'bold', textAlign: 'right' }} >{article.name} {article.surname}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={[
+                  styles.row,
+                  { alignItems: 'center', marginVertical: theme.sizes.margin / 2 }
+                ]}>
+                  <Text >
+                    <MaterialCommunityIcons
+                      name="map-marker-outline"
+                      size={theme.sizes.font}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold' }}> {article.meeting_place}</Text>
+                  </Text>
+
+                </View>
+                {/* <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => this.openGps(article.location_lat, article.location_long)}>
+                  <View>
+                    <Text style={{ color: 'blue', fontSize: 16, justifyContent: 'center', fontWeight: 'bold' }}> Show map </Text>
+                  </View>
+                </TouchableOpacity> */}
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <FontAwesome5
+                      name="users"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}> Joiners {article.joiner}/{article.number_of_seats}</Text>
+                  </Text>
+                </View>
+                {this.renderJoiner()}
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Event details</Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
+                  Distributor : {article.distributor}
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <Foundation
+                      name="calendar"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}>    {article.meeting_day}</Text>
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                {this.renderTpye(article.type,article.volunteer_hour)}
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={[
+                  styles.row
+                ]}>
+                  <Text >
+                    <MaterialCommunityIcons
+                      name="clock"
+                      size={theme.sizes.font * 2}
+                      color={theme.colors.black}
+                    />
+                    <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.1 }}> {article.meeting_time_start} - {article.meeting_time_end} </Text>
+                  </Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ borderBottomColor: '#ffc9de', borderBottomWidth: 3, }} />
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.black, fontWeight: 'bold', fontSize: theme.sizes.font * 1.5 }}>Rewarding Points</Text>
+                </View>
+                <Text style={{ fontSize: theme.sizes.font * 0.2, fontWeight: '500', paddingBottom: 8, }}>
+                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: theme.colors.black, fontSize: theme.sizes.font * 1.1 }}>
+                  {article.reward_point}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              {this.renderJoinButton(article.user_ids, article.number_of_seats, article.joiner, article.id,dates2)}
+
+            </View>
+
+          </View>
+          {this.DialogGenQrCode(article)}
+
+        </ScrollView>
+
+      )
+    }
+    else {
+      return (
+        <View >
+          <Spinner visible={this.state.loading} textContent="Loading..." textStyle={{ color: '#FFF' }} />
+        </View>
+      )
+    }
+  }
+}
+
+export default Article;

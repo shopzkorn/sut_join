@@ -57,6 +57,7 @@ class Register extends Component {
         { label: 'Teacher', value: 1 },
         { label: 'Personel', value: 2 },
         { label: 'General Public', value: 3 },
+        { label: 'Coach', value: 4 },
       ],
       valueStatus: 0,
       valueGender: 0,
@@ -107,6 +108,11 @@ class Register extends Component {
     else if (value == 3) {
       this.setState({
         Textstatus: 'General Public'
+      })
+    }
+    else if (value == 4) {
+      this.setState({
+        Textstatus: 'Coach'
       })
     }
 

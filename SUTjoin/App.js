@@ -3,14 +3,18 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator,createD
 import { AsyncStorage,StatusBar,View,Dimensions   } from "react-native";
 import React, { Component } from "react";
 import Article from './components/Activity/DetailActivity';
+import DetailCoop from './components/Activity/DetailCoop';
 import ArticleSearch from './components/Activity/DetailActivitySearch';
 import ArticleUser from './components/Activity/DetailActivityUser';
 import Login from './components/Profile/Login';
 import userProfile from './components/Profile/ProfileUser';
+import coachProfile from './components/Profile/ProfileCoach';
 import Menu from './components/Navigation/Menu';
 import Register from './components/Profile/Register';
 import AddActivity from './components/Activity/AddActivity';
+import AddCoopActivity from './components/Activity/AddCoopActivity';
 import Calendar from './components/Activity/Calender';
+import CalendarCoop from './components/Activity/CalendarCoop';
 import AllHistoryActivity from './components/Activity/AllHistoryActivity';
 import SearchActivity from './components/Activity/TabsceneSearch';
 import SeemoreTag from './components/Activity/SeemoreTag';
@@ -44,6 +48,181 @@ const App = createStackNavigator(
   {
     Map,
     
+    userProfile: {
+      screen: userProfile,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Follow: {
+      screen: Follow,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    DetailNews,
+    SearchActivity: {
+      screen: SearchActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SeemoreTag: {
+      screen: SeemoreTag,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Notification: {
+      screen: Notification,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AllHistoryActivity: {
+      screen: AllHistoryActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CheckTime: {
+      screen: CheckTime,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    coachProfile: {
+      screen: coachProfile,
+    },
+    AddActivity,
+    Article,
+    DetailCoop,
+    ArticleUser,
+    ArticleSearch,
+    ScanQrcode,
+    FollowUser: {
+      screen: FollowUser,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    ScanSearchPeople: {
+      screen: ScanSearchPeople,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CheckinActivity,
+    Editprofile: {
+      screen: Editprofile,
+      navigationOptions: {
+        header: null,
+      },
+    },
+   
+    CalendarEditPro,
+    SelectMap: {
+      screen: SelectMap,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Menu: {
+      screen: Menu,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    MyInterest: {
+      screen: MyInterest,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    UserDashboard: {
+      screen: UserDashboard,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    UserDashboardUserdata: {
+      screen: UserDashboardUserdata,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    FirstPage: {
+      screen: FirstPage,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    manage_gpa: {
+      screen: manage_gpa,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    manage_subject: {
+      screen: manage_subject,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    add_subject: {
+      screen: add_subject,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    volunteer: {
+      screen: volunteer,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    SettingMode:{
+      screen: SettingMode,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AboutSutjoin:{
+      screen: AboutSutjoin,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    HelpCenter:{
+      screen: HelpCenter,
+      navigationOptions: {
+        header: null,
+      },
+    },
+
+  },
+
+  //You can hide the header from all the screens in once using defaultNavigationOptions
+  // {
+  //   defaultNavigationOptions: {
+  //     header: null
+  //   },
+  // },
+  { initialRouteName: 'Menu' }
+);
+
+const App1 = createStackNavigator(
+  {
+    Map,
+    coachProfile: {
+      screen: coachProfile,
+    },
     userProfile: {
       screen: userProfile,
       navigationOptions: {
@@ -207,6 +386,171 @@ const App = createStackNavigator(
   // },
   { initialRouteName: 'Menu' }
 );
+const Coach = createStackNavigator(
+  {
+    Map,
+    
+    coachProfile: {
+      screen: coachProfile,
+    },
+    Follow: {
+      screen: Follow,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    DetailNews,
+    SearchActivity: {
+      screen: SearchActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SeemoreTag: {
+      screen: SeemoreTag,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Notification: {
+      screen: Notification,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AllHistoryActivity: {
+      screen: AllHistoryActivity,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CheckTime: {
+      screen: CheckTime,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AddCoopActivity,
+    DetailCoop,
+    ArticleUser,
+    ArticleSearch,
+    ScanQrcode,
+    FollowUser: {
+      screen: FollowUser,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    ScanSearchPeople: {
+      screen: ScanSearchPeople,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CheckinActivity,
+    Editprofile: {
+      screen: Editprofile,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    CalendarCoop,
+    CalendarEditPro,
+    SelectMap: {
+      screen: SelectMap,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Menu: {
+      screen: Menu,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    MyInterest: {
+      screen: MyInterest,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    UserDashboard: {
+      screen: UserDashboard,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    UserDashboardUserdata: {
+      screen: UserDashboardUserdata,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    FirstPage: {
+      screen: FirstPage,
+      navigationOptions: {
+        // header: null,
+      }
+    },
+    manage_gpa: {
+      screen: manage_gpa,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    manage_subject: {
+      screen: manage_subject,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    add_subject: {
+      screen: add_subject,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    volunteer: {
+      screen: volunteer,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    SettingMode:{
+      screen: SettingMode,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AboutSutjoin:{
+      screen: AboutSutjoin,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    HelpCenter:{
+      screen: HelpCenter,
+      navigationOptions: {
+        header: null,
+      },
+    },
+
+  },
+
+  //You can hide the header from all the screens in once using defaultNavigationOptions
+  // {
+  //   defaultNavigationOptions: {
+  //     header: null
+  //   },
+  // },
+  { initialRouteName: 'coachProfile' }
+);
 const LoginScreen = createStackNavigator(
   {
     Login: {
@@ -227,6 +571,9 @@ const LoginScreen = createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    coachProfile: {
+      screen: coachProfile,
     },
     Interest: {
       screen: Interest,
@@ -263,7 +610,9 @@ export default createAppContainer( createSwitchNavigator(
   {
     AuthLoading: SplashScreen,
     App: App,
-    Auth: LoginScreen
+    App1: App1,
+    Coach: Coach,
+    Auth: LoginScreen,
   },
   {
     initialRouteName: 'AuthLoading',

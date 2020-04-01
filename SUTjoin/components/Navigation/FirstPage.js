@@ -13,48 +13,57 @@ import * as theme from '../../theme';
 const { width, height } = Dimensions.get('window');
 
 class FirstPage extends Component {
-  state ={
-    Username : '',
-    Password : ''
+  state = {
+    Username: '',
+    Password: ''
   }
   componentDidMount() {
     setTimeout(() => {
-      AsyncStorage.getItem('user_id').then( async (user) => { return await JSON.parse(user) }).then((user_data) => {
+      AsyncStorage.getItem('user_id').then(async (user) => { return await JSON.parse(user) }).then((user_data) => {
         console.log(user_data)
         if (user_data == null) {
           this.props.navigation.navigate('Auth');
         } else {
-          AsyncStorage.multiGet(['username','password']).then((data) => {
-         console.log(data[0][1]);
-           this.setState((prevState, props) => ({
-            Username : data[0][1],
-            Password : data[1][1]
-          }), () => {
-            fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
-              method: 'post',
-              headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              }),
-              body: JSON.stringify({
-                username: this.state.Username,
-                password: this.state.Password,
-              })
-            }).then((response) => response.json()) 
-            .then((responseJson) =>{
-              console.log(responseJson)
-              if (responseJson == false) {
-                this.props.navigation.navigate('Auth');
-              } else if (responseJson.length == 0) {
-                this.props.navigation.navigate('Auth');
-              } else {
-                this.props.navigation.navigate('App')
-              }
-            });
-          })
+          AsyncStorage.multiGet(['username', 'password']).then((data) => {
+            console.log(data[0][1]);
+            this.setState((prevState, props) => ({
+              Username: data[0][1],
+              Password: data[1][1]
+            }), () => {
+              fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/Login.php', {
+                method: 'post',
+                headers: new Headers({
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }),
+                body: JSON.stringify({
+                  username: this.state.Username,
+                  password: this.state.Password,
+                })
+              }).then((response) => response.json())
+                .then((responseJson) => {
+                  console.log(responseJson)
+                  if (responseJson == false) {
+                    this.props.navigation.navigate('Auth');
+                  } else if (responseJson.length == 0) {
+                    this.props.navigation.navigate('Auth');
+                  } else {
+                    AsyncStorage.multiGet(['status']).then((data) => {
+                      var status = data[0][1];
+                      console.log(status)
+                      if (status == 1) {
+                        this.props.navigation.navigate('App')
+                      } else if (status == 6) {
+                        this.props.navigation.navigate('Coach')
+                      }
+                    });
+
+                  }
+                });
+            })
           })
         }
-       
+
       });
 
     }, 1000)

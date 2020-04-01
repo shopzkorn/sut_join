@@ -113,10 +113,8 @@ export default class Example extends React.Component {
                     <Calendar
                         // Initially visible month. Default = Date()
                         current={this.state.date}
-                        // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-                        minDate={'1972-05-10'}
                         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-                        maxDate={Date()}
+                        minDate={Date()}
                         // Handler which gets executed on day press. Default = undefined
                         onDayPress={(day) => {
                             this.setState({

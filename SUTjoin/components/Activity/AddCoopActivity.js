@@ -70,30 +70,30 @@ export default class HomeScreen extends Component {
       visibleType: false,
       visibleGender: false,
       radio_type: [
-        { label: 'Learning', value: 0 },
-        { label: 'Volunteer', value: 1 },
-        { label: 'Recreation', value: 2 },
-        { label: 'Hangout', value: 3 },
-        { label: 'Travel', value: 4 },
-        { label: 'Hobby', value: 5 },
-        { label: 'Meet', value: 6 },
-        { label: 'Eat & Drink', value: 7 },
+        { label: 'SUT U-Space', value: 0 },
+        { label: 'C1', value: 1 },
+        { label: 'Fitness', value: 2 },
+        { label: 'B4101', value: 3 },
+        { label: 'B5101', value: 4 },
+        { label: 'B2101', value: 5 },
+        { label: 'B2102', value: 6 },
+        { label: 'B2103', value: 7 },
       ],
       radio_type2: [
-        { label: 'Learning', value: 0 },
-        { label: 'Recreation', value: 2 },
-        { label: 'Hangout', value: 3 },
-        { label: 'Travel', value: 4 },
-        { label: 'Hobby', value: 5 },
-        { label: 'Meet', value: 6 },
-        { label: 'Eat & Drink', value: 7 },
+        { label: 'SUT U-Space', value: 0 },
+        { label: 'Fitness', value: 2 },
+        { label: 'B4101', value: 3 },
+        { label: 'B5101', value: 4 },
+        { label: 'B2101', value: 5 },
+        { label: 'B2102', value: 6 },
+        { label: 'B2103', value: 7 },
       ],
       radio_Gender: [
         { label: 'Male', value: 0 },
         { label: 'Female', value: 1 },
         { label: 'Male & Female', value: 2 },
       ],
-      Texttype: 'Learning',
+      Texttype: 'SUT U-Space',
       Textgender: 'Male',
       valueType: 0,
       valueGender: 0,
@@ -132,42 +132,42 @@ export default class HomeScreen extends Component {
     console.log(value);
     if (value == 0) {
       this.setState({
-        Texttype: 'Learning'
+        Texttype: 'SUT U-Space'
       })
     }
     else if (value == 1) {
       this.setState({
-        Texttype: 'Volunteer'
+        Texttype: 'C1'
       })
     }
     else if (value == 2) {
       this.setState({
-        Texttype: 'Recreation'
+        Texttype: 'Fitness'
       })
     }
     else if (value == 3) {
       this.setState({
-        Texttype: 'Hangout'
+        Texttype: 'B4101'
       })
     }
     else if (value == 4) {
       this.setState({
-        Texttype: 'Travel'
+        Texttype: 'B5101'
       })
     }
     else if (value == 5) {
       this.setState({
-        Texttype: 'Hobby'
+        Texttype: 'B2101'
       })
     }
     else if (value == 6) {
       this.setState({
-        Texttype: 'Meet'
+        Texttype: 'B2102'
       })
     }
     else if (value == 7) {
       this.setState({
-        Texttype: 'Eat & Drink'
+        Texttype: 'B2103'
       })
     }
     this.setState((prevState, props) => ({
@@ -184,7 +184,7 @@ export default class HomeScreen extends Component {
     console.log(value);
     if (value == 0) {
       this.setState({
-        Texttype: 'Learning',
+        Texttype: 'SUT U-Space',
         valueType: value,
         visibleType: false,
         type: value + 1,
@@ -192,7 +192,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 2) {
       this.setState({
-        Texttype: 'Recreation',
+        Texttype: 'Fitness',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -200,7 +200,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 3) {
       this.setState({
-        Texttype: 'Hangout',
+        Texttype: 'B4101',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -208,7 +208,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 4) {
       this.setState({
-        Texttype: 'Travel',
+        Texttype: 'B5101',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -216,7 +216,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 5) {
       this.setState({
-        Texttype: 'Hobby',
+        Texttype: 'B2101',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -224,7 +224,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 6) {
       this.setState({
-        Texttype: 'Meet',
+        Texttype: 'B2102',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -232,7 +232,7 @@ export default class HomeScreen extends Component {
     }
     else if (value == 7) {
       this.setState({
-        Texttype: 'Eat & Drink',
+        Texttype: 'B2103',
         valueType: value - 1,
         visibleType: false,
         type: value + 1,
@@ -330,7 +330,7 @@ export default class HomeScreen extends Component {
           onTouchOutside={() => {
             this.setState({ visibleType: false });
           }}
-          dialogTitle={<DialogTitle title="Event type" />}
+          dialogTitle={<DialogTitle title="Meeting Place" />}
           width='100%'
         >
           <DialogContent>
@@ -500,7 +500,7 @@ export default class HomeScreen extends Component {
   }
   create = () => {
     this.setState({ loadingVisible : true})
-    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddActivity.php', {
+    fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/AddCoopActivity.php', {
       method: 'post',
       headers: new Headers({
         'Accept': 'application/json',
@@ -508,21 +508,14 @@ export default class HomeScreen extends Component {
       }),
       body: JSON.stringify({
         id_host: this.state.id_host,
-        title: this.state.Title,
-        description: this.state.description,
-        tag: this.state.tag,
-        location: this.state.Location,
-        datetimes: this.state.datetimes,
-        number_people: this.state.sliderOneValue[0],
-        minage: this.state.multiSliderValue[0],
-        maxage: this.state.multiSliderValue[1],
-        gender: this.state.Gender,
-        image: this.state.imageName,
-        latitude: this.state.latitude,
-        longitude: this.state.longitude,
-        address: this.state.address,
-        type: this.state.type,
-        volunteer: this.state.Volunteer
+        Distributor: this.state.Distributor,
+        Topic: this.state.Topic,
+        Language: this.state.Language,
+        Seats: this.state.Seats,
+        chooseDay: this.state.chooseDay,
+        start: this.state.start,
+        end: this.state.end,
+        Texttype: this.state.Texttype,
       })
     }).then((response) => response.text())
       .then((responseJson) => {
@@ -540,32 +533,18 @@ export default class HomeScreen extends Component {
         console.error(error);
       });
   }
-  register = (event) => {
-    console.log(this.state.type);
-    RNFetchBlob.fetch('POST', 'https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/uploadPhoto.php', {
-      Authorization: "Bearer access-token",
-      otherHeader: "foo",
-      'Content-Type': 'multipart/form-data',
-    }, [
-      // custom content type
-      { name: 'image', filename: this.state.imageName, data: this.state.imagePath },
-    ]).then((resp) => {
-      console.log(resp.text())
-      if (resp.text() == '"Success"') {
-        this.create();
-      } else if (resp.text() == '"Fail"') {
-        alert('Upload failed');
-      } else {
-        alert(resp.text());
-      }
-
-    }).catch((err) => {
-      console.log(err);
+ 
+  
+  setDate = (date) => {
+    console.log(date);
+    let day = date.split('-')[2];
+    let month = date.split('-')[1];
+    let year = date.split('-')[0];
+    let chooseDay = day + '-' + month + '-' + year
+    this.setState({
+        chooseDay: chooseDay
     })
-
-
   }
-
   volunteerCheck = () => {
     if (this.state.type == 2) {
       return (
@@ -643,36 +622,34 @@ export default class HomeScreen extends Component {
           contentContainerStyle={{ paddingBottom: theme.sizes.padding, flexGrow: 1, justifyContent: 'space-between', }}
                 >
             <View style={{ paddingHorizontal: width / 12 }}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event title</Text>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Distributor</Text>
               <TextInput
-                placeholder='Title'
-                value={this.state.Title}
-                onChangeText={Title => this.setState({ Title })}
+                placeholder='Distributor'
+                value={this.state.Distributor}
+                onChangeText={Distributor => this.setState({ Distributor })}
                 style={styles.input}
                 underlineColorAndroid="transparent"
                 keyboardType={'email-address'}
               />
             </View>
             <View style={{ paddingHorizontal: width / 12 }}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event description</Text>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Topic</Text>
               <TextInput
-                placeholder='Description'
-                value={this.state.description}
-                onChangeText={description => this.setState({ description })}
-                style={styles.inputdes}
+                placeholder='Topic'
+                value={this.state.Topic}
+                onChangeText={Topic => this.setState({ Topic })}
+                style={styles.input}
                 placeholderStyle={{ justifyContent: 'flex-start' }}
-                multiline={true}
-                numberOfLines={4}
                 underlineColorAndroid="transparent"
                 keyboardType={'email-address'}
               />
             </View>
             <View style={{ paddingHorizontal: width / 12 }}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Event tag</Text>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Language</Text>
               <TextInput
-                placeholder='Tag'
-                value={this.state.tag}
-                onChangeText={(tag) => this.onChangeText(tag)}
+                placeholder='Language'
+                value={this.state.Language}
+                onChangeText={(Language) => this.setState({ Language })}
                 style={styles.input}
                 placeholderStyle={{ justifyContent: 'flex-start' }}
                 multiline={true}
@@ -681,117 +658,77 @@ export default class HomeScreen extends Component {
                 underlineColorAndroid="transparent"
                 keyboardType={'email-address'}
               />
-              {this.renderTag()}
+            </View>
+            <View style={{ paddingHorizontal: width / 12 }}>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, marginVertical: 15 }}>Number of Seats</Text>
+              <TextInput
+                placeholder='Seats'
+                value={this.state.Seats}
+                onChangeText={(Seats) => this.setState({ Seats })}
+                style={styles.input}
+                placeholderStyle={{ justifyContent: 'flex-start' }}
+                multiline={true}
+                // onEndEditing={() => this.setState({ visibleTag: false })}
+                underlineColorAndroid="transparent"
+                keyboardType={'number-pad'}
+              />
             </View>
             <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical: 20 }} />
 
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.props.navigation.navigate('CalendarCoop', { onNavigateBack: this.setDate })}>
+              <View style={{ flexDirection: 'row', marginLeft: 18 }}>
+                <MaterialCommunityIcons name="calendar-month" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Meeting Day</Text>
+              </View>
+              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.chooseDay} </Text>
+              <View style={{ marginRight: 20 }}>
+                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
+              <View style={{ flexDirection: 'row', marginLeft: 18 }}>
+                <MaterialCommunityIcons name="clock" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Meeting Time</Text>
+              </View>
+              <TextInput
+                placeholder='Start'
+                value={this.state.start}
+                onChangeText={(start) => this.setState({ start })}
+                style={styles.input2}
+                placeholderStyle={{ justifyContent: 'flex-start' }}
+                multiline={true}
+                // onEndEditing={() => this.setState({ visibleTag: false })}
+                underlineColorAndroid="transparent"
+                keyboardType={'number-pad'}
+              />
+              <Text> - </Text>
+              <TextInput
+                placeholder='End'
+                value={this.state.end}
+                onChangeText={(end) => this.setState({ end })}
+                style={styles.input2}
+                placeholderStyle={{ justifyContent: 'flex-start' }}
+                multiline={true}
+                // onEndEditing={() => this.setState({ visibleTag: false })}
+                underlineColorAndroid="transparent"
+                keyboardType={'number-pad'}
+              />
+            </TouchableOpacity>
+
             <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleType: true })}>
               <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                <Ionicons name="md-pricetags" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Event type </Text>
+                <MaterialCommunityIcons name="map-marker-outline" color={theme.colors.black} size={theme.sizes.font * 1.5} />
+                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Meeting Place</Text>
               </View>
               <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Texttype} </Text>
               <View style={{ marginRight: 20 }}>
                 <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
               </View>
             </TouchableOpacity>
-            {this.volunteerCheck()}
-            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate('SelectMap', { returnData: this.returnData.bind(this) })}>
-              <View style={{ flexDirection: 'row', marginLeft: 18 }}>
-                <MaterialCommunityIcons name="map-marker-outline" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Choose location </Text>
-              </View>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Location} </Text>
-              <View style={{ marginRight: 20 }}>
-                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.button} title="Choose date" onPress={this.showDateTimePicker} >
-              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                <Ionicons name="md-calendar" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-                <Text style={{ color: '#ffffff', fontSize: width / 25, marginLeft: 10 }}> Date & Time </Text>
-              </View>
-              <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this.handleDatePicked}
-                onCancel={this.hideDateTimePicker}
-                mode={'datetime'}
-                minimumDate	={new Date()}
-                is24Hour={false}
-              />
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}>{this.state.chosendate}</Text>
-              <View style={{ marginRight: 20 }}>
-                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={this.selectPhoto.bind(this)}>
-              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                <MaterialCommunityIcons name="image" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Add cover event</Text>
-              </View>
-              <View style={{ marginRight: 20 }}>
-                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              </View>
-            </TouchableOpacity>
-            {this.renderPhoto()}
+           
             <View style={{ borderBottomColor: 'rgba(255,255,255,0.2)', borderBottomWidth: 3, marginVertical: 20 }} />
-            <View style={{ paddingHorizontal: width / 12 }}>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, marginBottom: 15 }}>Looking for</Text>
-            </View>
-            <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.setState({ visibleGender: true })}>
-              <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                <Foundation name="male-female" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-                <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', marginLeft: 10 }}>Gender</Text>
-              </View>
-              <Text style={{ color: '#ffffff', fontSize: width / 25, justifyContent: 'center', }}> {this.state.Textgender} </Text>
-              <View style={{ marginRight: 20 }}>
-                <Ionicons name="ios-arrow-forward" color={theme.colors.black} size={theme.sizes.font * 1.5} />
-              </View>
-            </TouchableOpacity>
-
-            <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', width: width, }}>
-
-              <View style={styles.sliderOne}>
-                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Number of people: </Text>
-                <Text
-                  style={{ color: '#ffffff', fontSize: width / 25, }}>
-                  {this.state.sliderOneValue}
-                </Text>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <MultiSlider
-                  values={this.state.sliderOneValue}
-                  sliderLength={280}
-                  onValuesChangeStart={this.sliderOneValuesChangeStart}
-                  onValuesChange={this.sliderOneValuesChange}
-                  onValuesChangeFinish={this.sliderOneValuesChangeFinish}
-                  min={1}
-                  max={300}
-                />
-              </View>
-              <View style={styles.sliderOne}>
-                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>Age range: </Text>
-                <Text style={{ color: '#ffffff', fontSize: width / 25, }}>{this.state.multiSliderValue[0]} - {this.state.multiSliderValue[1]}</Text>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <MultiSlider
-                  values={[
-                    this.state.multiSliderValue[0],
-                    this.state.multiSliderValue[1],
-                  ]}
-                  sliderLength={280}
-                  onValuesChange={this.multiSliderValuesChange}
-                  min={0}
-                  max={60}
-                  step={1}
-                  allowOverlap
-                  snapped
-                />
-              </View>
-            </View>
-
+          
             {this.DialogFilter()}
             <View style={{ alignItems: 'center', marginTop: 10 }}>
               <TouchableOpacity activeOpacity={0.7} style={{
@@ -804,7 +741,7 @@ export default class HomeScreen extends Component {
                 backgroundColor: 'transparent',
                 borderRadius: width / 2.5 / 2,
                 marginBottom: -100,
-              }} onPress={this.register.bind(this)}>
+              }} onPress={this.create.bind(this)}>
                 <View style={{
                   borderWidth: 2,
                   borderColor: '#fe53bb',
@@ -847,6 +784,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color:'white',
     height: height / 15
+    
+  },
+  input2: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    width: width / 4,
+    paddingLeft: 10,
+    color:'white',
+    height: height / 20
     
   },
   inputdes: {

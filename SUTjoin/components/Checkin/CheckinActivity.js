@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { RNCamera as Camera } from 'react-native-camera';
+import Dialog, { DialogFooter, DialogButton, DialogTitle, DialogContent } from 'react-native-popup-dialog';
 import { withNavigationFocus } from "react-navigation";
 import LinearGradient from 'react-native-linear-gradient';
 import BarcodeMask from 'react-native-barcode-mask';
@@ -33,54 +34,56 @@ class ScanScreen extends Component {
     keyword: '',
     room_lat: '',
     room_lng: '',
-    check : 0
+    check: 0,
+    dialogVisible: false,
+    position: ''
   }
   onSuccessButton = () => {
-    if(this.state.keyword !=''){
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    if (month < 10) {
-      month = '0' + month;
-    }
-    this.setState((prevState, props) => ({
-      id_activity: this.state.keyword.split('-')[0],
-      date: date + '/' + month + '/' + year
-    }), () => {
-      console.log(this.state.id_activity + this.state.date),
-        this.checked(2)
-    })
-  }else{
-    alert('กรุณาใส่code check in');
-  }
-  }
-  onSuccessScan = (e) => {
-    if(this.state.check == 0){
-    console.log(e.data.split('_').length)
-    if (e.data.split('_').length == 3) {
+    if (this.state.keyword != '') {
+      var date = new Date().getDate(); //Current Date
+      var month = new Date().getMonth() + 1; //Current Month
+      var year = new Date().getFullYear(); //Current Year
+      if (month < 10) {
+        month = '0' + month;
+      }
       this.setState((prevState, props) => ({
-        id_activity: e.data.split('_')[1],
-        date: e.data.split('_')[2],
+        id_activity: this.state.keyword.split('-')[0],
+        date: date + '/' + month + '/' + year
       }), () => {
-        console.log(this.state.id_activity),
-          this.checked(2)
-          this.setState({check : 1})
-      })
-    } else if (e.data.split('_').length == 4) {
-      this.setState((prevState, props) => ({
-        subject: e.data.split('_')[0],
-        date: e.data.split('_')[1],
-        room_lat: e.data.split('_')[2],
-        room_lng: e.data.split('_')[3],
-      }), () => {
-        console.log(this.state.subject + this.state.date),
-          this.checked(1)
-          this.setState({check : 1})
+        console.log(this.state.id_activity + this.state.date),
+          this.checked(3)
       })
     } else {
-      alert("Can't scan this qrcode");
+      alert('กรุณาใส่code check in');
     }
   }
+  onSuccessScan = (e) => {
+    if (this.state.check == 0) {
+      console.log(e.data.split('_').length)
+      if (e.data.split('_').length == 3) {
+        this.setState((prevState, props) => ({
+          id_activity: e.data.split('_')[1],
+          date: e.data.split('_')[2],
+        }), () => {
+          console.log(this.state.id_activity),
+            this.checked(3)
+          this.setState({ check: 1 })
+        })
+      } else if (e.data.split('_').length == 4) {
+        this.setState((prevState, props) => ({
+          subject: e.data.split('_')[0],
+          date: e.data.split('_')[1],
+          room_lat: e.data.split('_')[2],
+          room_lng: e.data.split('_')[3],
+        }), () => {
+          console.log(this.state.subject + this.state.date),
+            this.checked(1)
+          this.setState({ check: 1 })
+        })
+      } else {
+        alert("Can't scan this qrcode");
+      }
+    }
   }
 
   permisions = async () => {
@@ -155,10 +158,10 @@ class ScanScreen extends Component {
         }).catch((error) => {
           console.error(error);
         });
-    } else {
+    } else if (num == 1) {
       var Hours = new Date().getHours(); //Current Date
       var Minutes = new Date().getMinutes(); //Current Date
-      var Time = Hours+":"+Minutes
+      var Time = Hours + ":" + Minutes
       fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkName.php', {
         method: 'post',
         headers: new Headers({
@@ -174,7 +177,8 @@ class ScanScreen extends Component {
           user_id: this.state.user_id,
           subject: this.state.subject,
           date: this.state.date,
-          time:Time,
+          position: this.state.position,
+          time: Time,
           status: 1
         })
       }).then((response) => response.text())
@@ -182,6 +186,31 @@ class ScanScreen extends Component {
           // console.log('res ' + responseJson.length);
           this.setState({ isCameraVisible: false })
           alert(responseJson);
+        }).catch((error) => {
+          console.error(error);
+        });
+    } else if (num == 3) {
+      fetch('https://it2.sut.ac.th/project62_g4/Web_SUTJoin/include/checkVolunteerActivity.php', {
+        method: 'post',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          id: this.state.id_activity,
+        })
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          // console.log('res ' + responseJson.length);
+          // alert(responseJson[0].type);
+          if (responseJson[0].type == 2) {
+            this.setState({
+              dialogVisible: true
+            })
+          }
+          else {
+            this.checked(2)
+          }
         }).catch((error) => {
           console.error(error);
         });
@@ -209,8 +238,40 @@ class ScanScreen extends Component {
       }
     }
   }
-  
-  
+
+  renderDialog() {
+    return (
+      <View>
+        <Dialog
+          visible={this.state.dialogVisible}
+          containerStyle={{ height: '100%', justifyContent: 'flex-end' }}
+          onTouchOutside={() => {
+            this.setState({ dialogVisible: false });
+          }}
+          dialogTitle={<DialogTitle title="Your position" />}
+          width='100%'
+        >
+          <DialogContent>
+            <TextInput
+              placeholder='Enter your position'
+              value={this.state.position}
+              onChangeText={position => this.setState({ position })}
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              keyboardType={'email-address'}
+            />
+          </DialogContent>
+          <DialogFooter>
+          <DialogButton  text="Cancel" onPress={() => {
+              this.setState({ dialogVisible: false });
+            }} />
+            <DialogButton  text="Ok" onPress={() => this.checked(2)} />
+          </DialogFooter>
+        </Dialog>
+      </View>
+    )
+  }
+
   componentDidMount() {
     AsyncStorage.multiGet(['user_id']).then((data) => {
       let user_id = data[0][1];
@@ -229,7 +290,7 @@ class ScanScreen extends Component {
           start={{ x: 0, y: 1 }}
           end={{ x: 1, y: 0 }}
           style={{ flex: 1 }}
-          >
+        >
 
           <View style={{ flexDirection: 'row', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.1)', }}>
             <View style={{ justifyContent: 'flex-start' }}>
@@ -251,7 +312,7 @@ class ScanScreen extends Component {
               />
               <TouchableOpacity style={{ width: 50, height: 60, }} onPress={() => {
                 if (!this.state.isCameraVisible) {
-                  this.setState({ isCameraVisible: true , check:0 })
+                  this.setState({ isCameraVisible: true, check: 0 })
                 } else {
                   this.setState({ isCameraVisible: false })
                 }
@@ -264,6 +325,7 @@ class ScanScreen extends Component {
             </View>
           </View>
           {this.renderCamera()}
+          {this.renderDialog()}
         </LinearGradient>
       </SafeAreaView>
     );
@@ -300,6 +362,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2.5,
     borderColor: '#fe53bb',
+  },
+  input: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    width: width / 1.2,
+    paddingLeft: 10,
+    height: height / 15
+
   },
 });
 

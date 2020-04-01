@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity,Image ,SafeAreaView} from 'react-native';
+import { View, StyleSheet, Dimensions, AsyncStorage, TouchableOpacity,Image ,SafeAreaView} from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Animated from 'react-native-reanimated';
 import * as theme from '../../theme';
 import ListActivity from './ListActivity';
+import ListCoopActivity from './ListCoopActivity';
 import SearchActivity from './Explore';
 
 export default class TabViewExample extends React.Component {
@@ -49,6 +50,12 @@ export default class TabViewExample extends React.Component {
       <SearchActivity navigation={navigation} /> //send props is navigation={navigation}
     );
   }
+  ThirdRoute = () => {
+    const { navigation } = this.props;
+    return (
+      <ListCoopActivity navigation={navigation} />
+    );
+  }
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
@@ -79,6 +86,7 @@ export default class TabViewExample extends React.Component {
     routes: [
       { key: 'first', title: 'Feed' },
       { key: 'second', title: 'Explore' },
+      { key: 'third', title: 'Coop' },
     ],
   };
 
@@ -91,6 +99,7 @@ export default class TabViewExample extends React.Component {
         renderScene={SceneMap({
           first: this.FirstRoute,
           second: this.SecondRoute,
+          third: this.ThirdRoute
         })}
         renderTabBar={this._renderTabBar}
         onIndexChange={index => {this.setState({ index }),console.log(this.state.index)}}

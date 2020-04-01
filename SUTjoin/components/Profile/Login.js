@@ -50,14 +50,24 @@ class Login extends Component {
                 ["password", responseJson[0].Password],
                 ["user_id", user_id],
                 ["user_status", responseJson[0].volunteer_status],
+                ["status", responseJson[0].user_status],
             ])
             let { navigation } = this.props;
-            let resetAction = StackActions.reset({
+            let resetAction1 = StackActions.reset({
                 key: undefined,
                 index: 0,
                 actions: [NavigationActions.navigate({ routeName: 'Menu' })],
             });
-            navigation.dispatch(resetAction);
+            let resetAction2 = StackActions.reset({
+              key: undefined,
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: 'coachProfile' })],
+          });
+          if(responseJson[0].user_status == 1){
+            navigation.dispatch(resetAction1);
+          }else if(responseJson[0].user_status == 6 ){
+            navigation.dispatch(resetAction2);
+          }
            
             // AsyncStorage.setItem('user_data', responseJson[0])
 
